@@ -107,37 +107,21 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
             </h1>
           </div>
 
-          {/* Conversation thread */}
-          <div className="flex flex-col gap-3" data-el="receipt-thread">
-            <Bubble
-              side="you"
-              label={t("receipt.you")}
-              body={receipt.body}
-              time={fmt(receipt.createdAt)}
-            />
-
-            {receipt.reply ? (
-              <Bubble
-                side="them"
-                label={t("receipt.them")}
-                body={receipt.reply}
-                time={receipt.repliedAt ? fmt(receipt.repliedAt) : undefined}
-              />
-            ) : (
-              <p className="rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground gummy">
-                {t("receipt.waiting")}
-              </p>
+          {/* Conversation thread — one keyed slot per row, never text↔element */}
+          <div className="flex flex-col gap-3" data-el="receipt-thread" suppressHydrationWarning>
+            {rows.map((row) =>
+              row.kind === "bubble" ? (
+                <div key={row.key}>
+                  <Bubble side={row.side} label={row.label} body={row.body} time={row.time} />
+                </div>
+              ) : (
+                <div key={row.key}>
+                  <p className="rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground gummy">
+                    {t("receipt.waiting")}
+                  </p>
+                </div>
+              ),
             )}
-
-            {receipt.turns.map((turn: ConversationTurn) => (
-              <Bubble
-                key={turn.id}
-                side={turn.author === "owner" ? "them" : "you"}
-                label={turn.author === "owner" ? t("receipt.them") : t("receipt.you")}
-                body={turn.body}
-                time={fmt(turn.createdAt)}
-              />
-            ))}
           </div>
 
           {/* Follow-up composer (only once the owner has replied) */}
@@ -211,13 +195,17 @@ function Bubble({
           >
             {label}
           </p>
-          <p className="text-[15px] leading-relaxed text-foreground">{body}</p>
-          {time && (
-            <p className="mt-2 flex items-center gap-1 text-[11px] text-foreground/50">
-              <Clock className="h-3 w-3" />
-              {time}
-            </p>
-          )}
+          <p className="text-[15px] leading-relaxed text-foreground" suppressHydrationWarning>
+            {body}
+          </p>
+          <p className="mt-2 flex items-center gap-1 text-[11px] text-foreground/50" suppressHydrationWarning>
+            {time ? (
+              <>
+                <Clock className="h-3 w-3" />
+                {time}
+              </>
+            ) : null}
+          </p>
         </div>
       </GummyNote>
     </div>
