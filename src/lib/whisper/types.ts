@@ -2,6 +2,14 @@
 
 export type MessageStatus = "unread" | "read" | "replied";
 
+/** One follow-up turn in an ongoing anonymous conversation. */
+export interface ConversationTurn {
+  id: string;
+  author: "visitor" | "owner";
+  body: string;
+  createdAt: string; // ISO
+}
+
 /** A single anonymous conversation: visitor message + optional owner reply. */
 export interface WhisperMessage {
   id: string;
@@ -12,6 +20,7 @@ export interface WhisperMessage {
   receiptId: string;
   createdAt: string; // ISO
   repliedAt: string | null; // ISO
+  turns: ConversationTurn[];
 }
 
 /** Owner-facing inbox view. */
@@ -37,6 +46,8 @@ export interface ReceiptView {
   status: MessageStatus;
   createdAt: string;
   repliedAt: string | null;
+  turns: ConversationTurn[];
+  canFollowUp: boolean;
 }
 
 /** Deterministic aged-paper note tint palette (letter-paper look). */
