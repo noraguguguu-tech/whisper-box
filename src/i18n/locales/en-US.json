@@ -71,6 +71,13 @@
     "promptLabel": "A line for your visitors",
     "promptPlaceholder": "e.g. Write me anything…",
     "promptSaved": "Saved",
+    "promptTemplatesLabel": "Quick fill",
+    "promptTemplates": [
+      "Write me anything, seen or unseen.",
+      "Got a secret to whisper?",
+      "An anonymous hollow — speak freely.",
+      "Compliment me, or roast me."
+    ],
     "loadingBox": "Opening your letterbox…"
   },
   "visitor": {
