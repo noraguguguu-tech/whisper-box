@@ -2,16 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Clock, MessageCircleHeart } from "lucide-react";
+import { Clock, MessageCircleHeart, Send } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
-import type { ReceiptView as ReceiptData } from "@/lib/whisper/types";
-import { fetchReceipt } from "@/lib/api";
+import type { ConversationTurn, ReceiptView as ReceiptData } from "@/lib/whisper/types";
+import { fetchReceipt, sendReceiptFollowup } from "@/lib/api";
 
 export function ReceiptView({ receiptId }: { receiptId: string }) {
   const { t, i18n } = useTranslation();
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -24,6 +26,20 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
       alive = false;
     };
   }, [receiptId]);
+
+  async function sendFollowup() {
+    const text = draft.trim();
+    if (!text || sending) return;
+    setSending(true);
+    const updated = await sendReceiptFollowup(receiptId, text);
+    setSending(false);
+    if (updated) {
+      setReceipt(updated);
+      setDraft("");
+    }
+  }
+
+  const fmt = (iso: string) => new Date(iso).toLocaleString(i18n.language);
 
   return (
     <main
@@ -52,43 +68,119 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
             </h1>
           </div>
 
-          <GummyNote tint="#F6EFDD" el="receipt-message">
-            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/50">
-              {t("receipt.youAsked")}
-            </p>
-            <p className="text-[15px] leading-relaxed text-foreground">{receipt.body}</p>
-            <p className="mt-2 flex items-center gap-1 text-[11px] text-foreground/50">
-              <Clock className="h-3 w-3" />
-              {t("receipt.sentAt", {
-                time: new Date(receipt.createdAt).toLocaleString(i18n.language),
-              })}
-            </p>
-          </GummyNote>
+          {/* Conversation thread */}
+          <div className="flex flex-col gap-3" data-el="receipt-thread">
+            <Bubble
+              side="you"
+              label={t("receipt.you")}
+              body={receipt.body}
+              time={fmt(receipt.createdAt)}
+            />
 
-          <div className="mt-5">
             {receipt.reply ? (
-              <GummyNote tint="#EDE4CE" el="receipt-reply" popped>
-                <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-                  {t("receipt.theyReplied")}
-                </p>
-                <p className="text-[15px] leading-relaxed text-foreground">{receipt.reply}</p>
-                {receipt.repliedAt && (
-                  <p className="mt-2 flex items-center gap-1 text-[11px] text-foreground/50">
-                    <Clock className="h-3 w-3" />
-                    {t("receipt.repliedAt", {
-                      time: new Date(receipt.repliedAt).toLocaleString(i18n.language),
-                    })}
-                  </p>
-                )}
-              </GummyNote>
+              <Bubble
+                side="them"
+                label={t("receipt.them")}
+                body={receipt.reply}
+                time={receipt.repliedAt ? fmt(receipt.repliedAt) : undefined}
+              />
             ) : (
               <p className="rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground gummy">
                 {t("receipt.waiting")}
               </p>
             )}
+
+            {receipt.turns.map((turn: ConversationTurn) => (
+              <Bubble
+                key={turn.id}
+                side={turn.author === "owner" ? "them" : "you"}
+                label={turn.author === "owner" ? t("receipt.them") : t("receipt.you")}
+                body={turn.body}
+                time={fmt(turn.createdAt)}
+              />
+            ))}
           </div>
+
+          {/* Follow-up composer (only once the owner has replied) */}
+          {receipt.canFollowUp && (
+            <div className="mt-5" data-el="receipt-followup">
+              <GummyNote tint="#F6EFDD" el="followup-note">
+                <textarea
+                  data-el="followup-input"
+                  value={draft}
+                  maxLength={500}
+                  onChange={(e) => setDraft(e.target.value)}
+                  placeholder={t("receipt.followupPlaceholder")}
+                  rows={3}
+                  className="w-full resize-none bg-transparent text-[15px] leading-relaxed text-foreground outline-none placeholder:text-foreground/40"
+                />
+                <div className="mt-1 text-right text-[11px] text-foreground/50">
+                  {t("visitor.charCount", { count: draft.length })}
+                </div>
+              </GummyNote>
+              <button
+                data-el="followup-send"
+                disabled={!draft.trim() || sending}
+                onClick={sendFollowup}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
+              >
+                <Send className="h-4 w-4" />
+                {sending ? t("receipt.followupSending") : t("receipt.followupSend")}
+              </button>
+              <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                {t("receipt.followupHint")}
+              </p>
+            </div>
+          )}
+
+          <p className="mt-6 text-center text-[11px] leading-relaxed text-muted-foreground">
+            {t("receipt.saveLink")}
+          </p>
         </section>
       ) : null}
     </main>
+  );
+}
+
+/** One conversation bubble. "you" = the anonymous visitor, "them" = the owner. */
+function Bubble({
+  side,
+  label,
+  body,
+  time,
+}: {
+  side: "you" | "them";
+  label: string;
+  body: string;
+  time?: string;
+}) {
+  const mine = side === "you";
+  return (
+    <div className={mine ? "flex justify-end" : "flex justify-start"}>
+      <GummyNote
+        tint={mine ? "#F6EFDD" : "#EDE4CE"}
+        el={mine ? "bubble-you" : "bubble-them"}
+        popped={!mine}
+      >
+        <div className="max-w-[15rem] sm:max-w-xs">
+          <p
+            className={
+              mine
+                ? "mb-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/50"
+                : "mb-1 text-[11px] font-semibold uppercase tracking-wide text-primary"
+            }
+          >
+            {label}
+          </p>
+          <p className="text-[15px] leading-relaxed text-foreground">{body}</p>
+          {time && (
+            <p className="mt-2 flex items-center gap-1 text-[11px] text-foreground/50">
+              <Clock className="h-3 w-3" />
+              {time}
+            </p>
+          )}
+        </div>
+      </GummyNote>
+    </div>
   );
 }
