@@ -16,7 +16,7 @@ export default function InboxPage() {
   const loading = useEazo((s) => s.auth.loading);
 
   const [messages, setMessages] = useState<WhisperMessage[]>(MOCK_INBOX.messages);
-  const [openId, setOpenId] = useState<string | null>(MOCK_INBOX.messages[0]?.id ?? null);
+  const [openId, setOpenId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const slug = user?.id ? user.id.slice(0, 8) : MOCK_INBOX.slug;
@@ -89,7 +89,7 @@ export default function InboxPage() {
         </div>
       </section>
 
-      <div className="flex items-center justify-between px-6 pb-3 pt-6">
+      <div className="flex items-center justify-between px-6 pb-2 pt-6">
         <h2 className="font-heading text-base font-bold text-foreground">
           <Sparkles className="mr-1.5 inline h-4 w-4 text-accent" />
           {messages.length}
@@ -101,25 +101,20 @@ export default function InboxPage() {
         )}
       </div>
 
-      <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
-        {messages.length === 0 && (
-          <p className="rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
-            {t("inbox.empty")}
-          </p>
-        )}
-        {messages.map((m, i) => (
-          <NoteCard
-            key={m.id}
-            message={m}
-            expanded={openId === m.id}
-            rotate={openId === m.id ? 0 : ROTATIONS[i % ROTATIONS.length]}
-            locale={i18n.language}
-            onToggle={() => toggleOpen(m.id)}
-            onReply={(txt) => sendReply(m.id, txt)}
-            onTogglePublic={() => togglePublic(m.id)}
-          />
-        ))}
-      </section>
+      {messages.length === 0 ? (
+        <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
+          {t("inbox.empty")}
+        </p>
+      ) : (
+        <ScatterWall
+          messages={messages}
+          openId={openId}
+          locale={i18n.language}
+          onToggle={toggleOpen}
+          onReply={sendReply}
+          onTogglePublic={togglePublic}
+        />
+      )}
     </main>
   );
 }
