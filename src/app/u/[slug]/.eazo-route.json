@@ -1,0 +1,10 @@
+{
+  "route": "u/[slug]",
+  "name": "匿名留言",
+  "nav_type": "stack",
+  "parent": "",
+  "order_index": 1,
+  "icon": "pencil",
+  "summary": "访客匿名留言 + 公开对话墙",
+  "preview_route": "u/demo"
+}

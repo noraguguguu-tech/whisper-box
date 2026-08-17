@@ -1,0 +1,10 @@
+{
+  "route": "r/[receiptId]",
+  "name": "回执查看",
+  "nav_type": "stack",
+  "parent": "",
+  "order_index": 2,
+  "icon": "mail-open",
+  "summary": "访客凭回执码查看回复",
+  "preview_route": "r/demo-receipt"
+}
