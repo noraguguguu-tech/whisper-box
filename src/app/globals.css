@@ -171,6 +171,19 @@ body {
 .note-drift {
   animation: note-float 5s var(--gummy-ease) infinite;
 }
+/* slower, larger drift for the hero anchor note */
+@keyframes note-float-hero {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+.note-drift-hero {
+  animation: note-float-hero 7s var(--gummy-ease) infinite;
+}
+/* faraway note: pushed back with blur + fade to build depth */
+.note-far {
+  filter: blur(1.4px);
+  opacity: 0.55;
+}
 
 /* ambient warm paper glow behind the scatter board */
 .wall-aura {
