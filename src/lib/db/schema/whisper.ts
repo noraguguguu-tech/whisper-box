@@ -48,3 +48,26 @@ export const messages = pgTable(
 );
 
 export type MessageRow = InferSelectModel<typeof messages>;
+
+/**
+ * Follow-up turns in an ongoing anonymous conversation, created AFTER the
+ * initial letter (messages.body) and first reply (messages.reply). Each turn
+ * belongs to one message thread and records who wrote it. Visitors stay
+ * anonymous — a turn only stores the author role, never an identity.
+ */
+export const turns = pgTable(
+  "turns",
+  {
+    id: varchar("id", { length: 32 }).primaryKey(),
+    messageId: varchar("message_id", { length: 32 }).notNull(),
+    author: varchar("author", { length: 8 }).notNull(), // "visitor" | "owner"
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    messageIdx: index("turns_message_idx").on(table.messageId),
+    createdAtIdx: index("turns_created_at_idx").on(table.createdAt),
+  }),
+);
+
+export type TurnRow = InferSelectModel<typeof turns>;
