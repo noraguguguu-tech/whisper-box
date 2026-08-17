@@ -83,7 +83,7 @@ export default function VisitorPage({
           <p className="mb-4 rounded-2xl bg-card p-3 text-sm leading-relaxed text-foreground gummy">
             {prompt}
           </p>
-          <GummyNote tint="#FFE0E6" el="compose-note">
+          <GummyNote tint="#F6EFDD" el="compose-note">
             <textarea
               data-el="visitor-input"
               value={text}
@@ -166,8 +166,8 @@ function SentCard({
   const { t } = useTranslation();
   return (
     <section data-el="sent-card" className="pt-8">
-      <GummyNote tint="#DDF5E9" el="sent-note" popped>
-        <div className="mb-2 flex items-center gap-2 text-secondary-foreground">
+      <GummyNote tint="#EDE4CE" el="sent-note" popped>
+        <div className="mb-2 flex items-center gap-2 text-accent">
           <Check className="h-5 w-5" />
           <h1 className="font-heading text-lg font-bold">{t("visitor.sent")}</h1>
         </div>
