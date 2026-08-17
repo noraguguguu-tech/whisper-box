@@ -1,0 +1,8 @@
+{
+  "route": "inbox",
+  "name": "收件箱",
+  "nav_type": "tab",
+  "order_index": 1,
+  "icon": "inbox",
+  "summary": "专属链接 + 可操作的便签墙（阅读/回复/公开）"
+}
