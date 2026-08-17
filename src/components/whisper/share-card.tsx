@@ -1,14 +1,20 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Copy, Check, Download, Share2, X } from "lucide-react";
 
+const BG_SRC = "/share/letter-bg.png";
+const W = 1024;
+const H = 1280;
+
 /**
  * Share dialog for one public letter (question + owner reply).
+ * Renders a letter-paper card (fixed parchment background + wax seal +
+ * handwritten title) to a PNG via canvas.
  * - Copy link: the owner's public letterbox URL.
- * - Save image: renders a letter-paper card to a PNG via canvas.
- * - Share: Web Share API with the generated image when the browser supports it.
+ * - Save image: downloads the composed PNG.
+ * - Share: Web Share API with the generated image when supported.
  */
 export function ShareCard({
   question,
@@ -22,9 +28,29 @@ export function ShareCard({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
-  const cardRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLImageElement | null>(null);
   const [copied, setCopied] = useState(false);
+  const [bgReady, setBgReady] = useState(false);
   const canShare = typeof navigator !== "undefined" && !!navigator.share;
+
+  // Preload the parchment background so canvas renders are instant + complete.
+  useEffect(() => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      bgRef.current = img;
+      setBgReady(true);
+    };
+    img.src = BG_SRC;
+  }, []);
+
+  function handFamily(): string {
+    if (typeof window === "undefined") return "cursive";
+    const v = getComputedStyle(document.documentElement)
+      .getPropertyValue("--font-hand")
+      .trim();
+    return v || "cursive";
+  }
 
   function copyLink() {
     if (!shareUrl) return;
@@ -33,69 +59,72 @@ export function ShareCard({
     setTimeout(() => setCopied(false), 1600);
   }
 
-  function renderPng(): string {
-    const W = 1080;
-    const H = 1350;
+  async function renderPng(): Promise<string> {
+    // Ensure the brush webfont is ready before drawing to canvas.
+    try {
+      await document.fonts.ready;
+    } catch {
+      /* older browsers: fall through with fallback font */
+    }
     const canvas = document.createElement("canvas");
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext("2d");
     if (!ctx) return "";
 
-    // Paper background.
-    ctx.fillStyle = "#F2EAD8";
-    ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = "#FBF6EA";
-    roundRect(ctx, 70, 90, W - 140, H - 180, 48);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(36,59,107,0.14)";
-    ctx.lineWidth = 3;
-    roundRect(ctx, 70, 90, W - 140, H - 180, 48);
-    ctx.stroke();
+    if (bgRef.current) {
+      ctx.drawImage(bgRef.current, 0, 0, W, H);
+    } else {
+      ctx.fillStyle = "#F2EAD8";
+      ctx.fillRect(0, 0, W, H);
+    }
 
-    // Title.
-    ctx.fillStyle = "#C0392B";
-    ctx.font = "600 40px Georgia, serif";
-    ctx.fillText(t("inbox.shareTitleCard"), 130, 200);
+    const hand = handFamily();
+    const PAD = 130;
+    const maxW = W - PAD * 2;
 
-    // Question block.
-    let y = 300;
+    // Handwritten title.
     ctx.fillStyle = "#243B6B";
+    ctx.font = `400 66px ${hand}`;
+    ctx.fillText(t("inbox.shareTitleCard"), PAD, 210);
+
+    // Question.
+    let y = 320;
+    ctx.fillStyle = "#C0392B";
     ctx.font = "700 30px Georgia, serif";
-    ctx.fillText(t("inbox.shareQuestionLabel"), 130, y);
-    y += 20;
+    ctx.fillText(t("inbox.shareQuestionLabel"), PAD, y);
     ctx.fillStyle = "#2B2B2B";
     ctx.font = "400 40px Georgia, serif";
-    y = wrapText(ctx, question, 130, y + 44, W - 260, 58);
+    y = wrapText(ctx, question, PAD, y + 56, maxW, 58);
 
     // Divider.
-    y += 40;
-    ctx.strokeStyle = "rgba(36,59,107,0.2)";
+    y += 46;
+    ctx.strokeStyle = "rgba(36,59,107,0.22)";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(130, y);
-    ctx.lineTo(W - 130, y);
+    ctx.moveTo(PAD, y);
+    ctx.lineTo(W - PAD, y);
     ctx.stroke();
 
-    // Reply block.
-    y += 60;
+    // Reply.
+    y += 64;
     ctx.fillStyle = "#C0392B";
     ctx.font = "700 30px Georgia, serif";
-    ctx.fillText(t("inbox.shareReplyLabel"), 130, y);
+    ctx.fillText(t("inbox.shareReplyLabel"), PAD, y);
     ctx.fillStyle = "#2B2B2B";
     ctx.font = "400 40px Georgia, serif";
-    wrapText(ctx, reply, 130, y + 64, W - 260, 58);
+    wrapText(ctx, reply, PAD, y + 60, maxW, 58);
 
-    // Footer.
+    // Footer link.
     ctx.fillStyle = "rgba(36,59,107,0.55)";
-    ctx.font = "400 28px Georgia, serif";
-    ctx.fillText(shareUrl || t("inbox.shareTitleCard"), 130, H - 150);
+    ctx.font = "400 26px Georgia, serif";
+    ctx.fillText(shareUrl || "", PAD, H - 150);
 
     return canvas.toDataURL("image/png");
   }
 
-  function download() {
-    const url = renderPng();
+  async function download() {
+    const url = await renderPng();
     if (!url) return;
     const a = document.createElement("a");
     a.href = url;
@@ -104,7 +133,7 @@ export function ShareCard({
   }
 
   async function systemShare() {
-    const dataUrl = renderPng();
+    const dataUrl = await renderPng();
     try {
       if (dataUrl && navigator.canShare) {
         const blob = await (await fetch(dataUrl)).blob();
@@ -139,20 +168,23 @@ export function ShareCard({
           </button>
         </div>
 
-        {/* Live preview of the card. */}
+        {/* Live preview of the letter card (mirrors the exported image). */}
         <div
-          ref={cardRef}
           data-el="share-preview"
-          className="rounded-3xl border border-primary/15 bg-background p-5"
+          className="relative overflow-hidden rounded-3xl border border-primary/15 bg-cover bg-center p-5 shadow-inner"
+          style={{ backgroundImage: `url(${BG_SRC})` }}
         >
-          <p className="mb-3 font-heading text-sm font-semibold text-accent">
+          <p
+            className="mb-4 text-3xl leading-none text-primary"
+            style={{ fontFamily: "var(--font-hand)" }}
+          >
             {t("inbox.shareTitleCard")}
           </p>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">
             {t("inbox.shareQuestionLabel")}
           </p>
           <p className="mb-3 mt-1 text-sm leading-relaxed text-foreground">{question}</p>
-          <div className="my-3 h-px bg-primary/15" />
+          <div className="my-3 h-px bg-primary/20" />
           <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">
             {t("inbox.shareReplyLabel")}
           </p>
@@ -172,7 +204,8 @@ export function ShareCard({
           <button
             data-el="share-download"
             onClick={download}
-            className="flex items-center justify-center gap-1.5 rounded-full border border-primary/25 bg-background py-2.5 text-sm font-semibold text-primary"
+            disabled={!bgReady}
+            className="flex items-center justify-center gap-1.5 rounded-full border border-primary/25 bg-background py-2.5 text-sm font-semibold text-primary disabled:opacity-40"
           >
             <Download className="h-4 w-4" />
             {t("inbox.shareDownload")}
@@ -183,7 +216,8 @@ export function ShareCard({
           <button
             data-el="share-system"
             onClick={systemShare}
-            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground gummy"
+            disabled={!bgReady}
+            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
           >
             <Share2 className="h-4 w-4" />
             {t("inbox.shareSystem")}
@@ -196,23 +230,6 @@ export function ShareCard({
       </div>
     </div>
   );
-}
-
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number,
-) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
 }
 
 /** Draws wrapped text; returns the y after the last line. */
