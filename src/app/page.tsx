@@ -1,120 +1,88 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { auth } from "@eazo/sdk";
-import { useEazo } from "@eazo/sdk/react";
-import { Copy, Check, Link2, Sparkles } from "lucide-react";
-import { WhisperHeader } from "@/components/whisper/whisper-header";
-import { ScatterWall } from "@/components/whisper/scatter-wall";
-import type { WhisperMessage } from "@/lib/whisper/types";
+import { ChevronRight } from "lucide-react";
+import { GummyNote } from "@/components/whisper/gummy-note";
+import { tintForId } from "@/lib/whisper/types";
 import { MOCK_INBOX } from "@/lib/whisper/mock";
 
-export default function InboxPage() {
-  const { t, i18n } = useTranslation();
-  const user = useEazo((s) => s.auth.user);
-  const loading = useEazo((s) => s.auth.loading);
+// Scattered slots for the cover — irregular, tossed-on-a-board feel.
+const SLOTS = [
+  { top: "4%", left: "6%", w: 58, rotate: -5, delay: "0s" },
+  { top: "10%", left: "56%", w: 40, rotate: 6, delay: "1.2s" },
+  { top: "34%", left: "60%", w: 38, rotate: -4, delay: "0.6s" },
+  { top: "46%", left: "4%", w: 46, rotate: 5, delay: "1.7s" },
+  { top: "64%", left: "48%", w: 46, rotate: -6, delay: "0.9s" },
+  { top: "72%", left: "8%", w: 40, rotate: 4, delay: "2.1s" },
+];
 
-  const [messages, setMessages] = useState<WhisperMessage[]>(MOCK_INBOX.messages);
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  const slug = user?.id ? user.id.slice(0, 8) : MOCK_INBOX.slug;
-  const shareUrl = useMemo(
-    () => (typeof window !== "undefined" ? `${window.location.origin}/u/${slug}` : `/u/${slug}`),
-    [slug],
-  );
-  const unread = messages.filter((m) => m.status === "unread").length;
-
-  function copyLink() {
-    navigator.clipboard?.writeText(shareUrl).catch(() => undefined);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
-  }
-  function toggleOpen(id: string) {
-    setOpenId((cur) => (cur === id ? null : id));
-    setMessages((ms) =>
-      ms.map((m) => (m.id === id && m.status === "unread" ? { ...m, status: "read" } : m)),
-    );
-  }
-  function sendReply(id: string, text: string) {
-    setMessages((ms) =>
-      ms.map((m) =>
-        m.id === id
-          ? { ...m, reply: text, status: "replied", repliedAt: new Date().toISOString() }
-          : m,
-      ),
-    );
-  }
-  function togglePublic(id: string) {
-    setMessages((ms) => ms.map((m) => (m.id === id ? { ...m, isPublic: !m.isPublic } : m)));
-  }
+export default function CoverPage() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const notes = MOCK_INBOX.messages;
 
   return (
     <main
-      data-el="inbox-page"
-      className="mx-auto flex min-h-full w-full max-w-md flex-col"
-      style={{ paddingBottom: "max(34px, env(safe-area-inset-bottom, 0px))" }}
+      data-el="cover-page"
+      onClick={() => router.push("/inbox")}
+      className="wall-aura relative mx-auto flex min-h-full w-full max-w-md cursor-pointer flex-col overflow-hidden"
+      style={{
+        paddingTop: "max(56px, env(safe-area-inset-top, 0px))",
+        paddingBottom: "max(34px, env(safe-area-inset-bottom, 0px))",
+      }}
     >
-      <WhisperHeader />
+      {/* Title */}
+      <header data-el="cover-title" className="relative z-10 px-6 pb-2">
+        <h1 className="font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground">
+          {t("cover.title")}
+        </h1>
+        <p className="mt-2 max-w-[15rem] text-sm text-muted-foreground">
+          {t("cover.subtitle")}
+        </p>
+      </header>
 
-      <section data-el="share-card" className="px-5 pt-5">
-        <div className="rounded-[30px] border border-white/60 bg-card p-5 gummy">
-          <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
-            <Link2 className="h-4 w-4" />
-            {t("inbox.shareTitle")}
-          </div>
-          <p className="mb-3 text-xs text-muted-foreground">{t("inbox.shareHint")}</p>
-          <div className="flex items-center gap-2">
-            <div className="flex-1 truncate rounded-full bg-background px-4 py-2.5 font-mono text-sm text-foreground">
-              /u/{slug}
+      {/* Scattered floating notes (display only) */}
+      <div className="relative flex-1">
+        {notes.map((m, i) => {
+          const slot = SLOTS[i % SLOTS.length];
+          return (
+            <div
+              key={m.id}
+              data-el="cover-note"
+              className="note-drift absolute"
+              style={{
+                top: slot.top,
+                left: slot.left,
+                width: `${slot.w}%`,
+                animationDelay: slot.delay,
+              }}
+            >
+              <GummyNote tint={tintForId(m.id)} rotate={slot.rotate}>
+                <p
+                  className="leading-snug text-foreground"
+                  style={{ fontSize: slot.w > 50 ? 15 : 13 }}
+                >
+                  {truncate(m.body, slot.w > 50 ? 42 : 22)}
+                </p>
+              </GummyNote>
             </div>
-            <button
-              data-el="copy-link"
-              onClick={copyLink}
-              className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground gummy"
-            >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              {copied ? t("inbox.copied") : t("inbox.copy")}
-            </button>
-          </div>
-          {!user && !loading && (
-            <button
-              onClick={() => auth.login().catch(() => undefined)}
-              className="mt-3 w-full rounded-full border border-primary/30 bg-primary/10 py-2 text-sm font-medium text-primary"
-            >
-              {t("inbox.signedOutTitle")} · {t("common.signIn")}
-            </button>
-          )}
-        </div>
-      </section>
-
-      <div className="flex items-center justify-between px-6 pb-2 pt-6">
-        <h2 className="font-heading text-base font-bold text-foreground">
-          <Sparkles className="mr-1.5 inline h-4 w-4 text-accent" />
-          {messages.length}
-        </h2>
-        {unread > 0 && (
-          <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
-            {t("inbox.unreadBadge", { count: unread })}
-          </span>
-        )}
+          );
+        })}
       </div>
 
-      {messages.length === 0 ? (
-        <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
-          {t("inbox.empty")}
-        </p>
-      ) : (
-        <ScatterWall
-          messages={messages}
-          openId={openId}
-          locale={i18n.language}
-          onToggle={toggleOpen}
-          onReply={sendReply}
-          onTogglePublic={togglePublic}
-        />
-      )}
+      {/* Enter hint */}
+      <div
+        data-el="cover-enter"
+        className="relative z-10 flex items-center justify-center gap-1.5 px-6 pt-2 text-sm font-semibold text-primary"
+      >
+        {t("cover.enter")}
+        <ChevronRight className="h-4 w-4 animate-pulse" />
+      </div>
     </main>
   );
+}
+
+function truncate(s: string, n: number): string {
+  return s.length > n ? `${s.slice(0, n)}…` : s;
 }
