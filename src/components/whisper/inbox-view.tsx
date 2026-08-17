@@ -156,6 +156,7 @@ export function InboxView() {
                   expanded={openId === m.id}
                   rotate={0}
                   locale={i18n.language}
+                  shareUrl={shareUrl}
                   onToggle={() => toggleOpen(m.id)}
                   onReply={(txt) => sendReply(m.id, txt)}
                   onTogglePublic={() => togglePublic(m.id)}
