@@ -1,74 +1,127 @@
-// EAZO_TEMPLATE_PLACEHOLDER_PAGE
 "use client";
 
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { UserBadge } from "@/components/user-profile/user-badge";
-import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { auth } from "@eazo/sdk";
+import { useEazo } from "@eazo/sdk/react";
+import { Copy, Check, Link2, Sparkles } from "lucide-react";
+import { WhisperHeader } from "@/components/whisper/whisper-header";
+import { NoteCard } from "@/components/whisper/note-card";
+import type { WhisperMessage } from "@/lib/whisper/types";
+import { MOCK_INBOX } from "@/lib/whisper/mock";
 
-const STEP_KEYS = [
-  "readDocs",
-  "replacePage",
-  "firstFeature",
-  "translations",
-] as const;
+const ROTATIONS = [-2.5, 1.8, -1.2, 2.2, -2, 1.4];
 
-export default function Home() {
-  const { t } = useTranslation();
+export default function InboxPage() {
+  const { t, i18n } = useTranslation();
+  const user = useEazo((s) => s.auth.user);
+  const loading = useEazo((s) => s.auth.loading);
+
+  const [messages, setMessages] = useState<WhisperMessage[]>(MOCK_INBOX.messages);
+  const [openId, setOpenId] = useState<string | null>(MOCK_INBOX.messages[0]?.id ?? null);
+  const [copied, setCopied] = useState(false);
+
+  const slug = user?.id ? user.id.slice(0, 8) : MOCK_INBOX.slug;
+  const shareUrl = useMemo(
+    () => (typeof window !== "undefined" ? `${window.location.origin}/u/${slug}` : `/u/${slug}`),
+    [slug],
+  );
+  const unread = messages.filter((m) => m.status === "unread").length;
+
+  function copyLink() {
+    navigator.clipboard?.writeText(shareUrl).catch(() => undefined);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  }
+  function toggleOpen(id: string) {
+    setOpenId((cur) => (cur === id ? null : id));
+    setMessages((ms) =>
+      ms.map((m) => (m.id === id && m.status === "unread" ? { ...m, status: "read" } : m)),
+    );
+  }
+  function sendReply(id: string, text: string) {
+    setMessages((ms) =>
+      ms.map((m) =>
+        m.id === id
+          ? { ...m, reply: text, status: "replied", repliedAt: new Date().toISOString() }
+          : m,
+      ),
+    );
+  }
+  function togglePublic(id: string) {
+    setMessages((ms) => ms.map((m) => (m.id === id ? { ...m, isPublic: !m.isPublic } : m)));
+  }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,theme(colors.orange.500/0.18),transparent_50%)]"
-      />
+    <main
+      data-el="inbox-page"
+      className="mx-auto flex min-h-full w-full max-w-md flex-col"
+      style={{ paddingBottom: "max(34px, env(safe-area-inset-bottom, 0px))" }}
+    >
+      <WhisperHeader />
 
-      <header className="absolute right-4 top-4 z-10 flex items-center gap-2">
-        <LanguageSwitcher />
-        <UserBadge />
-      </header>
-
-      <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center gap-10 px-6 py-20 md:px-10">
-        <section className="space-y-4 text-center md:text-left">
-          <span className="inline-flex rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1 text-xs font-medium text-orange-600 dark:text-orange-300">
-            {t("starter.badge")}
-          </span>
-          <h1 className="text-4xl font-semibold tracking-tight text-balance md:text-5xl">
-            {t("starter.title")}
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-            {t("starter.subtitle")}
-          </p>
-        </section>
-
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {STEP_KEYS.map((key) => (
-            <article
-              key={key}
-              className="rounded-2xl border bg-card/60 p-5 shadow-sm backdrop-blur"
+      <section data-el="share-card" className="px-5 pt-5">
+        <div className="rounded-[30px] border border-white/60 bg-card p-5 gummy">
+          <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
+            <Link2 className="h-4 w-4" />
+            {t("inbox.shareTitle")}
+          </div>
+          <p className="mb-3 text-xs text-muted-foreground">{t("inbox.shareHint")}</p>
+          <div className="flex items-center gap-2">
+            <div className="flex-1 truncate rounded-full bg-background px-4 py-2.5 font-mono text-sm text-foreground">
+              /u/{slug}
+            </div>
+            <button
+              data-el="copy-link"
+              onClick={copyLink}
+              className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground gummy"
             >
-              <h2 className="text-base font-medium">
-                {t(`starter.steps.${key}.title`)}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {t(`starter.steps.${key}.desc`)}
-              </p>
-              <code className="mt-4 inline-block rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">
-                {t(`starter.steps.${key}.code`)}
-              </code>
-            </article>
-          ))}
-        </section>
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? t("inbox.copied") : t("inbox.copy")}
+            </button>
+          </div>
+          {!user && !loading && (
+            <button
+              onClick={() => auth.login().catch(() => undefined)}
+              className="mt-3 w-full rounded-full border border-primary/30 bg-primary/10 py-2 text-sm font-medium text-primary"
+            >
+              {t("inbox.signedOutTitle")} · {t("common.signIn")}
+            </button>
+          )}
+        </div>
+      </section>
 
-        <section className="rounded-2xl border bg-card/50 p-5 md:p-6">
-          <h3 className="text-sm font-medium">{t("starter.nextCommand.title")}</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t("starter.nextCommand.desc")}
+      <div className="flex items-center justify-between px-6 pb-3 pt-6">
+        <h2 className="font-heading text-base font-bold text-foreground">
+          <Sparkles className="mr-1.5 inline h-4 w-4 text-accent" />
+          {messages.length}
+        </h2>
+        {unread > 0 && (
+          <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
+            {t("inbox.unreadBadge", { count: unread })}
+          </span>
+        )}
+      </div>
+
+      <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
+        {messages.length === 0 && (
+          <p className="rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
+            {t("inbox.empty")}
           </p>
-          <pre className="mt-4 overflow-x-auto rounded-lg bg-muted p-3 text-sm">
-            <code>{t("starter.nextCommand.command")}</code>
-          </pre>
-        </section>
-      </main>
-    </div>
+        )}
+        {messages.map((m, i) => (
+          <NoteCard
+            key={m.id}
+            message={m}
+            expanded={openId === m.id}
+            rotate={openId === m.id ? 0 : ROTATIONS[i % ROTATIONS.length]}
+            locale={i18n.language}
+            onToggle={() => toggleOpen(m.id)}
+            onReply={(txt) => sendReply(m.id, txt)}
+            onTogglePublic={() => togglePublic(m.id)}
+          />
+        ))}
+      </section>
+    </main>
   );
 }
