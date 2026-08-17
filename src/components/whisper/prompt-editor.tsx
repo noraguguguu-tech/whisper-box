@@ -55,6 +55,29 @@ export function PromptEditor({ initialPrompt }: { initialPrompt: string }) {
           placeholder={t("inbox.promptPlaceholder")}
           className="w-full resize-none rounded-2xl border border-white/60 bg-background p-3 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
         />
+        {templates.length > 0 && (
+          <div data-el="prompt-templates" className="mt-3">
+            <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">
+              {t("inbox.promptTemplatesLabel")}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {templates.map((tpl) => (
+                <button
+                  key={tpl}
+                  type="button"
+                  data-el="prompt-template-chip"
+                  onClick={() => {
+                    setValue(tpl);
+                    setSavedFlash(false);
+                  }}
+                  className="rounded-full border border-primary/25 bg-background px-3 py-1.5 text-xs text-primary transition-colors hover:bg-primary/10"
+                >
+                  {tpl}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="mt-2 flex items-center justify-end gap-2">
           {savedFlash && (
             <span className="flex items-center gap-1 text-xs font-medium text-secondary-foreground">
