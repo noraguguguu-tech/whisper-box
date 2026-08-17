@@ -1,13 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+function subscribe() {
+  // origin never changes during the session; no subscription needed.
+  return () => {};
+}
+function getOrigin() {
+  return typeof window !== "undefined" ? window.location.origin : "";
+}
 
 /** Build the absolute share URL for /u/[slug] on the client. */
 export function useCallbackShareUrl(slug: string): string {
-  const [origin, setOrigin] = useState("");
-  useEffect(() => {
-    if (typeof window !== "undefined") setOrigin(window.location.origin);
-  }, []);
+  const origin = useSyncExternalStore(subscribe, getOrigin, () => "");
   if (!slug) return "";
   return `${origin}/u/${slug}`;
 }
