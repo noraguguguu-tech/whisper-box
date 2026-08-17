@@ -104,7 +104,11 @@
     "wallTitle": "Their public letters",
     "wallEmpty": "No public letters yet. Be the first to write one.",
     "charCount": "{{count}}/500",
-    "notFound": "This letterbox doesn't exist or has been closed."
+    "notFound": "This letterbox doesn't exist or has been closed.",
+    "myLettersTitle": "Letters I've sent",
+    "myLettersDesc": "Letters you sent from this device — open one to see replies and keep chatting.",
+    "openLetter": "View reply",
+    "clearMine": "Clear local history"
   },
   "receipt": {
     "title": "Your nameless letter",
@@ -113,6 +117,14 @@
     "theyReplied": "Their anonymous reply",
     "sentAt": "Sent {{time}}",
     "repliedAt": "Replied {{time}}",
-    "notFound": "This receipt can't be found. Please check your receipt link."
+    "notFound": "This receipt can't be found. Please check your receipt link.",
+    "you": "You",
+    "them": "Them",
+    "conversation": "Conversation",
+    "followupPlaceholder": "Say something more…",
+    "followupSend": "Reply back",
+    "followupSending": "Sending…",
+    "followupHint": "You can keep asking anonymously — they'll see it in their letterbox.",
+    "saveLink": "Keep this receipt link so you can come back and keep chatting."
   }
 }
