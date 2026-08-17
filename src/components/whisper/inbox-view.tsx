@@ -25,6 +25,7 @@ export function InboxView() {
   const authLoading = useEazo((s) => s.auth.loading);
 
   const [slug, setSlug] = useState<string>("");
+  const [prompt, setPrompt] = useState<string>("");
   const [messages, setMessages] = useState<WhisperMessage[]>([]);
   const [fetched, setFetched] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
