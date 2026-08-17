@@ -41,7 +41,8 @@
   "cover": {
     "title": "Nameless Letters",
     "subtitle": "Every letter is something someone wrote to you, anonymously.",
-    "enter": "Tap anywhere to open my letterbox"
+    "enter": "Tap anywhere to open my letterbox",
+    "stamp": "Nameless"
   },
   "inbox": {
     "signedOutTitle": "Your nameless letterbox",

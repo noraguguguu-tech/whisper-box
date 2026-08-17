@@ -41,7 +41,8 @@
   "cover": {
     "title": "无名信",
     "subtitle": "每一封信，都是有人匿名写给你的话。",
-    "enter": "轻触任意处，走进我的信箱"
+    "enter": "轻触任意处，走进我的信箱",
+    "stamp": "无名信"
   },
   "inbox": {
     "signedOutTitle": "你的无名信箱",
