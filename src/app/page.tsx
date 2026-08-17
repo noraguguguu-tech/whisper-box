@@ -24,18 +24,18 @@ interface CoverNote {
 }
 
 const NOTES: CoverNote[] = [
-  // far background — blurred + faded
-  { zh: "很久没联系了，最近好吗？", en: "It's been a while — how are you?", top: "6%", left: "58%", w: 38, rotate: 6, layer: "far", z: 1, tint: 2, delay: "1.2s" },
-  { zh: "祝你今天也有好心情 ☺", en: "Hope today treats you gently ☺", top: "41%", left: "63%", w: 33, rotate: -5, layer: "far", z: 1, tint: 4, delay: "0.6s" },
-  { zh: "见字如面。", en: "Like seeing your face.", top: "72%", left: "60%", w: 31, rotate: 5, layer: "far", z: 1, tint: 5, delay: "1.9s" },
-  // mid layer
-  { zh: "偷偷说，我关注你很久了。", en: "I've quietly followed you for a while.", top: "9%", left: "5%", w: 50, rotate: -4, layer: "mid", z: 2, tint: 1, delay: "0.3s" },
-  { zh: "谢谢你，那句话我记到现在。", en: "Thank you. I still remember it.", top: "66%", left: "6%", w: 47, rotate: 4, layer: "mid", z: 2, tint: 3, delay: "1.5s" },
-  // hero anchor — big, sharp, front
+  // far background — blurred + faded, pushed to edges/corners for depth
+  { zh: "很久没联系了，最近好吗？", en: "It's been a while — how are you?", top: "3%", left: "58%", w: 38, rotate: 7, layer: "far", z: 1, tint: 2, delay: "1.2s" },
+  { zh: "见字如面。", en: "Like seeing your face.", top: "38%", left: "72%", w: 26, rotate: -6, layer: "far", z: 1, tint: 5, delay: "1.9s" },
+  { zh: "祝你今天也有好心情 ☺", en: "Hope today treats you gently ☺", top: "80%", left: "10%", w: 36, rotate: 5, layer: "far", z: 1, tint: 4, delay: "0.6s" },
+  // mid layer — offset left AND right, staggered heights so they interlock
+  { zh: "偷偷说，我关注你很久了。", en: "I've quietly followed you for a while.", top: "10%", left: "3%", w: 45, rotate: -5, layer: "mid", z: 2, tint: 1, delay: "0.3s" },
+  { zh: "谢谢你，那句话我记到现在。", en: "Thank you. I still remember it.", top: "60%", left: "46%", w: 48, rotate: 4, layer: "mid", z: 2, tint: 3, delay: "1.5s" },
+  // hero anchor — big, sharp, front, sitting centre-right and overlapping others
   {
     zh: "今天你看起来很累，还好吗？想跟你说，慢慢来，没关系的。",
     en: "You looked tired today — are you okay? Take your time, it's alright.",
-    top: "31%", left: "7%", w: 66, rotate: -2, layer: "hero", z: 3, tint: 0, delay: "0s",
+    top: "33%", left: "12%", w: 60, rotate: -2, layer: "hero", z: 3, tint: 0, delay: "0s",
   },
 ];
 
