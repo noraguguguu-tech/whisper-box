@@ -88,7 +88,7 @@ export default function CoverPage() {
               <GummyNote tint={NOTE_TINTS[n.tint]} rotate={n.rotate} popped={isHero}>
                 {isHero && (
                   <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-accent">
-                    {isZh ? "无名信" : "Nameless"}
+                    {t("cover.stamp")}
                   </p>
                 )}
                 <p
