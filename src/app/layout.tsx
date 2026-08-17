@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Script from "next/script";
-import { Geist } from "next/font/google";
+import { Geist, Noto_Sans_SC } from "next/font/google";
 import { EazoProvider } from "@eazo/sdk/react";
 import { cn } from "@/utils/utils";
 import { Toaster } from "@/components/ui/sonner";
