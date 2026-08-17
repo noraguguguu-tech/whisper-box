@@ -155,6 +155,48 @@ export function VisitorView({ slug }: { slug: string }) {
         </section>
       )}
 
+      {/* My remembered letters (this browser only) */}
+      {!notFound && !receiptId && mine.length > 0 && (
+        <section data-el="my-letters" className="pt-8">
+          <div className="mb-2 flex items-center justify-between px-1">
+            <h2 className="flex items-center gap-1.5 font-heading text-base font-bold text-foreground">
+              <Mail className="h-4 w-4 text-primary" />
+              {t("visitor.myLettersTitle")}
+            </h2>
+            <button
+              data-el="clear-mine"
+              onClick={clearMine}
+              className="text-[11px] font-medium text-muted-foreground underline-offset-2 hover:underline"
+            >
+              {t("visitor.clearMine")}
+            </button>
+          </div>
+          <p className="mb-3 px-1 text-xs text-muted-foreground">
+            {t("visitor.myLettersDesc")}
+          </p>
+          <div className="flex flex-col gap-3">
+            {mine.map((l, i) => (
+              <button
+                key={l.receiptId}
+                data-el="my-letter"
+                onClick={() => router.push(`/r/${l.receiptId}`)}
+                className="text-left"
+              >
+                <GummyNote tint={tintForId(l.receiptId)} rotate={ROTATIONS[i % ROTATIONS.length]}>
+                  <p className="truncate text-[15px] leading-relaxed text-foreground">
+                    {l.preview || "…"}
+                  </p>
+                  <p className="mt-2 flex items-center gap-1 text-[11px] font-semibold text-primary">
+                    <MessageCircleHeart className="h-3 w-3" />
+                    {t("visitor.openLetter")}
+                  </p>
+                </GummyNote>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Public wall */}
       {!notFound && (
         <section data-el="public-wall" className="pt-8">
