@@ -18,6 +18,11 @@ export function PromptEditor({ initialPrompt }: { initialPrompt: string }) {
 
   const dirty = value.trim() !== saved.trim();
 
+  const templates = (() => {
+    const raw = t("inbox.promptTemplates", { returnObjects: true });
+    return Array.isArray(raw) ? (raw as string[]) : [];
+  })();
+
   async function save() {
     if (saving || !dirty) return;
     setSaving(true);
