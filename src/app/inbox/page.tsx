@@ -7,9 +7,11 @@ import { auth } from "@eazo/sdk";
 import { useEazo } from "@eazo/sdk/react";
 import { Copy, Check, Link2, Sparkles, ArrowLeft } from "lucide-react";
 import { WhisperHeader } from "@/components/whisper/whisper-header";
-import { ScatterWall } from "@/components/whisper/scatter-wall";
+import { NoteCard } from "@/components/whisper/note-card";
 import type { WhisperMessage } from "@/lib/whisper/types";
 import { MOCK_INBOX } from "@/lib/whisper/mock";
+
+const ROTATIONS = [-2.5, 1.8, -1.2, 2.2, -2, 1.4];
 
 export default function InboxPage() {
   const { t, i18n } = useTranslation();
@@ -117,14 +119,20 @@ export default function InboxPage() {
           {t("inbox.empty")}
         </p>
       ) : (
-        <ScatterWall
-          messages={messages}
-          openId={openId}
-          locale={i18n.language}
-          onToggle={toggleOpen}
-          onReply={sendReply}
-          onTogglePublic={togglePublic}
-        />
+        <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
+          {messages.map((m, i) => (
+            <NoteCard
+              key={m.id}
+              message={m}
+              expanded={openId === m.id}
+              rotate={openId === m.id ? 0 : ROTATIONS[i % ROTATIONS.length]}
+              locale={i18n.language}
+              onToggle={() => toggleOpen(m.id)}
+              onReply={(txt) => sendReply(m.id, txt)}
+              onTogglePublic={() => togglePublic(m.id)}
+            />
+          ))}
+        </section>
       )}
     </main>
   );
