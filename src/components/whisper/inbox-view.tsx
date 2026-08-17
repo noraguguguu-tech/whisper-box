@@ -25,7 +25,7 @@ export function InboxView() {
 
   const [slug, setSlug] = useState<string>("");
   const [messages, setMessages] = useState<WhisperMessage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -33,20 +33,15 @@ export function InboxView() {
   const unread = messages.filter((m) => m.status === "unread").length;
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+    if (authLoading || !user) return;
     let alive = true;
     setLoading(true);
     fetchInbox().then((data) => {
-      if (!alive || !data) {
-        if (alive) setLoading(false);
-        return;
+      if (!alive) return;
+      if (data) {
+        setSlug(data.inbox.slug);
+        setMessages(data.messages);
       }
-      setSlug(data.inbox.slug);
-      setMessages(data.messages);
       setLoading(false);
     });
     return () => {
