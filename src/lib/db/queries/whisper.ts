@@ -1,6 +1,13 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { db } from "../client";
-import { inboxes, messages, type Inbox, type MessageRow } from "../schema/whisper";
+import {
+  inboxes,
+  messages,
+  turns,
+  type Inbox,
+  type MessageRow,
+  type TurnRow,
+} from "../schema/whisper";
 
 // ---- id helpers ----
 function randId(len: number): string {
