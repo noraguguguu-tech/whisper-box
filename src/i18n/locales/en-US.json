@@ -38,6 +38,11 @@
     "title": "Whisper Box",
     "tagline": "Get your own link and collect every anonymous whisper."
   },
+  "cover": {
+    "title": "Whisper Box",
+    "subtitle": "Every note is something someone quietly wrote to you.",
+    "enter": "Tap anywhere to open my inbox"
+  },
   "inbox": {
     "signedOutTitle": "Your anonymous inbox",
     "signedOutDesc": "Sign in to get your own link. Anyone can leave you an anonymous message, and you read and reply to them all here.",
