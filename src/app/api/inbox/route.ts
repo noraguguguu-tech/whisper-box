@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/auth";
 import {
   getOrCreateInbox,
   listMessagesForOwner,
+  listTurnsForMessages,
   updateInboxPrompt,
 } from "@/lib/db/queries";
 import { inboxPublic, toOwnerMessage } from "@/lib/whisper/serialize";
@@ -14,9 +15,16 @@ export async function GET(request: NextRequest) {
 
   const inbox = await getOrCreateInbox(auth.user.id);
   const rows = await listMessagesForOwner(auth.user.id);
+  const allTurns = await listTurnsForMessages(rows.map((r) => r.id));
+  const byMessage = new Map<string, typeof allTurns>();
+  for (const turn of allTurns) {
+    const list = byMessage.get(turn.messageId) ?? [];
+    list.push(turn);
+    byMessage.set(turn.messageId, list);
+  }
   return NextResponse.json({
     inbox: inboxPublic(inbox),
-    messages: rows.map(toOwnerMessage),
+    messages: rows.map((r) => toOwnerMessage(r, byMessage.get(r.id) ?? [])),
   });
 }
 
