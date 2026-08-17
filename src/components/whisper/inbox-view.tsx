@@ -73,6 +73,11 @@ export function InboxView() {
     if (updated) setMessages((ms) => ms.map((m) => (m.id === id ? updated : m)));
   }
 
+  async function sendFollowup(id: string, text: string) {
+    const updated = await followupMessage(id, text);
+    if (updated) setMessages((ms) => ms.map((m) => (m.id === id ? updated : m)));
+  }
+
   async function togglePublic(id: string) {
     const cur = messages.find((m) => m.id === id);
     if (!cur) return;
