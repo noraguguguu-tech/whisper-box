@@ -104,7 +104,11 @@
     "wallTitle": "TA 公开的往来信件",
     "wallEmpty": "还没有公开的信件，来做第一个写信的人吧。",
     "charCount": "{{count}}/500",
-    "notFound": "这个信箱不存在或已关闭。"
+    "notFound": "这个信箱不存在或已关闭。",
+    "myLettersTitle": "我寄出的信",
+    "myLettersDesc": "以下是你在这台设备上寄出的信，点开可查看回信、继续聊。",
+    "openLetter": "查看回信",
+    "clearMine": "清除本地记录"
   },
   "receipt": {
     "title": "你的无名信",
@@ -113,6 +117,14 @@
     "theyReplied": "TA 的匿名回信",
     "sentAt": "寄于 {{time}}",
     "repliedAt": "回信于 {{time}}",
-    "notFound": "找不到这条回执，请检查你的回执链接。"
+    "notFound": "找不到这条回执，请检查你的回执链接。",
+    "you": "你",
+    "them": "TA",
+    "conversation": "对话往来",
+    "followupPlaceholder": "想继续说点什么…",
+    "followupSend": "继续回一句",
+    "followupSending": "寄送中…",
+    "followupHint": "你还可以继续匿名追问，TA 会在信箱里看到。",
+    "saveLink": "记得收好这条回执链接，方便下次回来继续聊。"
   }
 }
