@@ -6,47 +6,43 @@ import { ChevronRight } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { NOTE_TINTS } from "@/lib/whisper/types";
 
-// Short letter-like snippets shown as floating preview notes on the cover.
-// Kept as its own cover fixture so the cover fullness is independent of the inbox.
-const COVER_NOTES_ZH = [
-  "今天你看起来很累，还好吗？",
-  "偷偷说，我关注你很久了。",
-  "谢谢你，那句话我记到了现在。",
-  "有件事一直没敢当面问你…",
-  "见字如面，愿你一切都好。",
-  "祝你今天也有好心情 ☺",
-  "想给你写封信，却不知从何说起。",
-  "很久没联系了，最近好吗？",
-];
-const COVER_NOTES_EN = [
-  "You looked tired today — are you okay?",
-  "I've quietly followed you for a while.",
-  "Thank you. I still remember those words.",
-  "There's something I never dared to ask…",
-  "Reading this is like seeing your face.",
-  "Hope today treats you gently ☺",
-  "I wanted to write, but where to start?",
-  "It's been a while — how have you been?",
-];
+type Layer = "far" | "mid" | "hero";
 
-// Scattered slots — irregular positions + sizes, airy but fuller. Tuned so
-// notes don't overlap the title or the enter hint, with breathing room kept.
-const SLOTS = [
-  { top: "1%", left: "3%", w: 55, rotate: -5, delay: "0s" },
-  { top: "3%", left: "62%", w: 34, rotate: 6, delay: "1.2s" },
-  { top: "22%", left: "56%", w: 40, rotate: -4, delay: "0.6s" },
-  { top: "30%", left: "4%", w: 38, rotate: 4, delay: "1.7s" },
-  { top: "46%", left: "50%", w: 44, rotate: -6, delay: "0.9s" },
-  { top: "52%", left: "6%", w: 42, rotate: 5, delay: "2.1s" },
-  { top: "70%", left: "54%", w: 38, rotate: -3, delay: "1.4s" },
-  { top: "74%", left: "8%", w: 46, rotate: 4, delay: "0.4s" },
+// Layered composition: one big hero anchor up front, mid notes around it, and
+// faded far notes behind for depth — irregular but composed, letter-paper tones.
+interface CoverNote {
+  zh: string;
+  en: string;
+  top: string;
+  left: string;
+  w: number; // % width
+  rotate: number;
+  layer: Layer;
+  z: number;
+  tint: number;
+  delay: string;
+}
+
+const NOTES: CoverNote[] = [
+  // far background — blurred + faded
+  { zh: "很久没联系了，最近好吗？", en: "It's been a while — how are you?", top: "6%", left: "58%", w: 38, rotate: 6, layer: "far", z: 1, tint: 2, delay: "1.2s" },
+  { zh: "祝你今天也有好心情 ☺", en: "Hope today treats you gently ☺", top: "41%", left: "63%", w: 33, rotate: -5, layer: "far", z: 1, tint: 4, delay: "0.6s" },
+  { zh: "见字如面。", en: "Like seeing your face.", top: "72%", left: "60%", w: 31, rotate: 5, layer: "far", z: 1, tint: 5, delay: "1.9s" },
+  // mid layer
+  { zh: "偷偷说，我关注你很久了。", en: "I've quietly followed you for a while.", top: "9%", left: "5%", w: 50, rotate: -4, layer: "mid", z: 2, tint: 1, delay: "0.3s" },
+  { zh: "谢谢你，那句话我记到现在。", en: "Thank you. I still remember it.", top: "66%", left: "6%", w: 47, rotate: 4, layer: "mid", z: 2, tint: 3, delay: "1.5s" },
+  // hero anchor — big, sharp, front
+  {
+    zh: "今天你看起来很累，还好吗？想跟你说，慢慢来，没关系的。",
+    en: "You looked tired today — are you okay? Take your time, it's alright.",
+    top: "31%", left: "7%", w: 66, rotate: -2, layer: "hero", z: 3, tint: 0, delay: "0s",
+  },
 ];
 
 export default function CoverPage() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const isZh = i18n.language.startsWith("zh");
-  const notes = isZh ? COVER_NOTES_ZH : COVER_NOTES_EN;
 
   return (
     <main
@@ -59,7 +55,7 @@ export default function CoverPage() {
       }}
     >
       {/* Title */}
-      <header data-el="cover-title" className="relative z-10 px-6 pb-2">
+      <header data-el="cover-title" className="relative z-20 px-6 pb-2">
         <h1 className="font-heading text-3xl font-extrabold leading-tight tracking-tight text-primary">
           {t("cover.title")}
         </h1>
@@ -68,36 +64,49 @@ export default function CoverPage() {
         </p>
       </header>
 
-      {/* Scattered floating notes (display only) */}
+      {/* Layered floating notes (display only) */}
       <div className="relative flex-1">
-        {SLOTS.map((slot, i) => (
-          <div
-            key={i}
-            data-el="cover-note"
-            className="note-drift absolute"
-            style={{
-              top: slot.top,
-              left: slot.left,
-              width: `${slot.w}%`,
-              animationDelay: slot.delay,
-            }}
-          >
-            <GummyNote tint={NOTE_TINTS[i % NOTE_TINTS.length]} rotate={slot.rotate}>
-              <p
-                className="leading-snug text-foreground"
-                style={{ fontSize: slot.w > 48 ? 14 : 12.5 }}
-              >
-                {notes[i % notes.length]}
-              </p>
-            </GummyNote>
-          </div>
-        ))}
+        {NOTES.map((n, i) => {
+          const isHero = n.layer === "hero";
+          return (
+            <div
+              key={i}
+              data-el={isHero ? "cover-hero-note" : "cover-note"}
+              className={[
+                "absolute",
+                isHero ? "note-drift-hero" : "note-drift",
+                n.layer === "far" ? "note-far" : "",
+              ].join(" ")}
+              style={{
+                top: n.top,
+                left: n.left,
+                width: `${n.w}%`,
+                zIndex: n.z,
+                animationDelay: n.delay,
+              }}
+            >
+              <GummyNote tint={NOTE_TINTS[n.tint]} rotate={n.rotate} popped={isHero}>
+                {isHero && (
+                  <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-accent">
+                    {isZh ? "无名信" : "Nameless"}
+                  </p>
+                )}
+                <p
+                  className="leading-relaxed text-foreground"
+                  style={{ fontSize: isHero ? 17 : n.w > 44 ? 14 : 12.5 }}
+                >
+                  {isZh ? n.zh : n.en}
+                </p>
+              </GummyNote>
+            </div>
+          );
+        })}
       </div>
 
       {/* Enter hint */}
       <div
         data-el="cover-enter"
-        className="relative z-10 flex items-center justify-center gap-1.5 px-6 pt-2 text-sm font-semibold text-accent"
+        className="relative z-20 flex items-center justify-center gap-1.5 px-6 pt-2 text-sm font-semibold text-accent"
       >
         {t("cover.enter")}
         <ChevronRight className="h-4 w-4 animate-pulse" />
