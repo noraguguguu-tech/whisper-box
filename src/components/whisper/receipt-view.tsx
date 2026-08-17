@@ -41,6 +41,45 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
 
   const fmt = (iso: string) => new Date(iso).toLocaleString(i18n.language);
 
+  // Build the whole thread as a single keyed list so React never swaps an
+  // element slot with a bare text node (that swap is what triggers the
+  // "insertBefore" DOM crash when a browser translation extension has mutated
+  // text nodes in place). Every slot is always a keyed <div>.
+  type Row =
+    | { kind: "bubble"; key: string; side: "you" | "them"; label: string; body: string; time?: string }
+    | { kind: "waiting"; key: string };
+
+  const rows: Row[] = receipt
+    ? [
+        {
+          kind: "bubble" as const,
+          key: "letter",
+          side: "you" as const,
+          label: t("receipt.you"),
+          body: receipt.body,
+          time: fmt(receipt.createdAt),
+        },
+        receipt.reply
+          ? {
+              kind: "bubble" as const,
+              key: "reply",
+              side: "them" as const,
+              label: t("receipt.them"),
+              body: receipt.reply,
+              time: receipt.repliedAt ? fmt(receipt.repliedAt) : undefined,
+            }
+          : { kind: "waiting" as const, key: "waiting" },
+        ...receipt.turns.map((turn: ConversationTurn) => ({
+          kind: "bubble" as const,
+          key: `turn-${turn.id}`,
+          side: (turn.author === "owner" ? "them" : "you") as "you" | "them",
+          label: turn.author === "owner" ? t("receipt.them") : t("receipt.you"),
+          body: turn.body,
+          time: fmt(turn.createdAt),
+        })),
+      ]
+    : [];
+
   return (
     <main
       data-el="receipt-page"
