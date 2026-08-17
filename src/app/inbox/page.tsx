@@ -11,8 +11,6 @@ import { NoteCard } from "@/components/whisper/note-card";
 import type { WhisperMessage } from "@/lib/whisper/types";
 import { MOCK_INBOX } from "@/lib/whisper/mock";
 
-const ROTATIONS = [-2.5, 1.8, -1.2, 2.2, -2, 1.4];
-
 export default function InboxPage() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -120,7 +118,7 @@ export default function InboxPage() {
         </p>
       ) : (
         <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
-          {messages.map((m, i) => (
+          {messages.map((m) => (
             <NoteCard
               key={m.id}
               message={m}
