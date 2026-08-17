@@ -65,7 +65,12 @@
     "sending": "寄送中…",
     "yourReply": "你的回信",
     "replied": "已回信",
-    "receivedAt": "收到于 {{time}}"
+    "receivedAt": "收到于 {{time}}",
+    "loginPrompt": "登录后即可拥有你的专属信箱链接",
+    "promptLabel": "写给访客的引导语",
+    "promptPlaceholder": "比如：见字如面，问我任何事…",
+    "promptSaved": "已保存",
+    "loadingBox": "正在打开信箱…"
   },
   "visitor": {
     "heading": "给 TA 写一封无名信",

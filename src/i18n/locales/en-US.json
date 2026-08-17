@@ -65,7 +65,12 @@
     "sending": "Sending…",
     "yourReply": "Your reply",
     "replied": "Replied",
-    "receivedAt": "Received {{time}}"
+    "receivedAt": "Received {{time}}",
+    "loginPrompt": "Sign in to get your own letterbox link",
+    "promptLabel": "A line for your visitors",
+    "promptPlaceholder": "e.g. Write me anything…",
+    "promptSaved": "Saved",
+    "loadingBox": "Opening your letterbox…"
   },
   "visitor": {
     "heading": "Write them a nameless letter",
