@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { Clock, MessageCircleHeart, Send } from "lucide-react";
+import { ArrowLeft, Clock, MessageCircleHeart, Send } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import type { ConversationTurn, ReceiptView as ReceiptData } from "@/lib/whisper/types";
@@ -10,6 +11,7 @@ import { fetchReceipt, sendReceiptFollowup } from "@/lib/api";
 
 export function ReceiptView({ receiptId }: { receiptId: string }) {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [draft, setDraft] = useState("");
@@ -93,6 +95,15 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
         <span className="font-mono text-xs text-muted-foreground">/r/{receiptId}</span>
         <LanguageSwitcher />
       </div>
+
+      <button
+        data-el="receipt-back"
+        onClick={() => router.back()}
+        className="mt-3 flex w-fit items-center gap-1 text-xs font-medium text-muted-foreground"
+      >
+        <ArrowLeft className="h-3.5 w-3.5" />
+        {t("receipt.back")}
+      </button>
 
       {loaded && !receipt ? (
         <p className="mt-16 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground gummy">
