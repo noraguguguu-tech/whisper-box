@@ -35,23 +35,23 @@
     }
   },
   "app": {
-    "title": "Whisper Box",
-    "tagline": "Get your own link and collect every anonymous whisper."
+    "title": "Nameless Letters",
+    "tagline": "Get your own link and collect every anonymous letter."
   },
   "cover": {
-    "title": "Whisper Box",
-    "subtitle": "Every note is something someone quietly wrote to you.",
-    "enter": "Tap anywhere to open my inbox"
+    "title": "Nameless Letters",
+    "subtitle": "Every letter is something someone wrote to you, anonymously.",
+    "enter": "Tap anywhere to open my letterbox"
   },
   "inbox": {
-    "signedOutTitle": "Your anonymous inbox",
-    "signedOutDesc": "Sign in to get your own link. Anyone can leave you an anonymous message, and you read and reply to them all here.",
+    "signedOutTitle": "Your nameless letterbox",
+    "signedOutDesc": "Sign in to get your own link. Anyone can write you an anonymous letter, and you read and reply to them all here.",
     "shareTitle": "My personal link",
-    "shareHint": "Share it — anyone can leave you an anonymous message",
+    "shareHint": "Share it — anyone can write you an anonymous letter",
     "copy": "Copy link",
     "copied": "Copied!",
-    "openLink": "Preview message page",
-    "empty": "No whispers yet. Share your link and wait for the first one ✨",
+    "openLink": "Preview writing page",
+    "empty": "No letters yet. Share your link and wait for the first one ✨",
     "unreadBadge": "{{count}} unread",
     "statusUnread": "Unread",
     "statusRead": "Read",
@@ -68,7 +68,7 @@
     "receivedAt": "Received {{time}}"
   },
   "visitor": {
-    "heading": "Leave them a whisper",
+    "heading": "Write them a nameless letter",
     "anonymousNote": "Fully anonymous — they'll never know it's you",
     "placeholder": "Write what you want to say…",
     "send": "Send anonymously",
@@ -78,14 +78,14 @@
     "yourReceipt": "Your receipt link",
     "copyReceipt": "Copy receipt link",
     "sendAnother": "Write another",
-    "wallTitle": "Their public whispers",
-    "wallEmpty": "No public conversations yet. Be the first to leave a message.",
+    "wallTitle": "Their public letters",
+    "wallEmpty": "No public letters yet. Be the first to write one.",
     "charCount": "{{count}}/500",
-    "notFound": "This inbox doesn't exist or has been closed."
+    "notFound": "This letterbox doesn't exist or has been closed."
   },
   "receipt": {
-    "title": "Your whisper",
-    "youAsked": "What you left",
+    "title": "Your nameless letter",
+    "youAsked": "What you sent",
     "waiting": "No reply yet — check back later 🌱",
     "theyReplied": "Their anonymous reply",
     "sentAt": "Sent {{time}}",
