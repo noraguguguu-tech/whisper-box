@@ -15,6 +15,7 @@ import {
   fetchInbox,
   markMessageRead,
   replyToMessage,
+  followupMessage,
   setMessagePublic,
 } from "@/lib/api";
 
@@ -164,6 +165,7 @@ export function InboxView() {
                   shareUrl={shareUrl}
                   onToggle={() => toggleOpen(m.id)}
                   onReply={(txt) => sendReply(m.id, txt)}
+                  onFollowup={(txt) => sendFollowup(m.id, txt)}
                   onTogglePublic={() => togglePublic(m.id)}
                 />
               ))}
