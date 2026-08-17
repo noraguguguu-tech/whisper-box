@@ -39,14 +39,14 @@ export interface ReceiptView {
   repliedAt: string | null;
 }
 
-/** Deterministic pastel note tint palette (from the gummy design). */
+/** Deterministic aged-paper note tint palette (letter-paper look). */
 export const NOTE_TINTS = [
-  "#FFE0E6", // rose
-  "#DDF5E9", // mint
-  "#FFE9D6", // peach
-  "#E8E4FF", // lilac
-  "#FFF3C9", // butter
-  "#DDEEFF", // sky
+  "#F6EFDD", // cream
+  "#F0E7D2", // ivory
+  "#EDE4CE", // parchment
+  "#F3EBD6", // warm sand
+  "#E9E7DA", // pale linen
+  "#F1E6CE", // aged buff
 ] as const;
 
 export function tintForId(id: string): string {

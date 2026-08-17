@@ -148,8 +148,8 @@ body {
 
 /* Gummy note surface tokens (from selected design: glossy jelly + inflated shadow) */
 :root {
-  --gummy-shadow-sm: 0 10px 20px rgba(92, 35, 38, 0.12);
-  --gummy-shadow-md: 0 18px 38px rgba(92, 35, 38, 0.18);
+  --gummy-shadow-sm: 0 8px 18px rgba(36, 34, 42, 0.10);
+  --gummy-shadow-md: 0 16px 34px rgba(36, 34, 42, 0.16);
   --gummy-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
