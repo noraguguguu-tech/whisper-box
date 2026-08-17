@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Globe, Lock, Send } from "lucide-react";
+import { Globe, Lock, Send, Share2 } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
+import { ShareCard } from "@/components/whisper/share-card";
 import { tintForId } from "@/lib/whisper/types";
 import type { WhisperMessage } from "@/lib/whisper/types";
 import { cn } from "@/utils/utils";
@@ -14,6 +15,7 @@ export function NoteCard({
   expanded,
   rotate,
   locale,
+  shareUrl,
   onToggle,
   onReply,
   onTogglePublic,
@@ -22,12 +24,14 @@ export function NoteCard({
   expanded: boolean;
   rotate: number;
   locale: string;
+  shareUrl: string;
   onToggle: () => void;
   onReply: (text: string) => void;
   onTogglePublic: () => void;
 }) {
   const { t } = useTranslation();
   const [draft, setDraft] = useState("");
+  const [sharing, setSharing] = useState(false);
   const tint = tintForId(message.id);
 
   const statusKey =
@@ -116,12 +120,31 @@ export function NoteCard({
               </>
             )}
           </button>
+          {message.reply && (
+            <button
+              data-el="open-share"
+              onClick={() => setSharing(true)}
+              className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-accent/15 py-2 text-xs font-semibold text-accent"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              {t("inbox.shareLetter")}
+            </button>
+          )}
           <p className="mt-2 text-center text-[11px] text-muted-foreground">
             {t("inbox.receivedAt", {
               time: new Date(message.createdAt).toLocaleString(locale),
             })}
           </p>
         </div>
+      )}
+
+      {sharing && message.reply && (
+        <ShareCard
+          question={message.body}
+          reply={message.reply}
+          shareUrl={shareUrl}
+          onClose={() => setSharing(false)}
+        />
       )}
     </GummyNote>
   );
