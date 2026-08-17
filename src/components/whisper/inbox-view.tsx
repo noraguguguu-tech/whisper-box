@@ -37,7 +37,6 @@ export function InboxView() {
   useEffect(() => {
     if (authLoading || !user) return;
     let alive = true;
-    setFetched(false);
     fetchInbox().then((data) => {
       if (!alive) return;
       if (data) {
