@@ -1,18 +1,26 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { Copy, Check, Send, Sparkles, MessageCircleHeart } from "lucide-react";
+import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { tintForId } from "@/lib/whisper/types";
 import type { PublicEntry } from "@/lib/whisper/types";
 import { fetchVisitorInbox, sendVisitorMessage } from "@/lib/api";
+import {
+  getRememberedLetters,
+  rememberLetter,
+  clearRememberedLetters,
+  type RememberedLetter,
+} from "@/lib/whisper/local-letters";
 
 const ROTATIONS = [-2, 1.6, -1.4, 2];
 
 export function VisitorView({ slug }: { slug: string }) {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
 
   const [prompt, setPrompt] = useState("");
   const [wall, setWall] = useState<PublicEntry[]>([]);
@@ -23,6 +31,7 @@ export function VisitorView({ slug }: { slug: string }) {
   const [sending, setSending] = useState(false);
   const [receiptId, setReceiptId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [mine, setMine] = useState<RememberedLetter[]>([]);
 
   useEffect(() => {
     let alive = true;
@@ -41,6 +50,11 @@ export function VisitorView({ slug }: { slug: string }) {
     };
   }, [slug]);
 
+  // Remembered letters live only in this browser; read them after mount.
+  useEffect(() => {
+    setMine(getRememberedLetters(slug));
+  }, [slug]);
+
   const receiptUrl = useMemo(
     () =>
       receiptId && typeof window !== "undefined"
@@ -52,14 +66,23 @@ export function VisitorView({ slug }: { slug: string }) {
   async function submit() {
     if (!text.trim() || sending) return;
     setSending(true);
-    const res = await sendVisitorMessage(slug, text.trim());
+    const body = text.trim();
+    const res = await sendVisitorMessage(slug, body);
     setSending(false);
-    if (res) setReceiptId(res.receiptId);
+    if (res) {
+      rememberLetter({ receiptId: res.receiptId, slug, preview: body });
+      setMine(getRememberedLetters(slug));
+      setReceiptId(res.receiptId);
+    }
   }
   function copyReceipt() {
     navigator.clipboard?.writeText(receiptUrl).catch(() => undefined);
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
+  }
+  function clearMine() {
+    clearRememberedLetters(slug);
+    setMine([]);
   }
 
   return (
