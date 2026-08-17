@@ -71,6 +71,13 @@
     "promptLabel": "写给访客的引导语",
     "promptPlaceholder": "比如：见字如面，问我任何事…",
     "promptSaved": "已保存",
+    "promptTemplatesLabel": "快填模板",
+    "promptTemplates": [
+      "见字如面，问我任何事",
+      "有什么悄悄话想对我说？",
+      "匿名树洞，畅所欲言",
+      "夸夸我，或者吐槽我都行"
+    ],
     "loadingBox": "正在打开信箱…"
   },
   "visitor": {
