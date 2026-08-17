@@ -40,7 +40,7 @@ export default function ReceiptPage({
           </h1>
         </div>
 
-        <GummyNote tint="#FFE0E6" el="receipt-message">
+        <GummyNote tint="#F6EFDD" el="receipt-message">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/50">
             {t("receipt.youAsked")}
           </p>
@@ -55,7 +55,7 @@ export default function ReceiptPage({
 
         <div className="mt-5">
           {receipt.reply ? (
-            <GummyNote tint="#DDF5E9" el="receipt-reply" popped>
+            <GummyNote tint="#EDE4CE" el="receipt-reply" popped>
               <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
                 {t("receipt.theyReplied")}
               </p>
