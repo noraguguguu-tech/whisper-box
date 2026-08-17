@@ -57,6 +57,11 @@ export function replyToMessage(id: string, reply: string): Promise<WhisperMessag
   return patchMessage(id, { action: "reply", reply });
 }
 
+/** Owner: add a follow-up turn on an already-replied thread. */
+export function followupMessage(id: string, reply: string): Promise<WhisperMessage | null> {
+  return patchMessage(id, { action: "followup", reply });
+}
+
 export function setMessagePublic(id: string, isPublic: boolean): Promise<WhisperMessage | null> {
   return patchMessage(id, { action: "public", isPublic });
 }
