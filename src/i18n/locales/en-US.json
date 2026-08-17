@@ -116,6 +116,7 @@
   "receipt": {
     "title": "Your nameless letter",
     "youAsked": "What you sent",
+    "back": "Back",
     "waiting": "No reply yet — check back later 🌱",
     "theyReplied": "Their anonymous reply",
     "sentAt": "Sent {{time}}",
