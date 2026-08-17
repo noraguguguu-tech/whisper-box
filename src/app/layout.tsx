@@ -17,6 +17,12 @@ const notoSC = Noto_Sans_SC({
   weight: ["400", "500", "700"],
   variable: "--font-noto-sc",
 });
+// Brush/handwriting display font for the share-card title (covers CJK + Latin).
+const maShan = Ma_Shan_Zheng({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-hand",
+});
 
 const SITE_URL = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
