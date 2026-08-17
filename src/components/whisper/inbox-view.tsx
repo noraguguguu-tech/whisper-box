@@ -25,24 +25,26 @@ export function InboxView() {
 
   const [slug, setSlug] = useState<string>("");
   const [messages, setMessages] = useState<WhisperMessage[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [fetched, setFetched] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const shareUrl = useCallbackShareUrl(slug);
   const unread = messages.filter((m) => m.status === "unread").length;
+  // Loading while signed in but the first fetch hasn't resolved yet.
+  const loading = !!user && !authLoading && !fetched;
 
   useEffect(() => {
     if (authLoading || !user) return;
     let alive = true;
-    setLoading(true);
+    setFetched(false);
     fetchInbox().then((data) => {
       if (!alive) return;
       if (data) {
         setSlug(data.inbox.slug);
         setMessages(data.messages);
       }
-      setLoading(false);
+      setFetched(true);
     });
     return () => {
       alive = false;
