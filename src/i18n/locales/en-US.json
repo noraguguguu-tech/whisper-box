@@ -34,36 +34,57 @@
       "backHome": "Back to home"
     }
   },
-  "starter": {
-    "badge": "Eazo App Starter",
-    "title": "Build your next app with Eazo",
-    "subtitle": "You now have a clean foundation with auth, data access, and platform integrations ready for your product.",
-    "steps": {
-      "readDocs": {
-        "title": "Read the docs",
-        "desc": "Open AGENTS.md and README.md to understand the template architecture.",
-        "code": "AGENTS.md + README.md"
-      },
-      "replacePage": {
-        "title": "Replace this page",
-        "desc": "Move your product UI into src/components and keep page.tsx thin.",
-        "code": "src/app/page.tsx"
-      },
-      "firstFeature": {
-        "title": "Build your first feature",
-        "desc": "Add API routes under src/app/api and call them from typed helpers.",
-        "code": "src/app/api/*"
-      },
-      "translations": {
-        "title": "Add translations",
-        "desc": "Edit en-US / zh-CN strings in src/i18n/locales. LanguageSwitcher and I18nProvider in layout.tsx are already wired.",
-        "code": "src/i18n/locales/"
-      }
-    },
-    "nextCommand": {
-      "title": "Next command",
-      "desc": "Start developing and iterate in real time.",
-      "command": "bun dev"
-    }
+  "app": {
+    "title": "Whisper Box",
+    "tagline": "Get your own link and collect every anonymous whisper."
+  },
+  "inbox": {
+    "signedOutTitle": "Your anonymous inbox",
+    "signedOutDesc": "Sign in to get your own link. Anyone can leave you an anonymous message, and you read and reply to them all here.",
+    "shareTitle": "My personal link",
+    "shareHint": "Share it — anyone can leave you an anonymous message",
+    "copy": "Copy link",
+    "copied": "Copied!",
+    "openLink": "Preview message page",
+    "empty": "No whispers yet. Share your link and wait for the first one ✨",
+    "unreadBadge": "{{count}} unread",
+    "statusUnread": "Unread",
+    "statusRead": "Read",
+    "statusReplied": "Replied",
+    "public": "Public",
+    "private": "Only me",
+    "makePublic": "Post to wall",
+    "makePrivate": "Make private",
+    "replyPlaceholder": "Write your anonymous reply…",
+    "send": "Send reply",
+    "sending": "Sending…",
+    "yourReply": "Your reply",
+    "replied": "Replied",
+    "receivedAt": "Received {{time}}"
+  },
+  "visitor": {
+    "heading": "Leave them a whisper",
+    "anonymousNote": "Fully anonymous — they'll never know it's you",
+    "placeholder": "Write what you want to say…",
+    "send": "Send anonymously",
+    "sending": "Sending…",
+    "sent": "Delivered!",
+    "sentDesc": "Save the receipt link below and come back later to see if they replied.",
+    "yourReceipt": "Your receipt link",
+    "copyReceipt": "Copy receipt link",
+    "sendAnother": "Write another",
+    "wallTitle": "Their public whispers",
+    "wallEmpty": "No public conversations yet. Be the first to leave a message.",
+    "charCount": "{{count}}/500",
+    "notFound": "This inbox doesn't exist or has been closed."
+  },
+  "receipt": {
+    "title": "Your whisper",
+    "youAsked": "What you left",
+    "waiting": "No reply yet — check back later 🌱",
+    "theyReplied": "Their anonymous reply",
+    "sentAt": "Sent {{time}}",
+    "repliedAt": "Replied {{time}}",
+    "notFound": "This receipt can't be found. Please check your receipt link."
   }
 }
