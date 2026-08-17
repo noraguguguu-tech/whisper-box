@@ -12,19 +12,22 @@ import { updateInboxPrompt } from "@/lib/api";
 export function PromptEditor({ initialPrompt }: { initialPrompt: string }) {
   const { t } = useTranslation();
   const [value, setValue] = useState(initialPrompt);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(initialPrompt);
+  const [savedFlash, setSavedFlash] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const dirty = value.trim() !== initialPromptRef(initialPrompt, value);
+  const dirty = value.trim() !== saved.trim();
 
   async function save() {
-    if (saving) return;
+    if (saving || !dirty) return;
     setSaving(true);
-    const ok = await updateInboxPrompt(value.trim());
+    const next = value.trim();
+    const ok = await updateInboxPrompt(next);
     setSaving(false);
     if (ok) {
-      setSaved(true);
-      setTimeout(() => setSaved(false), 1800);
+      setSaved(next);
+      setSavedFlash(true);
+      setTimeout(() => setSavedFlash(false), 1800);
     }
   }
 
@@ -42,13 +45,13 @@ export function PromptEditor({ initialPrompt }: { initialPrompt: string }) {
           rows={2}
           onChange={(e) => {
             setValue(e.target.value);
-            setSaved(false);
+            setSavedFlash(false);
           }}
           placeholder={t("inbox.promptPlaceholder")}
           className="w-full resize-none rounded-2xl border border-white/60 bg-background p-3 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
         />
         <div className="mt-2 flex items-center justify-end gap-2">
-          {saved && (
+          {savedFlash && (
             <span className="flex items-center gap-1 text-xs font-medium text-secondary-foreground">
               <Check className="h-3.5 w-3.5" />
               {t("inbox.promptSaved")}
@@ -66,11 +69,4 @@ export function PromptEditor({ initialPrompt }: { initialPrompt: string }) {
       </div>
     </section>
   );
-}
-
-// Track the last-saved baseline so the Save button only enables on real edits.
-let _baseline: string | null = null;
-function initialPromptRef(initial: string, _current: string): string {
-  if (_baseline === null) _baseline = initial;
-  return _baseline;
 }
