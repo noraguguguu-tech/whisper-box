@@ -125,7 +125,7 @@ export default function InboxPage() {
               key={m.id}
               message={m}
               expanded={openId === m.id}
-              rotate={openId === m.id ? 0 : ROTATIONS[i % ROTATIONS.length]}
+              rotate={0}
               locale={i18n.language}
               onToggle={() => toggleOpen(m.id)}
               onReply={(txt) => sendReply(m.id, txt)}
