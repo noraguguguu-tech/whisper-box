@@ -110,3 +110,22 @@ export async function fetchReceipt(receiptId: string): Promise<ReceiptView | nul
     return null;
   }
 }
+
+/** Visitor: continue the thread with a follow-up (only after owner replied). */
+export async function sendReceiptFollowup(
+  receiptId: string,
+  body: string,
+): Promise<ReceiptView | null> {
+  try {
+    const res = await request(`/api/r/${receiptId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ body }),
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as { receipt: ReceiptView };
+    return json.receipt;
+  } catch {
+    return null;
+  }
+}
