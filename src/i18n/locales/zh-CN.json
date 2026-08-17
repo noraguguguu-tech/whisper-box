@@ -116,6 +116,7 @@
   "receipt": {
     "title": "你的无名信",
     "youAsked": "你寄出的信",
+    "back": "返回",
     "waiting": "对方还没有回信，稍后再来看看吧 🌱",
     "theyReplied": "TA 的匿名回信",
     "sentAt": "寄于 {{time}}",
