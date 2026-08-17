@@ -165,3 +165,79 @@ export async function setMessagePublic(
     .returning();
   return rows[0];
 }
+
+// ---- conversation turns (follow-ups after the first reply) ----
+
+/** All follow-up turns for one message thread, oldest first. */
+export async function listTurns(messageId: string): Promise<TurnRow[]> {
+  return db
+    .select()
+    .from(turns)
+    .where(eq(turns.messageId, messageId))
+    .orderBy(asc(turns.createdAt));
+}
+
+/** Follow-up turns for many threads at once (owner inbox), oldest first. */
+export async function listTurnsForMessages(
+  messageIds: string[],
+): Promise<TurnRow[]> {
+  if (messageIds.length === 0) return [];
+  return db
+    .select()
+    .from(turns)
+    .where(inArray(turns.messageId, messageIds))
+    .orderBy(asc(turns.createdAt));
+}
+
+async function insertTurn(
+  messageId: string,
+  author: "visitor" | "owner",
+  body: string,
+): Promise<TurnRow> {
+  const inserted = await db
+    .insert(turns)
+    .values({ id: randId(16), messageId, author, body })
+    .returning();
+  return inserted[0];
+}
+
+/**
+ * Visitor adds a follow-up, addressed only by the unguessable receiptId.
+ * Allowed only once the owner has replied (status "replied") — otherwise there
+ * is nothing to continue. Re-marks the thread unread so the owner sees it.
+ * Returns the updated message row, or undefined if not permitted.
+ */
+export async function addVisitorTurn(
+  receiptId: string,
+  body: string,
+): Promise<MessageRow | undefined> {
+  const msg = await getMessageByReceipt(receiptId);
+  if (!msg || msg.status !== "replied") return undefined;
+  await insertTurn(msg.id, "visitor", body);
+  const rows = await db
+    .update(messages)
+    .set({ status: "unread" })
+    .where(eq(messages.id, msg.id))
+    .returning();
+  return rows[0];
+}
+
+/**
+ * Owner adds a follow-up on a thread they own. Marks the thread replied.
+ * Returns the updated message row, or undefined if not owned.
+ */
+export async function addOwnerTurn(
+  ownerUserId: string,
+  messageId: string,
+  body: string,
+): Promise<MessageRow | undefined> {
+  const owned = await ownsMessage(ownerUserId, messageId);
+  if (!owned) return undefined;
+  await insertTurn(messageId, "owner", body);
+  const rows = await db
+    .update(messages)
+    .set({ status: "replied", repliedAt: new Date() })
+    .where(eq(messages.id, messageId))
+    .returning();
+  return rows[0];
+}
