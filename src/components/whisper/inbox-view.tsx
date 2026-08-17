@@ -43,6 +43,7 @@ export function InboxView() {
       if (!alive) return;
       if (data) {
         setSlug(data.inbox.slug);
+        setPrompt(data.inbox.prompt ?? "");
         setMessages(data.messages);
       }
       setFetched(true);
@@ -123,6 +124,8 @@ export function InboxView() {
               </div>
             </div>
           </section>
+
+          {fetched && <PromptEditor initialPrompt={prompt} />}
 
           <div className="flex items-center justify-between px-6 pb-2 pt-6">
             <h2 className="font-heading text-base font-bold text-foreground">
