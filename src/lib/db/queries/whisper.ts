@@ -5,9 +5,12 @@ import {
   messages,
   turns,
   rateHits,
+  takedownRequests,
+  moderationLogs,
   type Inbox,
   type MessageRow,
   type TurnRow,
+  type TakedownRequestRow,
 } from "../schema/whisper";
 
 // ---- id helpers ----
