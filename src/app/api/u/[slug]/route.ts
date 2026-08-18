@@ -3,12 +3,24 @@ import { createMessage, getInboxBySlug, listPublicMessagesBySlug } from "@/lib/d
 import { toPublicEntry } from "@/lib/whisper/serialize";
 import { screenContent } from "@/lib/whisper/moderation";
 import { truncateByCodePoints } from "@/lib/whisper/text";
-import { allowWrite } from "@/lib/whisper/rate-limit";
+import { allowRead, allowWrite } from "@/lib/whisper/rate-limit";
 
 type Params = { params: Promise<{ slug: string }> };
 
 /** GET /api/u/[slug] — public: inbox prompt + public wall. No auth. */
-export async function GET(_request: NextRequest, { params }: Params) {
+export async function GET(request: NextRequest, { params }: Params) {
+  // Enumeration guard first — a scanner sweeping many slugs is refused before
+  // we ever touch the database. Fails open if the limiter itself errors.
+  let allowed = true;
+  try {
+    allowed = await allowRead(request);
+  } catch {
+    allowed = true;
+  }
+  if (!allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
   const { slug } = await params;
   const inbox = await getInboxBySlug(slug);
   if (!inbox) return NextResponse.json({ error: "not_found" }, { status: 404 });
