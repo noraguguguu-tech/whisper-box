@@ -60,3 +60,25 @@ export async function allowWrite(req: NextRequest, action: string): Promise<bool
   await recordRateHit(minKey);
   return true;
 }
+
+/**
+ * Enumeration guard for public reads. Keyed by IP only (no slug), so it counts
+ * total public-read volume from one client. Returns true when allowed. Fails
+ * OPEN on any internal error path via the caller — reads should never hard-fail
+ * a legitimate visitor just because the limiter hiccuped.
+ */
+export async function allowRead(req: NextRequest): Promise<boolean> {
+  const bucket = bucketFor(req, "read");
+  const dayKey = `${bucket}:d`;
+  const minKey = `${bucket}:m`;
+
+  if (await isRateExceeded(dayKey, READ_LIMIT_DAILY.windowSeconds, READ_LIMIT_DAILY.max)) {
+    return false;
+  }
+  if (await isRateExceeded(minKey, READ_LIMIT.windowSeconds, READ_LIMIT.max)) {
+    return false;
+  }
+  await recordRateHit(dayKey);
+  await recordRateHit(minKey);
+  return true;
+}
