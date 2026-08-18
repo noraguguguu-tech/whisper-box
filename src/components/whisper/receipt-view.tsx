@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Clock, MessageCircleHeart, Send, Flag } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
+import { LetterButton } from "@/components/whisper/letter-button";
 import { CrisisCard } from "@/components/whisper/crisis-card";
 import { LineReveal } from "@/components/whisper/line-reveal";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
@@ -185,15 +186,18 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
                   {t("visitor.charCount", { count: draft.length })}
                 </div>
               </GummyNote>
-              <button
+              <LetterButton
                 data-el="followup-send"
                 disabled={!draft.trim() || sending}
                 onClick={sendFollowup}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
+                variant="primary"
+                size="lg"
+                fullWidth
+                className="mt-3"
               >
                 <Send className="h-4 w-4" />
                 {sending ? t("receipt.followupSending") : t("receipt.followupSend")}
-              </button>
+              </LetterButton>
               {notice && (
                 <p
                   data-el="followup-notice"
