@@ -368,4 +368,28 @@ export async function isRateExceeded(
 /** Record a single accepted write for a bucket. */
 export async function recordRateHit(bucket: string): Promise<void> {
   await db.insert(rateHits).values({ id: randId(16), bucket });
+  // Opportunistic TTL cleanup — no cron needed. We only prune on a fraction of
+  // writes to avoid write amplification; the created_at index keeps it cheap.
+  if (Math.random() < RATE_HIT_PRUNE_PROBABILITY) {
+    await pruneExpiredRateHits().catch(() => undefined);
+  }
+}
+
+// Anti-abuse tokens must not be retained long-term (see Privacy Policy). The
+// longest counting window is the daily cap (86400s); anything older carries no
+// counting value, so we keep a small buffer beyond it and delete the rest.
+export const RATE_HIT_TTL_SECONDS = 2 * 86400; // 2 days
+const RATE_HIT_PRUNE_PROBABILITY = 0.1; // prune on ~10% of writes
+
+/**
+ * Delete rate-limit tokens older than the TTL. Safe to call anytime; returns
+ * the number of rows removed. Can also be wired to a scheduled job later.
+ */
+export async function pruneExpiredRateHits(): Promise<number> {
+  const cutoff = new Date(Date.now() - RATE_HIT_TTL_SECONDS * 1000);
+  const deleted = await db
+    .delete(rateHits)
+    .where(lt(rateHits.createdAt, cutoff))
+    .returning({ id: rateHits.id });
+  return deleted.length;
 }
