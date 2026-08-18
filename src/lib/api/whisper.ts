@@ -99,6 +99,11 @@ export function setMessageBlocked(id: string, blocked: boolean): Promise<Whisper
   return patchMessage(id, { action: "block", blocked });
 }
 
+/** Owner: approve a pending letter — it leaves review and enters the inbox. */
+export function approveMessage(id: string): Promise<WhisperMessage | null> {
+  return patchMessage(id, { action: "approve" });
+}
+
 /** Owner: delete a letter and its whole thread. Returns true on success. */
 export async function deleteMessage(id: string): Promise<boolean> {
   try {
