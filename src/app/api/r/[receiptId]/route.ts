@@ -3,6 +3,7 @@ import {
   addVisitorTurn,
   getMessageByReceipt,
   listTurns,
+  logModeration,
   reportMessageByReceipt,
 } from "@/lib/db/queries";
 import { toReceiptView } from "@/lib/whisper/serialize";
