@@ -66,6 +66,21 @@ export function setMessagePublic(id: string, isPublic: boolean): Promise<Whisper
   return patchMessage(id, { action: "public", isPublic });
 }
 
+/** Owner: mute/unmute a thread (mute stops visitor follow-ups). */
+export function setMessageBlocked(id: string, blocked: boolean): Promise<WhisperMessage | null> {
+  return patchMessage(id, { action: "block", blocked });
+}
+
+/** Owner: delete a letter and its whole thread. Returns true on success. */
+export async function deleteMessage(id: string): Promise<boolean> {
+  try {
+    const res = await request(`/api/messages/${id}`, { method: "DELETE" });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 // ---- visitor (no auth) ----
 
 export interface VisitorInboxData {
@@ -83,20 +98,43 @@ export async function fetchVisitorInbox(slug: string): Promise<VisitorInboxData 
   }
 }
 
+/** Discriminated outcome so the UI can show a precise, friendly message. */
+export type SendOutcome<T> =
+  | { ok: true; data: T }
+  | { ok: false; reason: "blocked_content" | "rate_limited" | "not_allowed" | "error"; category?: string };
+
+async function readError(res: Response): Promise<{ error?: string; category?: string }> {
+  try {
+    return (await res.json()) as { error?: string; category?: string };
+  } catch {
+    return {};
+  }
+}
+
+function mapReason(status: number, error?: string): SendOutcome<never>["reason"] {
+  if (status === 422 || error === "blocked_content") return "blocked_content";
+  if (status === 429 || error === "rate_limited") return "rate_limited";
+  if (status === 403 || status === 400) return "not_allowed";
+  return "error";
+}
+
 export async function sendVisitorMessage(
   slug: string,
   body: string,
-): Promise<{ receiptId: string } | null> {
+): Promise<SendOutcome<{ receiptId: string }>> {
   try {
     const res = await request(`/api/u/${slug}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ body }),
     });
-    if (!res.ok) return null;
-    return (await res.json()) as { receiptId: string };
+    if (res.ok) {
+      return { ok: true, data: (await res.json()) as { receiptId: string } };
+    }
+    const err = await readError(res);
+    return { ok: false, reason: mapReason(res.status, err.error), category: err.category };
   } catch {
-    return null;
+    return { ok: false, reason: "error" };
   }
 }
 
@@ -115,17 +153,34 @@ export async function fetchReceipt(receiptId: string): Promise<ReceiptView | nul
 export async function sendReceiptFollowup(
   receiptId: string,
   body: string,
-): Promise<ReceiptView | null> {
+): Promise<SendOutcome<ReceiptView>> {
   try {
     const res = await request(`/api/r/${receiptId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ body }),
     });
-    if (!res.ok) return null;
-    const json = (await res.json()) as { receipt: ReceiptView };
-    return json.receipt;
+    if (res.ok) {
+      const json = (await res.json()) as { receipt: ReceiptView };
+      return { ok: true, data: json.receipt };
+    }
+    const err = await readError(res);
+    return { ok: false, reason: mapReason(res.status, err.error), category: err.category };
   } catch {
-    return null;
+    return { ok: false, reason: "error" };
+  }
+}
+
+/** Visitor: flag this thread as harmful. Best-effort. */
+export async function reportReceipt(receiptId: string): Promise<boolean> {
+  try {
+    const res = await request(`/api/r/${receiptId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "report" }),
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
 }
