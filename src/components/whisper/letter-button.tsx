@@ -20,7 +20,7 @@ import { cn } from "@/utils/utils";
  *   md → py-2.5 text-sm  (in-card action)
  *   sm → py-2   text-xs  (secondary row inside a card)
  */
-type Variant = "primary" | "secondary" | "danger" | "ghost" | "accent";
+type Variant = "primary" | "secondary" | "danger" | "ghost" | "accent" | "accent-solid";
 type Size = "sm" | "md" | "lg";
 
 const VARIANT: Record<Variant, string> = {
@@ -30,6 +30,9 @@ const VARIANT: Record<Variant, string> = {
   ghost: "text-primary hover:bg-primary/10 transition-colors",
   // Vermilion soft-fill emphasis that is NOT destructive (e.g. share a letter).
   accent: "bg-accent/15 text-accent",
+  // Filled vermilion for a strong confirming action (take down, submit report,
+  // close inbox) — louder than `accent`, semantically distinct from `danger`.
+  "accent-solid": "bg-accent text-accent-foreground gummy",
 };
 
 const SIZE: Record<Size, string> = {
