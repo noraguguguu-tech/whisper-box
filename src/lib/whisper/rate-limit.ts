@@ -31,14 +31,24 @@ export const WRITE_LIMIT_DAILY: RateLimit = { windowSeconds: 86400, max: 60 }; /
 /**
  * Returns true when the request is allowed (and records the hit), false when
  * it should be throttled. Enforces both a burst window and a daily cap.
+ *
+ * We evaluate BOTH windows before recording anything: a request refused by the
+ * burst limit must not consume the visitor's daily budget, and vice-versa. Only
+ * a fully-accepted write records a hit in each window.
  */
 export async function allowWrite(req: NextRequest, action: string): Promise<boolean> {
   const bucket = bucketFor(req, action);
-  const dayOk = await checkAndRecordRate(
-    `${bucket}:d`,
-    WRITE_LIMIT_DAILY.windowSeconds,
-    WRITE_LIMIT_DAILY.max,
-  );
-  if (!dayOk) return false;
-  return checkAndRecordRate(`${bucket}:m`, WRITE_LIMIT.windowSeconds, WRITE_LIMIT.max);
+  const dayKey = `${bucket}:d`;
+  const minKey = `${bucket}:m`;
+
+  if (await isRateExceeded(dayKey, WRITE_LIMIT_DAILY.windowSeconds, WRITE_LIMIT_DAILY.max)) {
+    return false;
+  }
+  if (await isRateExceeded(minKey, WRITE_LIMIT.windowSeconds, WRITE_LIMIT.max)) {
+    return false;
+  }
+  // Accepted — record against both windows.
+  await recordRateHit(dayKey);
+  await recordRateHit(minKey);
+  return true;
 }
