@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { ScrollText } from "lucide-react";
@@ -22,6 +23,7 @@ const STORAGE_KEY = "whisper.consent";
 export function ConsentGate() {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
+  const pathname = usePathname();
   // undefined = not yet checked (avoid SSR/first-paint flash); true/false after.
   const [needed, setNeeded] = useState<boolean | undefined>(undefined);
 
