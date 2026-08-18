@@ -75,7 +75,7 @@ export default function CoverPage() {
               data-el={isHero ? "cover-hero-note" : "cover-note"}
               className={[
                 "absolute",
-                isHero ? "note-drift-hero" : "note-drift",
+                isHero ? "note-drift-hero" : `note-drift-${i % 4}`,
                 n.layer === "far" ? "note-far" : "",
               ].join(" ")}
               style={{
