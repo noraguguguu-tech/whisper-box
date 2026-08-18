@@ -111,6 +111,10 @@ export default function CoverPage() {
         {t("cover.enter")}
         <ChevronRight className="h-3.5 w-3.5" />
       </div>
+
+      <div className="relative z-20 mt-3">
+        <LegalFooter stop />
+      </div>
     </main>
   );
 }
