@@ -2,9 +2,11 @@ import { type NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import {
   addOwnerTurn,
+  deleteMessage,
   listTurns,
   markMessageRead,
   replyToMessage,
+  setMessageBlocked,
   setMessagePublic,
 } from "@/lib/db/queries";
 import { toOwnerMessage } from "@/lib/whisper/serialize";
@@ -20,7 +22,7 @@ async function respond(row: MessageRow) {
 
 /**
  * PATCH /api/messages/[id]
- * Owner actions on one message: mark read, reply, toggle public, or follow up.
+ * Owner actions on one message: read, reply, follow up, public, or block/mute.
  * Ownership is enforced in the query layer via inbox ownership.
  */
 export async function PATCH(request: NextRequest, { params }: Params) {
@@ -29,7 +31,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
   const { id } = await params;
   const body = (await request.json().catch(() => null)) as
-    | { action?: unknown; reply?: unknown; isPublic?: unknown }
+    | { action?: unknown; reply?: unknown; isPublic?: unknown; blocked?: unknown }
     | null;
   const action = body?.action;
 
@@ -62,5 +64,23 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     return respond(row);
   }
 
+  if (action === "block") {
+    const blocked = body?.blocked === true;
+    const row = await setMessageBlocked(auth.user.id, id, blocked);
+    if (!row) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    return respond(row);
+  }
+
   return NextResponse.json({ error: "bad_action" }, { status: 400 });
+}
+
+/** DELETE /api/messages/[id] — owner deletes a letter and its whole thread. */
+export async function DELETE(request: NextRequest, { params }: Params) {
+  const auth = requireAuth(request);
+  if (!auth.ok) return auth.response;
+
+  const { id } = await params;
+  const ok = await deleteMessage(auth.user.id, id);
+  if (!ok) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  return NextResponse.json({ ok: true });
 }
