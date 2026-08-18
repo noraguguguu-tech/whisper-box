@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Clock, MessageCircleHeart, Send } from "lucide-react";
+import { ArrowLeft, Clock, MessageCircleHeart, Send, Flag } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
+import { CrisisCard } from "@/components/whisper/crisis-card";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import type { ConversationTurn, ReceiptView as ReceiptData } from "@/lib/whisper/types";
-import { fetchReceipt, sendReceiptFollowup } from "@/lib/api";
+import { fetchReceipt, sendReceiptFollowup, reportReceipt } from "@/lib/api";
 
 export function ReceiptView({ receiptId }: { receiptId: string }) {
   const { t, i18n } = useTranslation();
@@ -16,6 +17,9 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
   const [loaded, setLoaded] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [showCrisis, setShowCrisis] = useState(false);
+  const [reported, setReported] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -33,12 +37,31 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
     const text = draft.trim();
     if (!text || sending) return;
     setSending(true);
-    const updated = await sendReceiptFollowup(receiptId, text);
+    setNotice(null);
+    const res = await sendReceiptFollowup(receiptId, text);
     setSending(false);
-    if (updated) {
-      setReceipt(updated);
+    if (res.ok) {
+      setReceipt(res.data);
       setDraft("");
+      return;
     }
+    if (res.reason === "blocked_content") {
+      setNotice(t("receipt.blockedContent"));
+      if (res.category === "self_harm") setShowCrisis(true);
+    } else if (res.reason === "rate_limited") {
+      setNotice(t("receipt.rateLimited"));
+    } else if (res.reason === "not_allowed") {
+      // Thread closed by the owner — reflect it and refresh state.
+      setNotice(t("receipt.closed"));
+      fetchReceipt(receiptId).then((r) => r && setReceipt(r));
+    } else {
+      setNotice(t("receipt.sendFailed"));
+    }
+  }
+
+  async function report() {
+    const ok = await reportReceipt(receiptId);
+    if (ok) setReported(true);
   }
 
   const fmt = (iso: string) => new Date(iso).toLocaleString(i18n.language);
