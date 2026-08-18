@@ -1,9 +1,8 @@
 import { db } from "@/lib/db/client";
-import { inboxes } from "@/lib/db/schema/whisper";
-const rows = await db.select().from(inboxes).limit(1);
-if (rows[0]) { console.log("SLUG=" + rows[0].slug); }
-else {
-  await db.insert(inboxes).values({ id: "testinbox0000000000000000000000", ownerUserId: "testowner", slug: "testslug", prompt: "" });
-  console.log("SLUG=testslug");
-}
+import { messages } from "@/lib/db/schema/whisper";
+import { eq } from "drizzle-orm";
+const rid = "s3czro3kiqe9xavb11pbsm8a219yd36z";
+// Mark replied so a follow-up would normally be allowed.
+await db.update(messages).set({ status: "replied", reply: "回信了", repliedAt: new Date() }).where(eq(messages.receiptId, rid));
+console.log("replied set");
 process.exit(0);
