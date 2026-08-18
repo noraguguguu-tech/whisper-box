@@ -131,13 +131,13 @@ export function InboxView() {
           <div data-el="inbox-tabs" className="flex gap-2 px-5 pt-3">
             <TabButton
               active={tab === "letters"}
-              onClick={() => setTab("letters")}
+              onClick={() => selectTab("letters")}
               label={t("inbox.tabLetters")}
               badge={unread > 0 ? unread : undefined}
             />
             <TabButton
               active={tab === "settings"}
-              onClick={() => setTab("settings")}
+              onClick={() => selectTab("settings")}
               label={t("inbox.tabSettings")}
             />
           </div>
