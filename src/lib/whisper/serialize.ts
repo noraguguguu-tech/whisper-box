@@ -33,6 +33,7 @@ export function toOwnerMessage(
     isPublic: row.isPublic,
     blocked: row.blocked,
     reported: row.reported,
+    pending: row.pending,
     receiptId: row.receiptId,
     createdAt: row.createdAt.toISOString(),
     repliedAt: row.repliedAt ? row.repliedAt.toISOString() : null,
