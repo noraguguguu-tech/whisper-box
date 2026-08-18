@@ -261,10 +261,21 @@ export function VisitorView({ slug }: { slug: string }) {
       {/* Public wall */}
       {!notFound && (
         <section data-el="public-wall" className="pt-8">
-          <h2 className="mb-3 flex items-center gap-1.5 px-1 font-heading text-base font-bold text-foreground">
-            <Sparkles className="h-4 w-4 text-accent" />
-            {t("visitor.wallTitle")}
-          </h2>
+          <div className="mb-3 flex items-center justify-between px-1">
+            <h2 className="flex items-center gap-1.5 font-heading text-base font-bold text-foreground">
+              <Sparkles className="h-4 w-4 text-accent" />
+              {t("visitor.wallTitle")}
+            </h2>
+            {wall.length > 0 && (
+              <button
+                data-el="wall-view-all"
+                onClick={() => router.push(`/u/${slug}/wall`)}
+                className="text-xs font-semibold text-primary underline underline-offset-2"
+              >
+                {t("wallPage.count", { count: wall.length })}
+              </button>
+            )}
+          </div>
           {wall.length === 0 ? (
             <p className="rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
               {t("visitor.wallEmpty")}
