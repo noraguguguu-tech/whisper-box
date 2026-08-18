@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail, Lock } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { CrisisCard } from "@/components/whisper/crisis-card";
+import { SealCeremony } from "@/components/whisper/seal-ceremony";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { tintForId } from "@/lib/whisper/types";
 import type { PublicEntry } from "@/lib/whisper/types";
@@ -89,7 +90,8 @@ export function VisitorView({ slug }: { slug: string }) {
     if (res.ok) {
       rememberLetter({ receiptId: res.data.receiptId, slug, preview: body });
       setMine(getRememberedLetters(slug));
-      setReceiptId(res.data.receiptId);
+      // Play the sealing ceremony; it resolves into the receipt on completion.
+      setSealing({ receiptId: res.data.receiptId, preview: body });
       return;
     }
     // Rejected — show a precise, non-punitive message. Self-harm content also
