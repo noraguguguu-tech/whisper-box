@@ -241,6 +241,8 @@
     "emptyCta": "Be the very first to write one.",
     "writeCta": "Write them a letter too",
     "backToWrite": "Write a letter",
+    "shareCta": "Share this wall",
+    "shareCopied": "Link copied",
     "count_one": "{{count}} public letter",
     "count_other": "{{count}} public letters"
   },
