@@ -167,6 +167,17 @@ export function VisitorView({ slug }: { slug: string }) {
             <Send className="h-4 w-4" />
             {sending ? t("visitor.sending") : t("visitor.send")}
           </button>
+          {notice && (
+            <p
+              data-el="send-notice"
+              className="mt-3 rounded-2xl bg-accent/10 px-4 py-2.5 text-center text-xs font-medium text-accent"
+            >
+              {notice}
+            </p>
+          )}
+          <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
+            {t("safety.screeningNote")}
+          </p>
         </section>
       )}
 
