@@ -64,5 +64,11 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   }
   const ok = await reportMessageByReceipt(receiptId);
   if (!ok) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  await logModeration({
+    actor: "visitor",
+    action: "report",
+    targetType: "message",
+    targetRef: receiptId,
+  }).catch(() => undefined);
   return NextResponse.json({ ok: true });
 }
