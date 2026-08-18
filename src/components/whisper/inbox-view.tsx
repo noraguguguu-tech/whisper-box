@@ -17,6 +17,8 @@ import {
   replyToMessage,
   followupMessage,
   setMessagePublic,
+  setMessageBlocked,
+  deleteMessage,
 } from "@/lib/api";
 
 export function InboxView() {
@@ -104,6 +106,21 @@ export function InboxView() {
     if (!cur) return;
     const updated = await setMessagePublic(id, !cur.isPublic);
     if (updated) setMessages((ms) => ms.map((m) => (m.id === id ? updated : m)));
+  }
+
+  async function toggleBlock(id: string) {
+    const cur = messages.find((m) => m.id === id);
+    if (!cur) return;
+    const updated = await setMessageBlocked(id, !cur.blocked);
+    if (updated) setMessages((ms) => ms.map((m) => (m.id === id ? updated : m)));
+  }
+
+  async function removeMessage(id: string) {
+    const ok = await deleteMessage(id);
+    if (ok) {
+      setMessages((ms) => ms.filter((m) => m.id !== id));
+      setOpenId((cur) => (cur === id ? null : cur));
+    }
   }
 
   return (
@@ -214,6 +231,8 @@ export function InboxView() {
                       onReply={(txt) => sendReply(m.id, txt)}
                       onFollowup={(txt) => sendFollowup(m.id, txt)}
                       onTogglePublic={() => togglePublic(m.id)}
+                      onToggleBlock={() => toggleBlock(m.id)}
+                      onDelete={() => removeMessage(m.id)}
                     />
                   ))}
                 </section>
