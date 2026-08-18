@@ -66,7 +66,16 @@
       "curious": "Tell me your honest first impression of me — anonymously 👀 I really won't know it's you. {{url}}",
       "bold": "Go on, roast me anonymously. I can take all of it. 🔥 {{url}}"
     },
-    "note": "Best posted at night when feelings run deep. Rotate captions so it never feels spammy."
+    "note": "Best posted at night when feelings run deep. Rotate captions so it never feels spammy.",
+    "postTo": "Copy & post to",
+    "platform": {
+      "xhs": "Xiaohongshu",
+      "weibo": "Weibo",
+      "x": "X",
+      "system": "More…"
+    },
+    "copiedGo": "Copied — paste it in {{platform}}",
+    "xhsHint": "Copied! Opening Xiaohongshu — long-press the post box to paste."
   },
   "language": {
     "label": "Language",
