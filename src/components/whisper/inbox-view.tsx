@@ -238,7 +238,7 @@ export function InboxView() {
                     >
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       {copied ? t("inbox.copied") : t("inbox.copy")}
-                    </button>
+                    </LetterButton>
                   </div>
                 </div>
               </section>
