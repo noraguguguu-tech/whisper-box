@@ -25,6 +25,7 @@ export function VisitorView({ slug }: { slug: string }) {
 
   const [prompt, setPrompt] = useState("");
   const [wall, setWall] = useState<PublicEntry[]>([]);
+  const [closed, setClosed] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
@@ -46,6 +47,7 @@ export function VisitorView({ slug }: { slug: string }) {
       } else {
         setPrompt(data.prompt);
         setWall(data.wall);
+        setClosed(data.closed);
       }
       setLoaded(true);
     });
@@ -87,6 +89,9 @@ export function VisitorView({ slug }: { slug: string }) {
       if (res.category === "self_harm") setShowCrisis(true);
     } else if (res.reason === "rate_limited") {
       setNotice(t("visitor.rateLimited"));
+    } else if (res.reason === "inbox_closed") {
+      setNotice(t("visitor.boxClosed"));
+      setClosed(true);
     } else {
       setNotice(t("visitor.sendFailed"));
     }
