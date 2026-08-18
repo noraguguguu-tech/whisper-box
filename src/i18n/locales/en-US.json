@@ -72,10 +72,14 @@
       "xhs": "Xiaohongshu",
       "weibo": "Weibo",
       "x": "X",
+      "line": "LINE",
+      "kakao": "KakaoTalk",
+      "facebook": "Facebook",
       "system": "More…"
     },
     "copiedGo": "Copied — paste it in {{platform}}",
-    "xhsHint": "Copied! Opening Xiaohongshu — long-press the post box to paste."
+    "xhsHint": "Copied! Opening Xiaohongshu — long-press the post box to paste.",
+    "pasteHint": "Copied! Opening {{platform}} — long-press the box to paste."
   },
   "language": {
     "label": "Language",
