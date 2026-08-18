@@ -281,6 +281,14 @@ export function VisitorView({ slug }: { slug: string }) {
                       time: new Date(e.repliedAt).toLocaleDateString(i18n.language),
                     })}
                   </p>
+                  <button
+                    data-el="wall-report"
+                    onClick={() => setReportTarget(e.id)}
+                    className="mt-2 flex items-center gap-1 text-[11px] font-medium text-muted-foreground/70 underline underline-offset-2"
+                  >
+                    <Flag className="h-3 w-3" />
+                    {t("takedown.reportPublic")}
+                  </button>
                 </GummyNote>
               ))}
             </div>
