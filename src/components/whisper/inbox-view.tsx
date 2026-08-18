@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallbackShareUrl } from "./use-share-url";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
@@ -367,23 +367,33 @@ function TabButton({
         />
       )}
       <span className="relative z-10">{label}</span>
-      {badge !== undefined && (
-        <motion.span
-          key={badge}
-          initial={reduce ? false : { scale: 0 }}
-          animate={reduce ? { scale: 1 } : { scale: [0, 1.3, 1] }}
-          transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 18 }}
-          onAnimationStart={() => {
-            if (!reduce) hapticTap(12);
-          }}
-          className={`relative z-10 rounded-full px-1.5 text-[11px] font-semibold ${
-            active ? "bg-primary-foreground/20" : "bg-accent/15 text-accent"
-          }`}
-        >
-          {badge}
-        </motion.span>
-      )}
+      {badge !== undefined && <UnreadBadge count={badge} active={active} reduce={!!reduce} />}
     </button>
+  );
+}
+
+/** Unread count badge. Springs in on mount and re-springs (with one haptic tap)
+ *  only when the count actually increases — never on first render, so entering
+ *  the inbox with existing unread letters does not buzz. */
+function UnreadBadge({ count, active, reduce }: { count: number; active: boolean; reduce: boolean }) {
+  const prev = useRef<number | null>(null);
+  useEffect(() => {
+    const isIncrease = prev.current !== null && count > prev.current;
+    if (isIncrease && !reduce) hapticTap(12);
+    prev.current = count;
+  }, [count, reduce]);
+  return (
+    <motion.span
+      key={count}
+      initial={reduce ? false : { scale: 0 }}
+      animate={reduce ? { scale: 1 } : { scale: [0, 1.3, 1] }}
+      transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 18 }}
+      className={`relative z-10 rounded-full px-1.5 text-[11px] font-semibold ${
+        active ? "bg-primary-foreground/20" : "bg-accent/15 text-accent"
+      }`}
+    >
+      {count}
+    </motion.span>
   );
 }
 
