@@ -47,6 +47,8 @@ export function ConsentGate() {
   }
 
   if (needed !== true) return null;
+  // Let users read the policy/terms before consenting.
+  if (pathname?.startsWith("/legal")) return null;
 
   return (
     <div
