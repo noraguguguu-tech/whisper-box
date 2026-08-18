@@ -55,6 +55,7 @@
     "copied": "Copied!",
     "openLink": "Preview writing page",
     "empty": "No letters yet. Share your link and wait for the first one ✨",
+    "emptyCta": "Copy my personal link",
     "unreadBadge": "{{count}} unread",
     "statusUnread": "Unread",
     "statusRead": "Read",
