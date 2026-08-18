@@ -237,6 +237,8 @@ export function InboxView() {
                 </div>
               </section>
 
+              <SharePromoPanel shareUrl={shareUrl} />
+
               {fetched && (
                 <SettingsControls
                   closed={closed}
