@@ -39,7 +39,7 @@ export async function POST(request: NextRequest, { params }: Params) {
     );
   }
 
-  if (!(await allowWrite(request, "followup"))) {
+  if (!(await allowWrite(request, `followup:${receiptId}`))) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
