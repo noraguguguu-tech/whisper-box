@@ -22,14 +22,33 @@ export async function GET(request: NextRequest, { params }: Params) {
   }
 
   const { slug } = await params;
+
+  // Wall pagination. First page (offset 0) also carries inbox prompt/closed so
+  // the initial visit is a single round-trip; "load more" requests pass a
+  // positive offset and get back only the next wall slice.
+  const offsetParam = Number(request.nextUrl.searchParams.get("wallOffset") ?? "0");
+  const offset = Number.isFinite(offsetParam) ? Math.max(0, Math.trunc(offsetParam)) : 0;
+  const PAGE_SIZE = 20;
+
+  if (offset > 0) {
+    const page = await listPublicMessagesBySlug(slug, { limit: PAGE_SIZE, offset });
+    return NextResponse.json({
+      wall: page.rows.map(toPublicEntry),
+      wallHasMore: page.hasMore,
+      wallTotal: page.total,
+    });
+  }
+
   const inbox = await getInboxBySlug(slug);
   if (!inbox) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
-  const publicRows = await listPublicMessagesBySlug(slug);
+  const page = await listPublicMessagesBySlug(slug, { limit: PAGE_SIZE, offset: 0 });
   return NextResponse.json({
     prompt: inbox.prompt,
     closed: inbox.closed,
-    wall: publicRows.map(toPublicEntry),
+    wall: page.rows.map(toPublicEntry),
+    wallHasMore: page.hasMore,
+    wallTotal: page.total,
   });
 }
 
