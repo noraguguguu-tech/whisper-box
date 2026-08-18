@@ -17,6 +17,8 @@ export interface WhisperMessage {
   reply: string | null;
   status: MessageStatus;
   isPublic: boolean;
+  blocked: boolean;
+  reported: boolean;
   receiptId: string;
   createdAt: string; // ISO
   repliedAt: string | null; // ISO
@@ -48,6 +50,7 @@ export interface ReceiptView {
   repliedAt: string | null;
   turns: ConversationTurn[];
   canFollowUp: boolean;
+  closed: boolean;
 }
 
 /** Deterministic aged-paper note tint palette (letter-paper look). */
