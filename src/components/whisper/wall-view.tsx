@@ -84,7 +84,19 @@ export function WallView({ slug }: { slug: string }) {
           <ArrowLeft className="h-3.5 w-3.5" />
           {t("wallPage.backToWrite")}
         </button>
-        <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          {!notFound && loaded && (
+            <button
+              data-el="wall-share"
+              onClick={shareWall}
+              className="flex items-center gap-1 rounded-full border border-primary/20 bg-card/80 px-3 py-1.5 text-xs font-semibold text-primary shadow-sm backdrop-blur-sm gummy"
+            >
+              {copied ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
+              {copied ? t("wallPage.shareCopied") : t("wallPage.shareCta")}
+            </button>
+          )}
+          <LanguageSwitcher />
+        </div>
       </div>
 
       {notFound ? (
