@@ -18,6 +18,31 @@
     "termsLink": "Terms",
     "footerNote": "By using this, you agree to"
   },
+  "takedown": {
+    "title": "Report this public letter",
+    "intro": "If this public letter defames you, exposes your privacy, or harasses you, submit a takedown request here. No login required — we record and act on it.",
+    "reasonLabel": "Reason",
+    "reason": {
+      "defamation": "Defamation",
+      "privacy": "Privacy / doxxing",
+      "harassment": "Harassment",
+      "illegal": "Illegal content",
+      "minor": "Involves a minor",
+      "other": "Other"
+    },
+    "detailsPlaceholder": "Details (optional): how does this letter concern you?",
+    "contactPlaceholder": "Contact (optional, so we can update you)",
+    "submit": "Submit takedown request",
+    "done": "We've received your request and will act on it soon.",
+    "reportPublic": "Report this public letter"
+  },
+  "takedownQueue": {
+    "title": "Takedown requests ({{count}})",
+    "desc": "A third party requested removal of one of your public letters. Review, then resolve: 'Actioned' means you've deleted or unpublished it.",
+    "contact": "Contact",
+    "actioned": "Actioned",
+    "dismiss": "Dismiss"
+  },
   "language": {
     "label": "Language",
     "triggerLabel": "Language: {{language}}",
