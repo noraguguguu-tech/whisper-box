@@ -47,6 +47,8 @@
   "inbox": {
     "signedOutTitle": "你的无名信箱",
     "signedOutDesc": "登录后即可获得专属链接，任何人都能匿名给你写信，你在这里统一查看并匿名回信。",
+    "tabLetters": "来信",
+    "tabSettings": "设置",
     "shareTitle": "我的专属链接",
     "shareHint": "分享出去，任何人都能匿名给你写信",
     "copy": "复制链接",
