@@ -1,6 +1,6 @@
 import { createHash } from "crypto";
 import type { NextRequest } from "next/server";
-import { checkAndRecordRate } from "@/lib/db/queries";
+import { isRateExceeded, recordRateHit } from "@/lib/db/queries";
 
 // Anonymous-write throttling. We never store a raw IP: the IP + action + a
 // server salt are hashed into an opaque bucket key. Best-effort only — behind

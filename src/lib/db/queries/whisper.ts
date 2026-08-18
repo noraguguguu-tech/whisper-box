@@ -346,13 +346,26 @@ export async function checkAndRecordRate(
   windowSeconds: number,
   maxInWindow: number,
 ): Promise<boolean> {
+  if (await isRateExceeded(bucket, windowSeconds, maxInWindow)) return false;
+  await recordRateHit(bucket);
+  return true;
+}
+
+/** Count-only check: true when the bucket is AT or OVER the limit in-window. */
+export async function isRateExceeded(
+  bucket: string,
+  windowSeconds: number,
+  maxInWindow: number,
+): Promise<boolean> {
   const since = new Date(Date.now() - windowSeconds * 1000);
   const recent = await db
     .select({ n: sql<number>`count(*)` })
     .from(rateHits)
     .where(and(eq(rateHits.bucket, bucket), gt(rateHits.createdAt, since)));
-  const count = Number(recent[0]?.n ?? 0);
-  if (count >= maxInWindow) return false;
+  return Number(recent[0]?.n ?? 0) >= maxInWindow;
+}
+
+/** Record a single accepted write for a bucket. */
+export async function recordRateHit(bucket: string): Promise<void> {
   await db.insert(rateHits).values({ id: randId(16), bucket });
-  return true;
 }
