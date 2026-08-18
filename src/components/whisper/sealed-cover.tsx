@@ -97,16 +97,28 @@ export function SealedCover({
       {/* Unopened crease line across the paper */}
       <span className="pointer-events-none absolute inset-x-6 top-1/2 h-px -translate-y-1/2 bg-foreground/10" />
 
-      {/* Wax seal */}
-      <span
+      {/* Wax seal — its shadow pulses gently in sync with the breathing so the
+          seal reads as a warm, living focal point. */}
+      <motion.span
         className="flex h-11 w-11 items-center justify-center rounded-full"
         style={{
           background: "radial-gradient(circle at 35% 30%, #D8543F, #C0392B 60%, #9E2A1E)",
-          boxShadow: "0 4px 10px rgba(158,42,30,0.4), inset 0 2px 3px rgba(255,255,255,0.25)",
         }}
+        animate={
+          reduce
+            ? undefined
+            : {
+                boxShadow: [
+                  "0 4px 10px rgba(158,42,30,0.35), inset 0 2px 3px rgba(255,255,255,0.25)",
+                  "0 6px 16px rgba(158,42,30,0.5), inset 0 2px 3px rgba(255,255,255,0.3)",
+                  "0 4px 10px rgba(158,42,30,0.35), inset 0 2px 3px rgba(255,255,255,0.25)",
+                ],
+              }
+        }
+        transition={reduce ? undefined : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
       >
         <Send className="h-4 w-4 text-[#FBF6EA]" />
-      </span>
+      </motion.span>
       <span className="text-xs font-medium text-foreground/60">{t("inbox.sealedHint")}</span>
 
       {/* Peek: a corner of the letter lifts up from under the seal, revealing
@@ -119,7 +131,7 @@ export function SealedCover({
           initial={{ opacity: 0, y: -6, rotateX: -12 }}
           animate={{ opacity: 1, y: 0, rotateX: 0 }}
           transition={paperSpring}
-          style={{ transformPerspective: 600 }}
+          style={{ transformPerspective: 600, transformOrigin: "top center" }}
         >
           <p className="line-clamp-2 text-[13px] leading-relaxed text-foreground/80">
             {previewLines || body}
