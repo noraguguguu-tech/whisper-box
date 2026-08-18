@@ -3,12 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail, Lock } from "lucide-react";
+import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail, Lock, Flag } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { CrisisCard } from "@/components/whisper/crisis-card";
 import { SealCeremony } from "@/components/whisper/seal-ceremony";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { LegalFooter } from "@/components/whisper/legal-footer";
+import { TakedownDialog } from "@/components/whisper/takedown-dialog";
 import { tintForId } from "@/lib/whisper/types";
 import type { PublicEntry } from "@/lib/whisper/types";
 import { fetchVisitorInbox, sendVisitorMessage } from "@/lib/api";
