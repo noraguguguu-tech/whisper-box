@@ -363,6 +363,38 @@ function SentCard({
       >
         {t("visitor.sendAnother")}
       </button>
+
+      <OpenOwnBoxCta className="mt-5" />
+    </section>
+  );
+}
+
+/**
+ * The core viral loop: convert a passerby who just wrote a letter (peak intent)
+ * into a new owner. Routes to /inbox where they sign in and get their own box.
+ */
+function OpenOwnBoxCta({ className = "" }: { className?: string }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  return (
+    <section
+      data-el="open-own-box"
+      className={`rounded-[26px] border border-primary/20 bg-primary/5 p-5 text-center ${className}`}
+    >
+      <h3 className="font-heading text-base font-bold text-foreground">
+        {t("visitor.ownBoxTitle")}
+      </h3>
+      <p className="mx-auto mt-1.5 max-w-xs text-xs leading-relaxed text-muted-foreground">
+        {t("visitor.ownBoxDesc")}
+      </p>
+      <button
+        data-el="open-own-box-cta"
+        onClick={() => router.push("/inbox")}
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground gummy"
+      >
+        <PenLine className="h-4 w-4" />
+        {t("visitor.ownBoxCta")}
+      </button>
     </section>
   );
 }
