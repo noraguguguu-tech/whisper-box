@@ -52,6 +52,8 @@ export default i18n;
 export const supportedLocales = [
   { code: "en-US" as const, label: "English", nativeLabel: "English" },
   { code: "zh-CN" as const, label: "Chinese", nativeLabel: "中文" },
+  { code: "ja-JP" as const, label: "Japanese", nativeLabel: "日本語" },
+  { code: "ko-KR" as const, label: "Korean", nativeLabel: "한국어" },
 ];
 
 export const changeLocale = async (preference: LocalePreference) => {
