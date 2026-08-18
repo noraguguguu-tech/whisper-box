@@ -11,6 +11,7 @@ import { WhisperHeader } from "@/components/whisper/whisper-header";
 import { NoteCard } from "@/components/whisper/note-card";
 import { SettingsControls, PendingQueue } from "@/components/whisper/inbox-safety";
 import { TakedownQueue } from "@/components/whisper/takedown-queue";
+import { SharePromoPanel } from "@/components/whisper/share-promo-panel";
 import { LegalFooter } from "@/components/whisper/legal-footer";
 import { PromptEditor } from "@/components/whisper/prompt-editor";
 import type { WhisperMessage } from "@/lib/whisper/types";
