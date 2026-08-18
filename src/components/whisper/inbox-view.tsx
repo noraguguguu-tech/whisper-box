@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { auth } from "@eazo/sdk";
 import { useEazo } from "@eazo/sdk/react";
-import { Copy, Check, Link2, Sparkles, ArrowLeft, LogIn } from "lucide-react";
+import { Copy, Check, Link2, Sparkles, ArrowLeft, LogIn, ShieldAlert, Power, CheckCircle2, Trash2 } from "lucide-react";
 import { WhisperHeader } from "@/components/whisper/whisper-header";
 import { NoteCard } from "@/components/whisper/note-card";
 import { PromptEditor } from "@/components/whisper/prompt-editor";
@@ -214,6 +214,14 @@ export function InboxView() {
                 </div>
               </section>
 
+              {fetched && (
+                <SettingsControls
+                  closed={closed}
+                  modMode={modMode}
+                  onToggleClosed={toggleClosed}
+                  onSwitchMode={switchMode}
+                />
+              )}
               {fetched && <PromptEditor initialPrompt={prompt} />}
             </>
           ) : (
@@ -221,7 +229,7 @@ export function InboxView() {
               <div className="flex items-center justify-between px-6 pb-2 pt-6">
                 <h2 className="font-heading text-base font-bold text-foreground">
                   <Sparkles className="mr-1.5 inline h-4 w-4 text-accent" />
-                  {messages.length}
+                  {liveList.length}
                 </h2>
                 {unread > 0 && (
                   <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
@@ -230,11 +238,20 @@ export function InboxView() {
                 )}
               </div>
 
+              {/* Pending / review queue — held out of the main list. */}
+              {pendingList.length > 0 && (
+                <PendingQueue
+                  items={pendingList}
+                  onApprove={approve}
+                  onReject={removeMessage}
+                />
+              )}
+
               {loading ? (
                 <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
                   {t("inbox.loadingBox")}
                 </p>
-              ) : messages.length === 0 ? (
+              ) : liveList.length === 0 ? (
                 <div className="mx-5 rounded-3xl bg-card p-6 text-center gummy">
                   <p className="text-sm text-muted-foreground">{t("inbox.empty")}</p>
                   <button
@@ -248,7 +265,7 @@ export function InboxView() {
                 </div>
               ) : (
                 <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
-                  {messages.map((m) => (
+                  {liveList.map((m) => (
                     <NoteCard
                       key={m.id}
                       message={m}
