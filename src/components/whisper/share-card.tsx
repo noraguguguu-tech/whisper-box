@@ -30,8 +30,10 @@ export function ShareCard({
 }) {
   const { t } = useTranslation();
   const bgRef = useRef<HTMLImageElement | null>(null);
+  const qrRef = useRef<HTMLImageElement | null>(null);
   const [copied, setCopied] = useState(false);
   const [bgReady, setBgReady] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const canShare = typeof navigator !== "undefined" && !!navigator.share;
 
   // Preload the parchment background so canvas renders are instant + complete.
@@ -44,6 +46,36 @@ export function ShareCard({
     };
     img.src = BG_SRC;
   }, []);
+
+  // Encode the letterbox URL into a scannable QR. This is the viral bridge: a
+  // screenshot circulating anywhere stays actionable — a passerby can scan it to
+  // land on the box and open their own, no typing a URL from an image.
+  useEffect(() => {
+    if (!shareUrl) {
+      setQrDataUrl("");
+      return;
+    }
+    let alive = true;
+    QRCode.toDataURL(shareUrl, {
+      margin: 1,
+      width: 220,
+      color: { dark: "#243B6Bff", light: "#00000000" },
+      errorCorrectionLevel: "M",
+    })
+      .then((url) => {
+        if (!alive) return;
+        setQrDataUrl(url);
+        const img = new Image();
+        img.onload = () => {
+          qrRef.current = img;
+        };
+        img.src = url;
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [shareUrl]);
 
   function handFamily(): string {
     if (typeof window === "undefined") return "cursive";
