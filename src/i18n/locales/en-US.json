@@ -41,6 +41,7 @@
     "contactPlaceholder": "Contact (optional, so we can update you)",
     "submit": "Submit takedown request",
     "done": "We've received your request and will act on it soon.",
+    "failed": "Couldn't submit — please check your connection and try again.",
     "reportPublic": "Report this public letter"
   },
   "takedownQueue": {
