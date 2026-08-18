@@ -120,6 +120,8 @@ export interface VisitorInboxData {
   prompt: string;
   closed: boolean;
   wall: PublicEntry[];
+  wallHasMore: boolean;
+  wallTotal: number;
 }
 
 export async function fetchVisitorInbox(slug: string): Promise<VisitorInboxData | null> {
@@ -127,6 +129,20 @@ export async function fetchVisitorInbox(slug: string): Promise<VisitorInboxData 
     const res = await request(`/api/u/${slug}`);
     if (!res.ok) return null;
     return (await res.json()) as VisitorInboxData;
+  } catch {
+    return null;
+  }
+}
+
+/** One more page of a slug's public wall, starting at `offset`. */
+export async function fetchPublicWall(
+  slug: string,
+  offset: number,
+): Promise<{ wall: PublicEntry[]; wallHasMore: boolean; wallTotal: number } | null> {
+  try {
+    const res = await request(`/api/u/${slug}?wallOffset=${offset}`);
+    if (!res.ok) return null;
+    return (await res.json()) as { wall: PublicEntry[]; wallHasMore: boolean; wallTotal: number };
   } catch {
     return null;
   }
