@@ -359,14 +359,16 @@ function SentCard({
         <div className="mb-3 truncate rounded-full bg-background px-4 py-2.5 font-mono text-xs text-foreground">
           {receiptUrl}
         </div>
-        <button
+        <LetterButton
           data-el="copy-receipt"
           onClick={onCopy}
-          className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground gummy"
+          variant="primary"
+          size="lg"
+          fullWidth
         >
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           {copied ? t("inbox.copied") : t("visitor.copyReceipt")}
-        </button>
+        </LetterButton>
         <p
           data-el="receipt-warning"
           className="mt-3 flex items-start gap-1.5 text-[11px] leading-relaxed text-muted-foreground"
@@ -376,12 +378,15 @@ function SentCard({
         </p>
       </div>
 
-      <button
+      <LetterButton
         onClick={onAgain}
-        className="mt-3 w-full rounded-full border border-white/60 bg-white/40 py-2.5 text-sm font-medium text-foreground/70"
+        variant="secondary"
+        size="md"
+        fullWidth
+        className="mt-3 font-medium"
       >
         {t("visitor.sendAnother")}
-      </button>
+      </LetterButton>
 
       <OpenOwnBoxCta className="mt-5" />
     </section>
