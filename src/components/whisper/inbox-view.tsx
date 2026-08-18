@@ -291,7 +291,7 @@ export function InboxView() {
               <div className="flex items-center justify-between px-6 pb-2 pt-6">
                 <h2 className="font-heading text-base font-bold text-foreground">
                   <Sparkles className="mr-1.5 inline h-4 w-4 text-accent" />
-                  {liveList.length}
+                  {filtering ? `${visibleList.length}/${liveList.length}` : liveList.length}
                 </h2>
                 {unread > 0 && (
                   <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
@@ -299,6 +299,17 @@ export function InboxView() {
                   </span>
                 )}
               </div>
+
+              {/* Filter + search — only once there are letters to narrow. */}
+              {!loading && liveList.length > 0 && (
+                <InboxFilterBar
+                  filter={filter}
+                  onFilter={setFilter}
+                  query={query}
+                  onQuery={setQuery}
+                  counts={counts}
+                />
+              )}
 
               {/* Pending / review queue — held out of the main list. */}
               {pendingList.length > 0 && (
@@ -332,9 +343,25 @@ export function InboxView() {
                     {t("inbox.emptyCta")}
                   </LetterButton>
                 </div>
+              ) : visibleList.length === 0 ? (
+                <div data-el="inbox-no-match" className="mx-5 rounded-3xl bg-card p-6 text-center gummy">
+                  <p className="text-sm text-muted-foreground">{t("inbox.noMatch")}</p>
+                  <LetterButton
+                    data-el="clear-filter-cta"
+                    onClick={() => {
+                      setFilter("all");
+                      setQuery("");
+                    }}
+                    variant="secondary"
+                    size="md"
+                    className="mt-4 px-4"
+                  >
+                    {t("inbox.clearFilter")}
+                  </LetterButton>
+                </div>
               ) : (
                 <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
-                  {liveList.map((m) => (
+                  {visibleList.map((m) => (
                     <NoteCard
                       key={m.id}
                       message={m}
