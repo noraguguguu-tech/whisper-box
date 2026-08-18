@@ -79,12 +79,20 @@ export function SealCeremony({
               animate={{ scale: [0, 1.4, 1.2], opacity: [0, 0.9, 0.5] }}
               transition={{ delay: 0.16, duration: 0.4, ease: "easeOut" }}
             />
-            {/* Seal disc */}
+            {/* Seal disc: slams down from above. The spring is deliberately
+                under-damped (damping 12) so a two-keyframe -80 -> 0 naturally
+                overshoots past the paper and rebounds — the "press in, spring
+                back" of a real stamp — without illegal 3-keyframe spring. */}
             <motion.div
               initial={{ scale: 1.6, rotate: -12, y: -80, opacity: 0 }}
               animate={{ scale: 1, rotate: 0, y: 0, opacity: 1 }}
-              transition={{ ...sealSpring, delay: 0.16 }}
-              onAnimationStart={() => window.setTimeout(() => hapticTap(12), 160)}
+              transition={{ ...sealSpring, damping: 12, delay: 0.16 }}
+              onAnimationStart={() => {
+                // Two-stage haptics: a firm tap as it lands, then a lighter
+                // rebound tick, matching the "thud + settle" of a stamp.
+                window.setTimeout(() => hapticTap(12), 160);
+                window.setTimeout(() => hapticTap(6), 300);
+              }}
             >
               <SealDisc label={t("cover.stamp")} />
             </motion.div>
