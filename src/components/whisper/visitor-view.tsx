@@ -287,6 +287,15 @@ export function VisitorView({ slug }: { slug: string }) {
         </section>
       )}
       {showCrisis && <CrisisCard onClose={() => setShowCrisis(false)} />}
+      {sealing && (
+        <SealCeremony
+          previewText={sealing.preview}
+          onDone={() => {
+            setReceiptId(sealing.receiptId);
+            setSealing(null);
+          }}
+        />
+      )}
     </main>
   );
 }
