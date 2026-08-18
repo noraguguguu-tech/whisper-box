@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { LINE_STAGGER, paperSpring, toRevealLines } from "@/lib/whisper/motion";
 import { cn } from "@/utils/utils";
 
@@ -29,26 +29,28 @@ export function LineReveal({
     return <p className={cn("whitespace-pre-line", className)}>{text}</p>;
   }
 
-  const container: Variants = {
-    hidden: {},
-    show: { transition: { staggerChildren: LINE_STAGGER } },
-  };
-  const line: Variants = {
-    hidden: { opacity: 0, y: 8 },
-    show: { opacity: 1, y: 0, transition: paperSpring },
-  };
+  // Cap the cascade: lines 1..8 stagger in sequence; line 9 onward all share
+  // the 8th slot's delay so a long letter still finishes quickly instead of
+  // dribbling out line-by-line. 8 * 0.06s = ~0.48s max lead, then springs.
+  const MAX_STAGGER_STEPS = 8;
 
   return (
     <motion.span
       key={revealKey}
       data-el="line-reveal"
       className={cn("block", className)}
-      variants={container}
-      initial="hidden"
-      animate="show"
     >
       {lines.map((ln, i) => (
-        <motion.span key={`${revealKey}-${i}`} variants={line} className="block">
+        <motion.span
+          key={`${revealKey}-${i}`}
+          className="block"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            ...paperSpring,
+            delay: Math.min(i, MAX_STAGGER_STEPS) * LINE_STAGGER,
+          }}
+        >
           {ln}
         </motion.span>
       ))}
