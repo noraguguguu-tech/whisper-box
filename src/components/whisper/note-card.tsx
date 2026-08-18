@@ -96,7 +96,7 @@ export function NoteCard({
         </div>
 
         {sealed ? (
-          <SealedCover body={message.body} sealLabel={t("cover.stamp")} onOpen={onToggle} />
+          <SealedCover body={message.body} onOpen={onToggle} />
         ) : (
           <button
             onClick={onToggle}

@@ -20,11 +20,9 @@ const LONG_PRESS_MS = 450;
  */
 export function SealedCover({
   body,
-  sealLabel,
   onOpen,
 }: {
   body: string;
-  sealLabel: string;
   onOpen: () => void;
 }) {
   const { t } = useTranslation();
