@@ -52,12 +52,38 @@ export function InboxView() {
   const [copied, setCopied] = useState(false);
   const [tab, setTab] = useState<"letters" | "settings">("letters");
   const [takedowns, setTakedowns] = useState<OwnerTakedown[]>([]);
+  const [filter, setFilter] = useState<InboxFilter>("all");
+  const [query, setQuery] = useState("");
 
   const shareUrl = useCallbackShareUrl(slug);
   // Pending letters are held out of the normal list and the unread count.
   const pendingList = messages.filter((m) => m.pending);
   const liveList = messages.filter((m) => !m.pending);
   const unread = liveList.filter((m) => m.status === "unread").length;
+
+  // Per-filter counts (over the live list, ignoring the text query) so each
+  // filter chip advertises how many letters it reveals.
+  const counts = {
+    all: liveList.length,
+    unread: liveList.filter((m) => m.status === "unread").length,
+    replied: liveList.filter((m) => m.status === "replied").length,
+    public: liveList.filter((m) => m.isPublic).length,
+  };
+
+  // Text query matches the visitor's letter, the owner's reply, and every
+  // follow-up turn — case-insensitive, whitespace-trimmed.
+  const q = query.trim().toLowerCase();
+  const visibleList = liveList.filter((m) => {
+    if (filter === "unread" && m.status !== "unread") return false;
+    if (filter === "replied" && m.status !== "replied") return false;
+    if (filter === "public" && !m.isPublic) return false;
+    if (!q) return true;
+    const hay = [m.body, m.reply ?? "", ...m.turns.map((tn) => tn.body)]
+      .join("\n")
+      .toLowerCase();
+    return hay.includes(q);
+  });
+  const filtering = filter !== "all" || q.length > 0;
   // Loading while signed in but the first fetch hasn't resolved yet.
   const loading = !!user && !authLoading && !fetched;
 
