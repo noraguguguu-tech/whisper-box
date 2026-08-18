@@ -41,6 +41,7 @@ export function InboxView() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [tab, setTab] = useState<"letters" | "settings">("letters");
+  const [takedowns, setTakedowns] = useState<OwnerTakedown[]>([]);
 
   const shareUrl = useCallbackShareUrl(slug);
   // Pending letters are held out of the normal list and the unread count.
