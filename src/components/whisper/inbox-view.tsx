@@ -4,6 +4,8 @@ import { useCallbackShareUrl } from "./use-share-url";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import { motion, useReducedMotion } from "framer-motion";
+import { hapticTap } from "@/lib/whisper/motion";
 import { auth } from "@eazo/sdk";
 import { useEazo } from "@eazo/sdk/react";
 import { Copy, Check, Link2, Sparkles, ArrowLeft, LogIn } from "lucide-react";
