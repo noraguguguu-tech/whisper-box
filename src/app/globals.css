@@ -164,26 +164,57 @@ body {
 .gummy-pop {
   box-shadow: var(--gummy-shadow-md);
 }
-/* gentle floating drift for scattered notes on the wall */
-@keyframes note-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+/* Gentle floating drift for scattered notes on the wall.
+   Motion design notes:
+   - 2D elliptical path (x + y + tiny rotate), NOT a pure vertical "elevator" bob.
+   - Four coprime periods (5.5 / 6.3 / 7.1 / 8s) so no two notes share a cycle;
+     this breaks the synchronized "collective pulse" that causes mild dizziness.
+   - Displacement capped at ~8px and rotation at <=0.8deg — beyond that it reads
+     as "shaking", not "floating".
+   - transform-only (GPU compositing) so low-end phones stay smooth. */
+@keyframes note-float-a {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(2px, -6px) rotate(0.5deg); }
+  66%  { transform: translate(-2px, -3px) rotate(-0.4deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
-.note-drift {
-  animation: note-float 5s var(--gummy-ease) infinite;
+@keyframes note-float-b {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(-3px, -5px) rotate(-0.6deg); }
+  66%  { transform: translate(2px, -2px) rotate(0.4deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
-/* slower, larger drift for the hero anchor note */
+@keyframes note-float-c {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(3px, -7px) rotate(0.6deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes note-float-d {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  40%  { transform: translate(-2px, -4px) rotate(0.5deg); }
+  75%  { transform: translate(3px, -6px) rotate(-0.5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+/* Coprime periods keep the field desynchronized. */
+.note-drift-0 { animation: note-float-a 5.5s var(--gummy-ease) infinite; }
+.note-drift-1 { animation: note-float-b 6.3s var(--gummy-ease) infinite; }
+.note-drift-2 { animation: note-float-c 7.1s var(--gummy-ease) infinite; }
+.note-drift-3 { animation: note-float-d 8s   var(--gummy-ease) infinite; }
+/* Hero anchor: slower + slightly larger, the calm centre of the composition. */
 @keyframes note-float-hero {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-9px); }
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(2px, -9px) rotate(0.4deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 .note-drift-hero {
-  animation: note-float-hero 7s var(--gummy-ease) infinite;
+  animation: note-float-hero 9s var(--gummy-ease) infinite;
 }
-/* faraway note: pushed back with blur + fade to build depth */
+/* Faraway note: pushed back with blur + fade for depth, and drifts slower +
+   weaker so peripheral motion never competes with the foreground. */
 .note-far {
   filter: blur(1.4px);
   opacity: 0.55;
+  animation-duration: 11s;
 }
 
 /* ambient warm paper glow behind the scatter board */
@@ -211,7 +242,10 @@ body {
    turned off entirely; framer-motion reads the same signal via useReducedMotion
    and skips its entrance/seal animations, showing final state instantly. */
 @media (prefers-reduced-motion: reduce) {
-  .note-drift,
+  .note-drift-0,
+  .note-drift-1,
+  .note-drift-2,
+  .note-drift-3,
   .note-drift-hero {
     animation: none !important;
   }
