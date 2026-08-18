@@ -2,6 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import { ShieldAlert, Check, X } from "lucide-react";
+import { LetterButton } from "@/components/whisper/letter-button";
 import type { OwnerTakedown } from "@/lib/api";
 
 /**
@@ -49,22 +50,26 @@ export function TakedownQueue({
               </p>
             )}
             <div className="mt-2 flex gap-2">
-              <button
+              <LetterButton
                 data-el="takedown-action"
                 onClick={() => onResolve(it.id, "actioned")}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-accent py-2 text-xs font-semibold text-accent-foreground gummy"
+                variant="accent-solid"
+                size="sm"
+                className="flex-1"
               >
                 <Check className="h-3.5 w-3.5" />
                 {t("takedownQueue.actioned")}
-              </button>
-              <button
+              </LetterButton>
+              <LetterButton
                 data-el="takedown-dismiss"
                 onClick={() => onResolve(it.id, "dismissed")}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-white/60 bg-white/40 py-2 text-xs font-semibold text-foreground/70"
+                variant="secondary"
+                size="sm"
+                className="flex-1"
               >
                 <X className="h-3.5 w-3.5" />
                 {t("takedownQueue.dismiss")}
-              </button>
+              </LetterButton>
             </div>
           </div>
         ))}
