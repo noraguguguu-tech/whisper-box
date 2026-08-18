@@ -30,12 +30,30 @@ export async function GET(request: NextRequest) {
   });
 }
 
-/** PATCH /api/inbox — update the owner's guiding prompt. */
+/** PATCH /api/inbox — update prompt, toggle closed, or switch review mode. */
 export async function PATCH(request: NextRequest) {
   const auth = requireAuth(request);
   if (!auth.ok) return auth.response;
 
-  const body = (await request.json().catch(() => null)) as { prompt?: unknown } | null;
+  const body = (await request.json().catch(() => null)) as
+    | { prompt?: unknown; closed?: unknown; moderationMode?: unknown }
+    | null;
+
+  // Toggle emergency close.
+  if (typeof body?.closed === "boolean") {
+    const updated = await setInboxClosed(auth.user.id, body.closed);
+    if (!updated) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    return NextResponse.json({ inbox: inboxPublic(updated) });
+  }
+
+  // Switch review mode.
+  if (body?.moderationMode === "suspicious" || body?.moderationMode === "all") {
+    const updated = await setModerationMode(auth.user.id, body.moderationMode);
+    if (!updated) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    return NextResponse.json({ inbox: inboxPublic(updated) });
+  }
+
+  // Otherwise update the guiding prompt.
   const prompt = typeof body?.prompt === "string" ? body.prompt.slice(0, 200) : "";
   const updated = await updateInboxPrompt(auth.user.id, prompt);
   if (!updated) return NextResponse.json({ error: "not_found" }, { status: 404 });
