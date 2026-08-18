@@ -211,16 +211,17 @@ async function insertTurn(
 export async function addVisitorTurn(
   receiptId: string,
   body: string,
-): Promise<MessageRow | undefined> {
+): Promise<{ status: "ok"; row: MessageRow } | { status: "blocked" | "not_allowed" }> {
   const msg = await getMessageByReceipt(receiptId);
-  if (!msg || msg.status !== "replied") return undefined;
+  if (!msg || msg.status !== "replied") return { status: "not_allowed" };
+  if (msg.blocked) return { status: "blocked" };
   await insertTurn(msg.id, "visitor", body);
   const rows = await db
     .update(messages)
     .set({ status: "unread" })
     .where(eq(messages.id, msg.id))
     .returning();
-  return rows[0];
+  return { status: "ok", row: rows[0] };
 }
 
 /**
@@ -241,4 +242,67 @@ export async function addOwnerTurn(
     .where(eq(messages.id, messageId))
     .returning();
   return rows[0];
+}
+
+// ---- owner moderation: delete, block/mute ----
+
+/** Owner deletes a letter and its whole thread. Returns true if deleted. */
+export async function deleteMessage(
+  ownerUserId: string,
+  messageId: string,
+): Promise<boolean> {
+  const owned = await ownsMessage(ownerUserId, messageId);
+  if (!owned) return false;
+  await db.delete(turns).where(eq(turns.messageId, messageId));
+  await db.delete(messages).where(eq(messages.id, messageId));
+  return true;
+}
+
+/** Owner mutes/unmutes a thread — muted threads reject visitor follow-ups. */
+export async function setMessageBlocked(
+  ownerUserId: string,
+  messageId: string,
+  blocked: boolean,
+): Promise<MessageRow | undefined> {
+  const owned = await ownsMessage(ownerUserId, messageId);
+  if (!owned) return undefined;
+  const rows = await db
+    .update(messages)
+    .set({ blocked })
+    .where(eq(messages.id, messageId))
+    .returning();
+  return rows[0];
+}
+
+/** Visitor flags a thread as harmful (no auth; by receiptId). */
+export async function reportMessageByReceipt(receiptId: string): Promise<boolean> {
+  const rows = await db
+    .update(messages)
+    .set({ reported: true })
+    .where(eq(messages.receiptId, receiptId))
+    .returning();
+  return rows.length > 0;
+}
+
+// ---- rate limiting (durable, IP-hash bucket) ----
+
+/**
+ * Record one accepted write and return whether the caller is now over the
+ * limit within the window. `bucket` is an opaque hashed key (never a raw IP).
+ * Returns true when the write should be ALLOWED, false when throttled.
+ */
+export async function checkAndRecordRate(
+  bucket: string,
+  windowSeconds: number,
+  maxInWindow: number,
+): Promise<boolean> {
+  const since = new Date(Date.now() - windowSeconds * 1000);
+  const recent = await db
+    .select({ n: sql<number>`count(*)` })
+    .from(rateHits)
+    .where(and(eq(rateHits.bucket, bucket), gt(rateHits.createdAt, since)));
+  const count = Number(recent[0]?.n ?? 0);
+  if (count >= maxInWindow) return false;
+  await db.insert(rateHits).values({ id: randId(16), bucket });
+  return true;
 }
