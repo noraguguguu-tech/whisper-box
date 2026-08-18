@@ -99,21 +99,43 @@ export async function listMessagesForOwner(ownerUserId: string): Promise<Message
     .orderBy(desc(messages.createdAt));
 }
 
-/** Public replied conversations for a slug's wall (newest replied first). */
-export async function listPublicMessagesBySlug(slug: string): Promise<MessageRow[]> {
+/**
+ * Public replied conversations for a slug's wall (newest replied first),
+ * paginated. Fetches one extra row to compute `hasMore` without a second query,
+ * and returns the total public count so the UI can show an accurate tally.
+ */
+export async function listPublicMessagesBySlug(
+  slug: string,
+  opts: { limit?: number; offset?: number } = {},
+): Promise<{ rows: MessageRow[]; hasMore: boolean; total: number }> {
   const inbox = await getInboxBySlug(slug);
-  if (!inbox) return [];
-  return db
-    .select()
-    .from(messages)
-    .where(
-      and(
-        eq(messages.inboxId, inbox.id),
-        eq(messages.isPublic, true),
-        eq(messages.pending, false),
-      ),
-    )
-    .orderBy(desc(messages.repliedAt));
+  if (!inbox) return { rows: [], hasMore: false, total: 0 };
+
+  const limit = Math.min(Math.max(opts.limit ?? 20, 1), 50);
+  const offset = Math.max(opts.offset ?? 0, 0);
+  const publicWhere = and(
+    eq(messages.inboxId, inbox.id),
+    eq(messages.isPublic, true),
+    eq(messages.pending, false),
+  );
+
+  const [rows, countRes] = await Promise.all([
+    db
+      .select()
+      .from(messages)
+      .where(publicWhere)
+      .orderBy(desc(messages.repliedAt))
+      .limit(limit + 1)
+      .offset(offset),
+    db.select({ n: sql<number>`count(*)::int` }).from(messages).where(publicWhere),
+  ]);
+
+  const hasMore = rows.length > limit;
+  return {
+    rows: hasMore ? rows.slice(0, limit) : rows,
+    hasMore,
+    total: countRes[0]?.n ?? 0,
+  };
 }
 
 /** Visitor creates an anonymous letter. Returns the receiptId to keep. */
