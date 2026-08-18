@@ -55,6 +55,7 @@
     "copied": "已复制！",
     "openLink": "预览写信页",
     "empty": "还没有来信。把专属链接分享出去，等待第一封信吧 ✨",
+    "emptyCta": "去复制我的专属链接",
     "unreadBadge": "{{count}} 封未读",
     "statusUnread": "未读",
     "statusRead": "已读",
