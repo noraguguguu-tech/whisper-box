@@ -11,6 +11,7 @@ import { useEazo } from "@eazo/sdk/react";
 import { Copy, Check, Link2, Sparkles, ArrowLeft, LogIn } from "lucide-react";
 import { WhisperHeader } from "@/components/whisper/whisper-header";
 import { LetterButton } from "@/components/whisper/letter-button";
+import { PromisePanel } from "@/components/whisper/promise-panel";
 import { NoteCard } from "@/components/whisper/note-card";
 import { SettingsControls, PendingQueue } from "@/components/whisper/inbox-safety";
 import { TakedownQueue } from "@/components/whisper/takedown-queue";
@@ -254,6 +255,9 @@ export function InboxView() {
                 />
               )}
               {fetched && <PromptEditor initialPrompt={prompt} />}
+              <div className="px-5 pt-3">
+                <PromisePanel variant="panel" />
+              </div>
             </>
           ) : (
             <>
