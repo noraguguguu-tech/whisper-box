@@ -493,3 +493,43 @@ export async function getPublicMessageById(id: string): Promise<MessageRow | nul
     .limit(1);
   return rows[0] ?? null;
 }
+
+/** Open takedowns concerning any of the owner's messages (newest first). */
+export async function listOpenTakedownsForOwner(
+  ownerUserId: string,
+): Promise<TakedownRequestRow[]> {
+  const inbox = await getOrCreateInbox(ownerUserId);
+  const owned = await db
+    .select({ id: messages.id })
+    .from(messages)
+    .where(eq(messages.inboxId, inbox.id));
+  return listOpenTakedownsForMessages(owned.map((m) => m.id));
+}
+
+/**
+ * Resolve a takedown only if it targets one of the owner's messages. Returns
+ * the target message id when resolved, or null when not found / not owned.
+ */
+export async function resolveTakedownForOwner(
+  ownerUserId: string,
+  takedownId: string,
+  status: "actioned" | "dismissed",
+): Promise<string | null> {
+  const rows = await db
+    .select()
+    .from(takedownRequests)
+    .where(and(eq(takedownRequests.id, takedownId), eq(takedownRequests.status, "open")))
+    .limit(1);
+  const td = rows[0];
+  if (!td) return null;
+  // Ownership: the referenced message must belong to this owner's inbox.
+  const inbox = await getOrCreateInbox(ownerUserId);
+  const owned = await db
+    .select({ id: messages.id })
+    .from(messages)
+    .where(and(eq(messages.id, td.targetRef), eq(messages.inboxId, inbox.id)))
+    .limit(1);
+  if (!owned[0]) return null;
+  const ok = await resolveTakedown(takedownId, status);
+  return ok ? td.targetRef : null;
+}
