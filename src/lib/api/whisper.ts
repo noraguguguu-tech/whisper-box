@@ -98,10 +98,12 @@ export async function fetchVisitorInbox(slug: string): Promise<VisitorInboxData 
   }
 }
 
+export type SendFailReason = "blocked_content" | "rate_limited" | "not_allowed" | "error";
+
 /** Discriminated outcome so the UI can show a precise, friendly message. */
 export type SendOutcome<T> =
   | { ok: true; data: T }
-  | { ok: false; reason: "blocked_content" | "rate_limited" | "not_allowed" | "error"; category?: string };
+  | { ok: false; reason: SendFailReason; category?: string };
 
 async function readError(res: Response): Promise<{ error?: string; category?: string }> {
   try {
@@ -111,7 +113,7 @@ async function readError(res: Response): Promise<{ error?: string; category?: st
   }
 }
 
-function mapReason(status: number, error?: string): SendOutcome<never>["reason"] {
+function mapReason(status: number, error?: string): SendFailReason {
   if (status === 422 || error === "blocked_content") return "blocked_content";
   if (status === 429 || error === "rate_limited") return "rate_limited";
   if (status === 403 || status === 400) return "not_allowed";
