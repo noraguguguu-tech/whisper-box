@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import {
   addOwnerTurn,
+  approveMessage,
   deleteMessage,
   listTurns,
   markMessageRead,
@@ -67,6 +68,12 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   if (action === "block") {
     const blocked = body?.blocked === true;
     const row = await setMessageBlocked(auth.user.id, id, blocked);
+    if (!row) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    return respond(row);
+  }
+
+  if (action === "approve") {
+    const row = await approveMessage(auth.user.id, id);
     if (!row) return NextResponse.json({ error: "not_found" }, { status: 404 });
     return respond(row);
   }
