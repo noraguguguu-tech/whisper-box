@@ -71,7 +71,7 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
   // "insertBefore" DOM crash when a browser translation extension has mutated
   // text nodes in place). Every slot is always a keyed <div>.
   type Row =
-    | { kind: "bubble"; key: string; side: "you" | "them"; label: string; body: string; time?: string }
+    | { kind: "bubble"; key: string; side: "you" | "them"; label: string; body: string; time?: string; reveal?: boolean }
     | { kind: "waiting"; key: string };
 
   const rows: Row[] = receipt
@@ -91,6 +91,7 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
               side: "them" as const,
               label: t("receipt.them"),
               body: receipt.reply,
+              reveal: true,
               time: receipt.repliedAt ? fmt(receipt.repliedAt) : undefined,
             }
           : { kind: "waiting" as const, key: "waiting" },
@@ -100,6 +101,7 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
           side: (turn.author === "owner" ? "them" : "you") as "you" | "them",
           label: turn.author === "owner" ? t("receipt.them") : t("receipt.you"),
           body: turn.body,
+          reveal: turn.author === "owner",
           time: fmt(turn.createdAt),
         })),
       ]
