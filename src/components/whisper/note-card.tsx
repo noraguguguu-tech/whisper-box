@@ -62,11 +62,7 @@ export function NoteCard({
 
   return (
     <GummyNote tint={tint} rotate={rotate} popped={expanded} el="note-item">
-      <button
-        onClick={onToggle}
-        data-el="note-toggle"
-        className="flex w-full flex-col gap-2 text-left"
-      >
+      <div className="flex w-full flex-col gap-2 text-left">
         <div className="flex items-center gap-2">
           <span
             className={cn(
@@ -97,8 +93,19 @@ export function NoteCard({
             </span>
           )}
         </div>
-        <p className="text-[15px] leading-relaxed text-foreground">{message.body}</p>
-      </button>
+
+        {sealed ? (
+          <SealedCover body={message.body} sealLabel={t("cover.stamp")} onOpen={onToggle} />
+        ) : (
+          <button
+            onClick={onToggle}
+            data-el="note-toggle"
+            className="w-full text-left"
+          >
+            <p className="text-[15px] leading-relaxed text-foreground">{message.body}</p>
+          </button>
+        )}
+      </div>
 
       {expanded && (
         <div className="mt-3 border-t border-white/50 pt-3">
