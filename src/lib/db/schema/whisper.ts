@@ -12,6 +12,10 @@ export const inboxes = pgTable(
     ownerUserId: varchar("owner_user_id", { length: 128 }).notNull(),
     slug: varchar("slug", { length: 32 }).notNull().unique(),
     prompt: text("prompt").notNull().default(""),
+    // Emergency valve — when true, the inbox refuses all new letters.
+    closed: boolean("closed").notNull().default(false),
+    // "suspicious" = only flagged letters go to review; "all" = every new letter.
+    moderationMode: varchar("moderation_mode", { length: 16 }).notNull().default("suspicious"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
@@ -40,6 +44,9 @@ export const messages = pgTable(
     blocked: boolean("blocked").notNull().default(false),
     // Visitor-flagged as harmful/harassment; surfaced to the owner.
     reported: boolean("reported").notNull().default(false),
+    // Held for owner review — not in the unread count, not on the public wall,
+    // until the owner approves it.
+    pending: boolean("pending").notNull().default(false),
     receiptId: varchar("receipt_id", { length: 40 }).notNull().unique(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     repliedAt: timestamp("replied_at"),
