@@ -57,8 +57,15 @@ export function VisitorView({ slug }: { slug: string }) {
   }, [slug]);
 
   // Remembered letters live only in this browser; read them after mount.
+  // Deferred via microtask so setState isn't synchronous in the effect body.
   useEffect(() => {
-    setMine(getRememberedLetters(slug));
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (!cancelled) setMine(getRememberedLetters(slug));
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   const receiptUrl = useMemo(

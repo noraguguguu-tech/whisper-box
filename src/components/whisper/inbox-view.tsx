@@ -49,14 +49,22 @@ export function InboxView() {
   // Loading while signed in but the first fetch hasn't resolved yet.
   const loading = !!user && !authLoading && !fetched;
 
-  // Restore the last-selected tab (persisted on this device).
+  // Restore the last-selected tab (persisted on this device). Deferred out of
+  // the synchronous effect body so it doesn't trigger a cascading render.
   useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem("wb.inboxTab");
-      if (saved === "settings" || saved === "letters") setTab(saved);
-    } catch {
-      /* storage disabled — keep default */
-    }
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      try {
+        const saved = window.localStorage.getItem("wb.inboxTab");
+        if (saved === "settings" || saved === "letters") setTab(saved);
+      } catch {
+        /* storage disabled — keep default */
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   function selectTab(next: "letters" | "settings") {
