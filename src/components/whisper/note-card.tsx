@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Globe, Lock, Send, Share2, Trash2, Ban, Flag } from "lucide-react";
+import { Globe, Lock, Send, Share2, Trash2, Ban } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
+import { LetterButton } from "@/components/whisper/letter-button";
+import { StatusPill } from "@/components/whisper/status-pill";
 import { ShareCard } from "@/components/whisper/share-card";
 import { LineReveal } from "@/components/whisper/line-reveal";
 import { SealedCover } from "@/components/whisper/sealed-cover";
