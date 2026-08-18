@@ -10,6 +10,7 @@ import { auth } from "@eazo/sdk";
 import { useEazo } from "@eazo/sdk/react";
 import { Copy, Check, Link2, Sparkles, ArrowLeft, LogIn } from "lucide-react";
 import { WhisperHeader } from "@/components/whisper/whisper-header";
+import { LetterButton } from "@/components/whisper/letter-button";
 import { NoteCard } from "@/components/whisper/note-card";
 import { SettingsControls, PendingQueue } from "@/components/whisper/inbox-safety";
 import { TakedownQueue } from "@/components/whisper/takedown-queue";
@@ -227,11 +228,13 @@ export function InboxView() {
                     <div className="flex-1 truncate rounded-full bg-background px-4 py-2.5 font-mono text-sm text-foreground">
                       {slug ? `/u/${slug}` : "…"}
                     </div>
-                    <button
+                    <LetterButton
                       data-el="copy-link"
                       disabled={!slug}
                       onClick={copyLink}
-                      className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
+                      variant="primary"
+                      size="md"
+                      className="shrink-0 px-4"
                     >
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       {copied ? t("inbox.copied") : t("inbox.copy")}
@@ -287,14 +290,16 @@ export function InboxView() {
               ) : liveList.length === 0 ? (
                 <div className="mx-5 rounded-3xl bg-card p-6 text-center gummy">
                   <p className="text-sm text-muted-foreground">{t("inbox.empty")}</p>
-                  <button
+                  <LetterButton
                     data-el="empty-copy-cta"
                     onClick={() => selectTab("settings")}
-                    className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground gummy"
+                    variant="primary"
+                    size="md"
+                    className="mt-4 px-4"
                   >
                     <Link2 className="h-4 w-4" />
                     {t("inbox.emptyCta")}
-                  </button>
+                  </LetterButton>
                 </div>
               ) : (
                 <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
@@ -408,14 +413,16 @@ function SignedOut({ onLogin }: { onLogin: () => void }) {
         <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
           {t("inbox.signedOutDesc")}
         </p>
-        <button
+        <LetterButton
           data-el="inbox-login"
           onClick={onLogin}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground gummy"
+          variant="primary"
+          size="lg"
+          fullWidth
         >
           <LogIn className="h-4 w-4" />
           {t("common.signIn")}
-        </button>
+        </LetterButton>
       </div>
     </section>
   );
