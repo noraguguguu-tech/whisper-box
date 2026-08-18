@@ -72,10 +72,14 @@
       "xhs": "샤오훙수",
       "weibo": "Weibo",
       "x": "X",
+      "line": "LINE",
+      "kakao": "KakaoTalk",
+      "facebook": "Facebook",
       "system": "더보기…"
     },
     "copiedGo": "복사됨——{{platform}}에 붙여넣으세요",
-    "xhsHint": "복사됨! 샤오훙수를 엽니다——작성란을 길게 눌러 붙여넣으세요."
+    "xhsHint": "복사됨! 샤오훙수를 엽니다——작성란을 길게 눌러 붙여넣으세요.",
+    "pasteHint": "복사됨! {{platform}}을(를) 엽니다——입력란을 길게 눌러 붙여넣으세요."
   },
   "language": {
     "label": "언어",
