@@ -386,8 +386,8 @@ function UnreadBadge({ count, active, reduce }: { count: number; active: boolean
     <motion.span
       key={count}
       initial={reduce ? false : { scale: 0 }}
-      animate={reduce ? { scale: 1 } : { scale: [0, 1.3, 1] }}
-      transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 18 }}
+      animate={{ scale: 1 }}
+      transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 14 }}
       className={`relative z-10 rounded-full px-1.5 text-[11px] font-semibold ${
         active ? "bg-primary-foreground/20" : "bg-accent/15 text-accent"
       }`}
