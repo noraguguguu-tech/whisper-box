@@ -108,6 +108,8 @@ export function NoteCard({
                   mine={turn.author === "owner"}
                   label={turn.author === "owner" ? t("inbox.yourReply") : t("inbox.theirFollowup")}
                   body={turn.body}
+                  reveal={turn.author === "visitor"}
+                  revealKey={turn.id}
                 />
               ))}
             </div>
