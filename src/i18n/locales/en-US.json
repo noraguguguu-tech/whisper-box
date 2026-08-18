@@ -12,6 +12,12 @@
     "delete": "Delete",
     "userId": "User ID"
   },
+  "legal": {
+    "back": "Back",
+    "privacyLink": "Privacy Policy",
+    "termsLink": "Terms",
+    "footerNote": "By using this, you agree to"
+  },
   "language": {
     "label": "Language",
     "triggerLabel": "Language: {{language}}",
