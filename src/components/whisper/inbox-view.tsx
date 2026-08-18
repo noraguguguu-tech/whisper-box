@@ -31,6 +31,7 @@ export function InboxView() {
   const [fetched, setFetched] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<"letters" | "settings">("letters");
 
   const shareUrl = useCallbackShareUrl(slug);
   const unread = messages.filter((m) => m.status === "unread").length;
