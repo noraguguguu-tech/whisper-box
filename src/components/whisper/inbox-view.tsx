@@ -296,6 +296,10 @@ export function InboxView() {
           )}
         </>
       )}
+
+      <div className="mt-8">
+        <LegalFooter />
+      </div>
     </main>
   );
 }
