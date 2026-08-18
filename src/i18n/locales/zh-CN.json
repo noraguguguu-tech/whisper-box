@@ -18,6 +18,31 @@
     "termsLink": "用户协议",
     "footerNote": "使用即表示同意"
   },
+  "takedown": {
+    "title": "举报这封公开信",
+    "intro": "如果这封公开的信件诽谤了你、泄露了你的隐私或对你造成骚扰，可在此提交下架请求。无需登录。我们会记录并处置。",
+    "reasonLabel": "举报原因",
+    "reason": {
+      "defamation": "诽谤名誉",
+      "privacy": "泄露隐私",
+      "harassment": "骚扰霸凌",
+      "illegal": "违法信息",
+      "minor": "涉未成年人",
+      "other": "其他"
+    },
+    "detailsPlaceholder": "补充说明（选填）：这封信如何涉及你？",
+    "contactPlaceholder": "联系方式（选填，便于我们回复处理进度）",
+    "submit": "提交下架请求",
+    "done": "已收到你的请求，我们会尽快处置。",
+    "reportPublic": "举报这封公开信"
+  },
+  "takedownQueue": {
+    "title": "下架请求（{{count}}）",
+    "desc": "有第三方就你公开上墙的信件提交了下架请求。请核实后处理：已处理表示你已删除或撤下该信。",
+    "contact": "联系方式",
+    "actioned": "已处理",
+    "dismiss": "驳回"
+  },
   "language": {
     "label": "语言",
     "triggerLabel": "语言：{{language}}",
