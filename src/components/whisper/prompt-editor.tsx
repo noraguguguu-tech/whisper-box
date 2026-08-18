@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, PenLine } from "lucide-react";
+import { LetterButton } from "@/components/whisper/letter-button";
 import { updateInboxPrompt } from "@/lib/api";
 
 /**
@@ -85,14 +86,16 @@ export function PromptEditor({ initialPrompt }: { initialPrompt: string }) {
               {t("inbox.promptSaved")}
             </span>
           )}
-          <button
+          <LetterButton
             data-el="prompt-save"
             disabled={saving || !dirty}
             onClick={save}
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
+            variant="primary"
+            size="md"
+            className="px-4"
           >
             {saving ? t("inbox.sending") : t("common.save")}
-          </button>
+          </LetterButton>
         </div>
       </div>
     </section>

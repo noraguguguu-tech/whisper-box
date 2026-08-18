@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Copy, Check, Download, Share2, X } from "lucide-react";
+import { LetterButton } from "@/components/whisper/letter-button";
 import QRCode from "qrcode";
 
 const BG_SRC = "/share/letter-bg.png";
@@ -308,15 +309,18 @@ export function ShareCard({
         </div>
 
         {canShare && (
-          <button
+          <LetterButton
             data-el="share-system"
             onClick={systemShare}
             disabled={!bgReady}
-            className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
+            variant="primary"
+            size="md"
+            fullWidth
+            className="mt-2"
           >
             <Share2 className="h-4 w-4" />
             {t("inbox.shareSystem")}
-          </button>
+          </LetterButton>
         )}
 
         <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
