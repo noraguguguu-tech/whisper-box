@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { ScrollText } from "lucide-react";
+import { LetterButton } from "@/components/whisper/letter-button";
 
 // Minimum age of use. Adjust per your target market before launch (commonly
 // 13+ or 16+). Bump CONSENT_VERSION whenever the legal terms materially change
