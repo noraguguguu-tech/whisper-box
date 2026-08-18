@@ -396,3 +396,87 @@ export async function pruneExpiredRateHits(): Promise<number> {
     .returning({ id: rateHits.id });
   return deleted.length;
 }
+
+// ---- moderation audit log ----
+
+export type ModActor = "owner" | "visitor" | "system";
+
+export interface ModLogInput {
+  actor: ModActor;
+  actorId?: string; // owner user id when known; never a visitor identity
+  action: string; // e.g. "delete", "mute", "unmute", "approve", "close_inbox", "report", "takedown_request", "takedown_resolve"
+  targetType: string; // "message" | "inbox" | "takedown"
+  targetRef: string;
+  reason?: string;
+}
+
+/**
+ * Append one immutable moderation-audit row. Best-effort: logging must never
+ * block or fail the underlying action, so callers may ignore rejections.
+ */
+export async function logModeration(input: ModLogInput): Promise<void> {
+  await db.insert(moderationLogs).values({
+    id: randId(20),
+    actor: input.actor,
+    actorId: input.actorId ?? "",
+    action: input.action.slice(0, 32),
+    targetType: input.targetType.slice(0, 24),
+    targetRef: input.targetRef.slice(0, 64),
+    reason: (input.reason ?? "").slice(0, 64),
+  });
+}
+
+// ---- third-party takedown requests ----
+
+export interface TakedownInput {
+  targetType: string; // "public_message"
+  targetRef: string;
+  reason: string;
+  details?: string;
+  contact?: string;
+}
+
+/** Record a third-party takedown request (no login). Returns the new row id. */
+export async function createTakedownRequest(input: TakedownInput): Promise<string> {
+  const id = randId(20);
+  await db.insert(takedownRequests).values({
+    id,
+    targetType: input.targetType.slice(0, 24),
+    targetRef: input.targetRef.slice(0, 64),
+    reason: input.reason.slice(0, 32),
+    details: (input.details ?? "").slice(0, 2000),
+    contact: (input.contact ?? "").slice(0, 200),
+  });
+  return id;
+}
+
+/** Open takedown requests that concern a set of message ids (for the owner). */
+export async function listOpenTakedownsForMessages(
+  messageIds: string[],
+): Promise<TakedownRequestRow[]> {
+  if (messageIds.length === 0) return [];
+  return db
+    .select()
+    .from(takedownRequests)
+    .where(
+      and(
+        eq(takedownRequests.status, "open"),
+        eq(takedownRequests.targetType, "public_message"),
+        inArray(takedownRequests.targetRef, messageIds),
+      ),
+    )
+    .orderBy(desc(takedownRequests.createdAt));
+}
+
+/** Mark a takedown request resolved: "actioned" or "dismissed". */
+export async function resolveTakedown(
+  id: string,
+  status: "actioned" | "dismissed",
+): Promise<boolean> {
+  const updated = await db
+    .update(takedownRequests)
+    .set({ status })
+    .where(and(eq(takedownRequests.id, id), eq(takedownRequests.status, "open")))
+    .returning({ id: takedownRequests.id });
+  return updated.length > 0;
+}
