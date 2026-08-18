@@ -92,6 +92,9 @@ export function InboxView() {
       }
       setFetched(true);
     });
+    fetchTakedowns().then((rows) => {
+      if (alive) setTakedowns(rows);
+    });
     return () => {
       alive = false;
     };
