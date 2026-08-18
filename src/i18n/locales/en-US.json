@@ -234,6 +234,16 @@
     "boxClosed": "This inbox is temporarily closed. The owner will reopen it later.",
     "pendingSent": "Delivered — waiting for the owner to review it into their inbox."
   },
+  "wallPage": {
+    "title": "Letters they've kept",
+    "subtitle": "Anonymous letters this letterbox chose to share — and how they replied.",
+    "empty": "No public letters here yet.",
+    "emptyCta": "Be the very first to write one.",
+    "writeCta": "Write them a letter too",
+    "backToWrite": "Write a letter",
+    "count_one": "{{count}} public letter",
+    "count_other": "{{count}} public letters"
+  },
   "receipt": {
     "title": "Your nameless letter",
     "youAsked": "What you sent",
