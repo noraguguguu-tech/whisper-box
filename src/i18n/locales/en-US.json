@@ -64,6 +64,14 @@
     "private": "Only me",
     "makePublic": "Post to wall",
     "makePrivate": "Make private",
+    "delete": "Delete this letter",
+    "deleteConfirm": "This can't be undone. Delete this letter and its conversation?",
+    "deleted": "Deleted",
+    "mute": "Stop follow-ups",
+    "unmute": "Allow follow-ups",
+    "muted": "Muted",
+    "mutedHint": "They can no longer reply in this thread",
+    "reportedFlag": "They reported this letter",
     "replyPlaceholder": "Write your anonymous reply…",
     "send": "Send reply",
     "sending": "Sending…",
@@ -114,7 +122,10 @@
     "myLettersTitle": "Letters I've sent",
     "myLettersDesc": "Letters you sent from this device — open one to see replies and keep chatting.",
     "openLetter": "View reply",
-    "clearMine": "Clear local history"
+    "clearMine": "Clear local history",
+    "blockedContent": "This may contain hurtful or abusive language. Try rephrasing before you send.",
+    "rateLimited": "You're sending too fast. Please try again shortly.",
+    "sendFailed": "Couldn't send. Please try again later."
   },
   "receipt": {
     "title": "Your nameless letter",
@@ -132,6 +143,20 @@
     "followupSend": "Reply back",
     "followupSending": "Sending…",
     "followupHint": "You can keep asking anonymously — they'll see it in their letterbox.",
-    "saveLink": "Keep this receipt link so you can come back and keep chatting."
+    "saveLink": "Keep this receipt link so you can come back and keep chatting.",
+    "closed": "They've closed follow-ups on this conversation.",
+    "blockedContent": "This may contain hurtful or abusive language. Try rephrasing.",
+    "rateLimited": "You're sending too fast. Please try again shortly.",
+    "sendFailed": "Couldn't send. Please try again later.",
+    "report": "Report this letter",
+    "reported": "Reported. Thank you for flagging it."
+  },
+  "safety": {
+    "screeningNote": "This app uses basic keyword filtering (not AI moderation) and may not catch everything.",
+    "crisisTitle": "If you're going through a hard time",
+    "crisisBody": "If you're thinking about harming yourself, please reach out to someone nearby or a helpline right now. You are not alone.",
+    "crisisHotlineCN": "China mental-health helpline: 12356",
+    "crisisHotlineIntl": "For emergencies elsewhere, call your local emergency number.",
+    "gotIt": "Got it"
   }
 }
