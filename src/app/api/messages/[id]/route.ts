@@ -70,12 +70,26 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     const blocked = body?.blocked === true;
     const row = await setMessageBlocked(auth.user.id, id, blocked);
     if (!row) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    await logModeration({
+      actor: "owner",
+      actorId: auth.user.id,
+      action: blocked ? "mute" : "unmute",
+      targetType: "message",
+      targetRef: id,
+    }).catch(() => undefined);
     return respond(row);
   }
 
   if (action === "approve") {
     const row = await approveMessage(auth.user.id, id);
     if (!row) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    await logModeration({
+      actor: "owner",
+      actorId: auth.user.id,
+      action: "approve",
+      targetType: "message",
+      targetRef: id,
+    }).catch(() => undefined);
     return respond(row);
   }
 
@@ -90,5 +104,12 @@ export async function DELETE(request: NextRequest, { params }: Params) {
   const { id } = await params;
   const ok = await deleteMessage(auth.user.id, id);
   if (!ok) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  await logModeration({
+    actor: "owner",
+    actorId: auth.user.id,
+    action: "delete",
+    targetType: "message",
+    targetRef: id,
+  }).catch(() => undefined);
   return NextResponse.json({ ok: true });
 }
