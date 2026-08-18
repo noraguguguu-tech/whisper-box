@@ -41,6 +41,9 @@ export function NoteCard({
   const [sharing, setSharing] = useState(false);
   const tint = tintForId(message.id);
   const hasReply = !!message.reply;
+  // Sealed presentation only while unread AND collapsed — opening it (a tap)
+  // still performs the real "unseal" (markRead happens in the parent onToggle).
+  const sealed = message.status === "unread" && !expanded;
 
   const statusKey =
     message.status === "unread"
