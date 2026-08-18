@@ -108,73 +108,132 @@ export function InboxView() {
         <SignedOut onLogin={() => auth.login().catch(() => undefined)} />
       ) : (
         <>
-          <section data-el="share-card" className="px-5 pt-3">
-            <div className="rounded-[30px] border border-white/60 bg-card p-5 gummy">
-              <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
-                <Link2 className="h-4 w-4" />
-                {t("inbox.shareTitle")}
-              </div>
-              <p className="mb-3 text-xs text-muted-foreground">{t("inbox.shareHint")}</p>
-              <div className="flex items-center gap-2">
-                <div className="flex-1 truncate rounded-full bg-background px-4 py-2.5 font-mono text-sm text-foreground">
-                  {slug ? `/u/${slug}` : "…"}
-                </div>
-                <button
-                  data-el="copy-link"
-                  disabled={!slug}
-                  onClick={copyLink}
-                  className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
-                >
-                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  {copied ? t("inbox.copied") : t("inbox.copy")}
-                </button>
-              </div>
-            </div>
-          </section>
-
-          {fetched && <PromptEditor initialPrompt={prompt} />}
-
-          <div className="flex items-center justify-between px-6 pb-2 pt-6">
-            <h2 className="font-heading text-base font-bold text-foreground">
-              <Sparkles className="mr-1.5 inline h-4 w-4 text-accent" />
-              {messages.length}
-            </h2>
-            {unread > 0 && (
-              <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
-                {t("inbox.unreadBadge", { count: unread })}
-              </span>
-            )}
+          {/* Tab bar */}
+          <div data-el="inbox-tabs" className="flex gap-2 px-5 pt-3">
+            <TabButton
+              active={tab === "letters"}
+              onClick={() => setTab("letters")}
+              label={t("inbox.tabLetters")}
+              badge={unread > 0 ? unread : undefined}
+            />
+            <TabButton
+              active={tab === "settings"}
+              onClick={() => setTab("settings")}
+              label={t("inbox.tabSettings")}
+            />
           </div>
 
-          {loading ? (
-            <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
-              {t("inbox.loadingBox")}
-            </p>
-          ) : messages.length === 0 ? (
-            <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
-              {t("inbox.empty")}
-            </p>
+          {tab === "settings" ? (
+            <>
+              <section data-el="share-card" className="px-5 pt-3">
+                <div className="rounded-[30px] border border-white/60 bg-card p-5 gummy">
+                  <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
+                    <Link2 className="h-4 w-4" />
+                    {t("inbox.shareTitle")}
+                  </div>
+                  <p className="mb-3 text-xs text-muted-foreground">{t("inbox.shareHint")}</p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 truncate rounded-full bg-background px-4 py-2.5 font-mono text-sm text-foreground">
+                      {slug ? `/u/${slug}` : "…"}
+                    </div>
+                    <button
+                      data-el="copy-link"
+                      disabled={!slug}
+                      onClick={copyLink}
+                      className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
+                    >
+                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                      {copied ? t("inbox.copied") : t("inbox.copy")}
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              {fetched && <PromptEditor initialPrompt={prompt} />}
+            </>
           ) : (
-            <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
-              {messages.map((m) => (
-                <NoteCard
-                  key={m.id}
-                  message={m}
-                  expanded={openId === m.id}
-                  rotate={0}
-                  locale={i18n.language}
-                  shareUrl={shareUrl}
-                  onToggle={() => toggleOpen(m.id)}
-                  onReply={(txt) => sendReply(m.id, txt)}
-                  onFollowup={(txt) => sendFollowup(m.id, txt)}
-                  onTogglePublic={() => togglePublic(m.id)}
-                />
-              ))}
-            </section>
+            <>
+              <div className="flex items-center justify-between px-6 pb-2 pt-6">
+                <h2 className="font-heading text-base font-bold text-foreground">
+                  <Sparkles className="mr-1.5 inline h-4 w-4 text-accent" />
+                  {messages.length}
+                </h2>
+                {unread > 0 && (
+                  <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
+                    {t("inbox.unreadBadge", { count: unread })}
+                  </span>
+                )}
+              </div>
+
+              {loading ? (
+                <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
+                  {t("inbox.loadingBox")}
+                </p>
+              ) : messages.length === 0 ? (
+                <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
+                  {t("inbox.empty")}
+                </p>
+              ) : (
+                <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
+                  {messages.map((m) => (
+                    <NoteCard
+                      key={m.id}
+                      message={m}
+                      expanded={openId === m.id}
+                      rotate={0}
+                      locale={i18n.language}
+                      shareUrl={shareUrl}
+                      onToggle={() => toggleOpen(m.id)}
+                      onReply={(txt) => sendReply(m.id, txt)}
+                      onFollowup={(txt) => sendFollowup(m.id, txt)}
+                      onTogglePublic={() => togglePublic(m.id)}
+                    />
+                  ))}
+                </section>
+              )}
+            </>
           )}
         </>
       )}
     </main>
+  );
+}
+
+/** One pill tab in the inbox tab bar. */
+function TabButton({
+  active,
+  onClick,
+  label,
+  badge,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  badge?: number;
+}) {
+  return (
+    <button
+      data-el="inbox-tab"
+      onClick={onClick}
+      className={
+        active
+          ? "flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground gummy"
+          : "flex items-center gap-1.5 rounded-full border border-white/60 bg-white/40 px-4 py-2 text-sm font-medium text-foreground/70"
+      }
+    >
+      {label}
+      {badge !== undefined && (
+        <span
+          className={
+            active
+              ? "rounded-full bg-primary-foreground/20 px-1.5 text-[11px] font-semibold"
+              : "rounded-full bg-accent/15 px-1.5 text-[11px] font-semibold text-accent"
+          }
+        >
+          {badge}
+        </span>
+      )}
+    </button>
   );
 }
 
