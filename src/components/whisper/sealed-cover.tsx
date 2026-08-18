@@ -107,14 +107,17 @@ export function SealedCover({
       </span>
       <span className="text-xs font-medium text-foreground/60">{t("inbox.sealedHint")}</span>
 
-      {/* Peek: a corner lifts, revealing the first lines underneath. */}
+      {/* Peek: a corner of the letter lifts up from under the seal, revealing
+          the first lines. Anchored below the seal so it stays inside the note
+          even for the top-most card (no clipping against the header). */}
       {peeking && (
         <motion.div
           data-el="peek-preview"
-          className="pointer-events-none absolute inset-x-3 bottom-full mb-1 rounded-2xl border border-white/60 bg-card/95 p-3 text-left shadow-lg"
-          initial={{ opacity: 0, y: 6, rotate: -1.5 }}
-          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          className="pointer-events-none mt-1 w-full origin-top rounded-2xl border border-white/60 bg-card/95 p-3 text-left shadow-lg"
+          initial={{ opacity: 0, y: -6, rotateX: -12 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
           transition={paperSpring}
+          style={{ transformPerspective: 600 }}
         >
           <p className="line-clamp-2 text-[13px] leading-relaxed text-foreground/80">
             {previewLines || body}
