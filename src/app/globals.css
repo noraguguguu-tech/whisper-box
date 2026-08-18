@@ -152,6 +152,12 @@ body {
   --gummy-shadow-sm: 0 8px 18px rgba(36, 34, 42, 0.10);
   --gummy-shadow-md: 0 16px 34px rgba(36, 34, 42, 0.16);
   --gummy-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Translucent-white "jelly" surface tokens. Previously hand-written as
+     bg-white/40, bg-white/60, border-white/50 across ~40 spots; centralizing
+     them keeps every gummy fill/border in lockstep. */
+  --gummy-fill: rgba(255, 255, 255, 0.40);
+  --gummy-fill-strong: rgba(255, 255, 255, 0.60);
+  --gummy-border: rgba(255, 255, 255, 0.50);
 }
 
 .gummy {
