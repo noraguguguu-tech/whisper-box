@@ -1,9 +1,10 @@
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, sql } from "drizzle-orm";
 import { db } from "../client";
 import {
   inboxes,
   messages,
   turns,
+  rateHits,
   type Inbox,
   type MessageRow,
   type TurnRow,
