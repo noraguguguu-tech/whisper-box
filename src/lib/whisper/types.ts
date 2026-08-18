@@ -19,6 +19,7 @@ export interface WhisperMessage {
   isPublic: boolean;
   blocked: boolean;
   reported: boolean;
+  pending: boolean;
   receiptId: string;
   createdAt: string; // ISO
   repliedAt: string | null; // ISO
