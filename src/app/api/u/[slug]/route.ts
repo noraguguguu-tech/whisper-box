@@ -44,8 +44,9 @@ export async function POST(request: NextRequest, { params }: Params) {
     );
   }
 
-  // Anti-flood throttle (no login, opaque IP hash).
-  if (!(await allowWrite(request, "write"))) {
+  // Anti-flood throttle (no login, opaque IP hash). Scoped per target inbox so
+  // one busy inbox can't exhaust a visitor's budget for writing to others.
+  if (!(await allowWrite(request, `write:${slug}`))) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
