@@ -32,6 +32,9 @@ export function VisitorView({ slug }: { slug: string }) {
   const [receiptId, setReceiptId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [mine, setMine] = useState<RememberedLetter[]>([]);
+  // Friendly inline notice for a rejected send (screen / throttle / crisis).
+  const [notice, setNotice] = useState<string | null>(null);
+  const [showCrisis, setShowCrisis] = useState(false);
 
   useEffect(() => {
     let alive = true;
