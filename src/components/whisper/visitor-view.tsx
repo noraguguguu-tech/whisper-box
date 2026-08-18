@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail } from "lucide-react";
+import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail, Lock } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { CrisisCard } from "@/components/whisper/crisis-card";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
@@ -134,6 +134,13 @@ export function VisitorView({ slug }: { slug: string }) {
             setText("");
           }}
         />
+      ) : closed ? (
+        <section data-el="closed-card" className="pt-8">
+          <div className="rounded-[30px] border border-white/60 bg-card p-6 text-center gummy">
+            <Lock className="mx-auto mb-3 h-7 w-7 text-muted-foreground" />
+            <p className="text-sm leading-relaxed text-foreground">{t("visitor.boxClosed")}</p>
+          </div>
+        </section>
       ) : (
         <section data-el="compose-card" className="pt-6">
           <div className="mb-4 flex items-center gap-2 text-primary">
