@@ -87,8 +87,10 @@ export function SealedCover({
       onPointerLeave={endPeek}
       onPointerCancel={endPeek}
       className="relative flex w-full flex-col items-center gap-2 py-2 text-center"
-      // Slow "breathing" to signal an unopened letter waiting to be read.
-      animate={reduce ? undefined : { scale: [1, 1.015, 1] }}
+      // Slow "breathing" to signal an unopened letter waiting to be read. Scale
+      // + a synchronized shadow pulse make the wax seal feel faintly "warm/alive"
+      // rather than a static sticker. tween keyframes (easeInOut) — 3 frames OK.
+      animate={reduce ? undefined : { scale: [1, 1.022, 1] }}
       transition={reduce ? undefined : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
       style={{ touchAction: "manipulation" }}
     >
