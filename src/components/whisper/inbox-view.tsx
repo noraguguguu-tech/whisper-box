@@ -10,6 +10,7 @@ import { Copy, Check, Link2, Sparkles, ArrowLeft, LogIn } from "lucide-react";
 import { WhisperHeader } from "@/components/whisper/whisper-header";
 import { NoteCard } from "@/components/whisper/note-card";
 import { SettingsControls, PendingQueue } from "@/components/whisper/inbox-safety";
+import { LegalFooter } from "@/components/whisper/legal-footer";
 import { PromptEditor } from "@/components/whisper/prompt-editor";
 import type { WhisperMessage } from "@/lib/whisper/types";
 import {
