@@ -1,0 +1,10 @@
+{
+  "route": "u/[slug]/wall",
+  "name": "Public Wall",
+  "nav_type": "stack",
+  "parent": "u/[slug]",
+  "order_index": 7,
+  "icon": "sparkles",
+  "summary": "Browse a letterbox's public letters",
+  "preview_route": "u/demo/wall"
+}
