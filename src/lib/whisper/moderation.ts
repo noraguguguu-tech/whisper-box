@@ -30,10 +30,19 @@ const SELF_HARM = [
   "killmyself", "suicide", "endmylife", "wanttodie",
 ];
 
+// Weak signals — not blocked outright, but suspicious enough to hold for the
+// owner to review (mild insults, coarse language, borderline hostility).
+const WEAK = [
+  "笨蛋", "讨厌", "闭嘴", "烦人", "垃圾", "恶心", "无聊透顶",
+  "idiot", "stupid", "shutup", "loser", "ugly", "hateyou",
+];
+
 export type ModerationCategory = "abuse" | "threat" | "self_harm";
+export type ModerationLevel = "clean" | "review" | "block";
 
 export interface ModerationResult {
-  ok: boolean; // true = passes the basic screen
+  ok: boolean; // false = hard block (never enters the inbox)
+  level: ModerationLevel; // clean → inbox, review → pending queue, block → rejected
   category?: ModerationCategory;
 }
 
@@ -42,14 +51,17 @@ function hits(normalized: string, list: string[]): boolean {
 }
 
 /**
- * Screen a piece of user text. Threat/abuse -> block (ok=false). Self-harm is
- * also flagged so the UI can show crisis resources; we still block posting the
- * raw self-harm text to another person's inbox.
+ * Screen a piece of user text into three tiers:
+ *   - block: self-harm / threat / blatant abuse → rejected (ok=false).
+ *   - review: weak/borderline signals → accepted but held pending owner review.
+ *   - clean: passes → goes straight to the inbox.
+ * Self-harm additionally carries a category so the UI shows crisis resources.
  */
 export function screenContent(text: string): ModerationResult {
   const n = normalize(text);
-  if (hits(n, SELF_HARM)) return { ok: false, category: "self_harm" };
-  if (hits(n, THREAT)) return { ok: false, category: "threat" };
-  if (hits(n, ABUSE)) return { ok: false, category: "abuse" };
-  return { ok: true };
+  if (hits(n, SELF_HARM)) return { ok: false, level: "block", category: "self_harm" };
+  if (hits(n, THREAT)) return { ok: false, level: "block", category: "threat" };
+  if (hits(n, ABUSE)) return { ok: false, level: "block", category: "abuse" };
+  if (hits(n, WEAK)) return { ok: true, level: "review" };
+  return { ok: true, level: "clean" };
 }
