@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { X, ShieldAlert, Check } from "lucide-react";
+import { LetterButton } from "@/components/whisper/letter-button";
 import { submitTakedown, type TakedownReason } from "@/lib/api";
 
 const REASONS: TakedownReason[] = [
@@ -69,12 +70,9 @@ export function TakedownDialog({
               <Check className="h-5 w-5 text-primary" />
             </div>
             <p className="text-sm text-foreground">{t("takedown.done")}</p>
-            <button
-              onClick={onClose}
-              className="mt-4 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground gummy"
-            >
+            <LetterButton onClick={onClose} variant="primary" size="md" className="mt-4 px-5">
               {t("common.close")}
-            </button>
+            </LetterButton>
           </div>
         ) : (
           <>
@@ -95,7 +93,7 @@ export function TakedownDialog({
                     "rounded-full border px-3 py-1.5 text-xs font-medium " +
                     (reason === r
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-white/60 bg-white/40 text-foreground/70")
+                      : "border-gummy-border bg-gummy-fill text-foreground/70")
                   }
                 >
                   {t(`takedown.reason.${r}`)}
@@ -119,14 +117,16 @@ export function TakedownDialog({
               className="mb-4 w-full rounded-2xl border border-white/60 bg-white/70 p-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
             />
 
-            <button
+            <LetterButton
               data-el="takedown-submit"
               disabled={sending}
               onClick={submit}
-              className="flex w-full items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-semibold text-accent-foreground disabled:opacity-50 gummy"
+              variant="accent-solid"
+              size="md"
+              fullWidth
             >
               {t("takedown.submit")}
-            </button>
+            </LetterButton>
             {failed && (
               <p data-el="takedown-error" className="mt-2 text-center text-[12px] text-destructive">
                 {t("takedown.failed")}
