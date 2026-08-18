@@ -69,13 +69,25 @@ export function VisitorView({ slug }: { slug: string }) {
   async function submit() {
     if (!text.trim() || sending) return;
     setSending(true);
+    setNotice(null);
     const body = text.trim();
     const res = await sendVisitorMessage(slug, body);
     setSending(false);
-    if (res) {
-      rememberLetter({ receiptId: res.receiptId, slug, preview: body });
+    if (res.ok) {
+      rememberLetter({ receiptId: res.data.receiptId, slug, preview: body });
       setMine(getRememberedLetters(slug));
-      setReceiptId(res.receiptId);
+      setReceiptId(res.data.receiptId);
+      return;
+    }
+    // Rejected — show a precise, non-punitive message. Self-harm content also
+    // surfaces crisis resources instead of just a block.
+    if (res.reason === "blocked_content") {
+      setNotice(t("visitor.blockedContent"));
+      if (res.category === "self_harm") setShowCrisis(true);
+    } else if (res.reason === "rate_limited") {
+      setNotice(t("visitor.rateLimited"));
+    } else {
+      setNotice(t("visitor.sendFailed"));
     }
   }
   function copyReceipt() {
