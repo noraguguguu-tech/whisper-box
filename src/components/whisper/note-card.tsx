@@ -80,6 +80,18 @@ export function NoteCard({
               {t("inbox.public")}
             </span>
           )}
+          {message.blocked && (
+            <span className="flex items-center gap-1 rounded-full bg-foreground/10 px-2 py-0.5 text-[11px] font-semibold text-foreground/70">
+              <Ban className="h-3 w-3" />
+              {t("inbox.muted")}
+            </span>
+          )}
+          {message.reported && (
+            <span className="flex items-center gap-1 rounded-full bg-accent/20 px-2 py-0.5 text-[11px] font-semibold text-accent">
+              <Flag className="h-3 w-3" />
+              {t("inbox.reportedFlag")}
+            </span>
+          )}
         </div>
         <p className="text-[15px] leading-relaxed text-foreground">{message.body}</p>
       </button>
