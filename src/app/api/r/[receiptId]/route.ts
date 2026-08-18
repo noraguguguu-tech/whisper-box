@@ -64,11 +64,15 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   }
   const ok = await reportMessageByReceipt(receiptId);
   if (!ok) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  // Log against the underlying message id, never the receiptId — the receiptId
+  // is the visitor's bearer key to their thread and must not be persisted in an
+  // audit log where it could be replayed.
+  const reported = await getMessageByReceipt(receiptId);
   await logModeration({
     actor: "visitor",
     action: "report",
     targetType: "message",
-    targetRef: receiptId,
+    targetRef: reported?.id ?? "unknown",
   }).catch(() => undefined);
   return NextResponse.json({ ok: true });
 }
