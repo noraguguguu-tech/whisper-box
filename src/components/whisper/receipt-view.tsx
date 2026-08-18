@@ -250,11 +250,15 @@ function Bubble({
   label,
   body,
   time,
+  reveal = false,
+  revealKey,
 }: {
   side: "you" | "them";
   label: string;
   body: string;
   time?: string;
+  reveal?: boolean;
+  revealKey?: string;
 }) {
   const mine = side === "you";
   return (
@@ -274,9 +278,17 @@ function Bubble({
           >
             {label}
           </p>
-          <p className="text-[15px] leading-relaxed text-foreground" suppressHydrationWarning>
-            {body}
-          </p>
+          {reveal ? (
+            <LineReveal
+              text={body}
+              revealKey={revealKey}
+              className="text-[15px] leading-relaxed text-foreground"
+            />
+          ) : (
+            <p className="text-[15px] leading-relaxed text-foreground" suppressHydrationWarning>
+              {body}
+            </p>
+          )}
           <p className="mt-2 flex items-center gap-1 text-[11px] text-foreground/50" suppressHydrationWarning>
             {time ? (
               <>
