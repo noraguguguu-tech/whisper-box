@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Copy, Check, Download, Share2, X } from "lucide-react";
+import QRCode from "qrcode";
 
 const BG_SRC = "/share/letter-bg.png";
 const W = 1024;
