@@ -38,6 +38,10 @@ export function SealedCover({
     }
   }, []);
 
+  // Cancel any pending long-press timer if the card unmounts (tab switch,
+  // list re-render) so we never setState on an unmounted component.
+  useEffect(() => clearTimer, [clearTimer]);
+
   const startPeek = useCallback(() => {
     if (reduce) return; // no peek gesture under reduced motion
     peeked.current = false;
@@ -51,6 +55,15 @@ export function SealedCover({
   const endPeek = useCallback(() => {
     clearTimer();
     setPeeking(false);
+    // If a peek actually fired, keep the swallow flag just long enough for a
+    // trailing synthetic click, then clear it. Without this, a peek that is
+    // NOT followed by a click (e.g. pointercancel on scroll) would leave the
+    // flag set and eat the user's next genuine tap.
+    if (peeked.current) {
+      window.setTimeout(() => {
+        peeked.current = false;
+      }, 320);
+    }
   }, [clearTimer]);
 
   const handleClick = useCallback(() => {
