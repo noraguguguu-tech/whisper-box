@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createMessage, getInboxBySlug, listPublicMessagesBySlug } from "@/lib/db/queries";
 import { toPublicEntry } from "@/lib/whisper/serialize";
 import { screenContent } from "@/lib/whisper/moderation";
+import { truncateByCodePoints } from "@/lib/whisper/text";
 import { allowWrite } from "@/lib/whisper/rate-limit";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest, { params }: Params) {
   }
 
   const body = (await request.json().catch(() => null)) as { body?: unknown } | null;
-  const text = typeof body?.body === "string" ? body.body.trim().slice(0, 500) : "";
+  const text = typeof body?.body === "string" ? truncateByCodePoints(body.body.trim(), 500) : "";
   if (!text) return NextResponse.json({ error: "empty" }, { status: 400 });
 
   // Tiered keyword screen (not AI). Hard hits (block) never enter the inbox.

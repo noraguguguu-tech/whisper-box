@@ -9,6 +9,7 @@ import {
 import { toReceiptView } from "@/lib/whisper/serialize";
 import { screenContent } from "@/lib/whisper/moderation";
 import { allowWrite } from "@/lib/whisper/rate-limit";
+import { truncateByCodePoints } from "@/lib/whisper/text";
 
 type Params = { params: Promise<{ receiptId: string }> };
 
@@ -29,7 +30,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
 export async function POST(request: NextRequest, { params }: Params) {
   const { receiptId } = await params;
   const body = (await request.json().catch(() => null)) as { body?: unknown } | null;
-  const text = typeof body?.body === "string" ? body.body.trim().slice(0, 500) : "";
+  const text = typeof body?.body === "string" ? truncateByCodePoints(body.body.trim(), 500) : "";
   if (!text) return NextResponse.json({ error: "empty" }, { status: 400 });
 
   const screen = screenContent(text);
