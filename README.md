@@ -1,48 +1,115 @@
-A minimal Next.js starter for building apps inside the [Eazo](https://eazo.ai) platform. Includes a working example of the Eazo session token flow: the app requests the encrypted user token from the host via `postMessage`, sends it to a Next.js API route, decrypts it server-side with `@eazo/node-sdk`, and returns the user profile.
+# 无名信
 
-## Getting Started
+> 一个不会出卖你的匿名信箱。
 
-Install dependencies with Bun:
+**无名信**是一个匿名信箱 App:创建属于你的信箱，把公开链接分享出去，任何人无需登录即可匿名给你写信；你收信、回信，还能把有意思的对话公开到「信墙」。
+
+它刻意避开了这个品类被诟病的黑暗模式——**不做「付费查身份」、不做订阅陷阱、不投广告、回执严格私密**。这条产品理念已经写进了产品本身（见应用内《我们的承诺》）。
+
+---
+
+## ✨ 核心特性
+
+- **仪式感的书信体验**：寄信有「纸张塌陷 → 蜡封砸下 → 抛入信箱」的封缄仪式；拆信逐行显影；未读信呈现为待拆的封蜡；信墙上的信笺错落漂浮。
+- **匿名且安全**：访客无需登录即可写信，系统从不存储访客身份；回执链接（`/r/[receiptId]`）是访客私密的钥匙，只有本人持有。
+- **完整的审核与安全体系**：紧急关箱、审核模式（仅可疑 / 全审）、待审队列、屏蔽后续对话、举报、第三方下架申诉、审计日志，以及检测到自伤内容时的危机干预引导。
+- **病毒传播设计**：适配小红书 / 微博 / X / LINE / KakaoTalk 的分享文案，带二维码的分享卡，「开个自己的信箱」引导。
+- **四语支持**：简体中文 / 英文 / 日文 / 韩文，界面文案全部通过 i18n 管理。
+
+---
+
+## 🧱 技术栈
+
+| 分类 | 选型 |
+|---|---|
+| 框架 | Next.js（App Router）+ React + TypeScript |
+| 构建 | Turbopack |
+| 样式 | Tailwind CSS + shadcn 变量体系（自定义「羊皮纸 + 果冻便签 + 蜡封」设计语言） |
+| 动效 | Framer Motion |
+| 数据库 | PostgreSQL + Drizzle ORM |
+| 平台能力 | `@eazo/sdk`（登录鉴权、分享等） |
+| 国际化 | react-i18next（en-US / zh-CN / ja-JP / ko-KR） |
+| 运行时 | Bun |
+| 部署 | Vercel |
+
+---
+
+## 🗺️ 页面与路由
+
+**用户可见页面**
+
+| 路由 | 说明 |
+|---|---|
+| `/` | 封面（漂浮信笺墙，点击进入） |
+| `/inbox` | 箱主收件箱（登录后：看信 / 回信 / 设置 / 审核） |
+| `/u/[slug]` | 访客写信页（匿名给某个信箱写信） |
+| `/r/[receiptId]` | 访客回执页（凭私密链接查看回信、继续对话） |
+| `/legal/privacy` · `/legal/terms` | 隐私政策 / 用户协议 |
+
+**后端 API**：收发信、回执、举报、第三方下架、限流清理、每日摘要、用户资料，以及 `/api/mcp`（将信箱能力暴露为 AI 可调用工具）。
+
+---
+
+## 🗂️ 数据模型
+
+隐私被直接刻进了数据结构：
+
+| 表 | 作用 | 隐私要点 |
+|---|---|---|
+| `inboxes` | 信箱（每位箱主一个） | 公开 slug、引导语、紧急关箱开关、审核模式 |
+| `messages` | 匿名信 + 回信 | 状态（未读/已读/已回）、公开/屏蔽/举报/待审、私密 `receiptId` |
+| `turns` | 后续对话轮次 | 只存 author 角色，**从不存访客身份** |
+| `rateHits` | 限流台账 | 只存哈希后的 bucket，**不存原始 IP、不存内容** |
+| `takedownRequests` | 第三方下架请求 | 被公开信影响者可无需登录申诉 |
+| `moderationLogs` | 审核审计日志 | 每次内容操作留痕，可证明合理可追溯的审核流程 |
+
+---
+
+## 🚀 本地运行
+
+需要 [Bun](https://bun.sh)。
 
 ```bash
 bun install
-```
+# 若 sharp 安装卡住：
+# SHARP_IGNORE_GLOBAL_LIBVIPS=1 bun install
 
-If dependency installation stalls on this machine during `sharp` setup, use:
-
-```bash
-SHARP_IGNORE_GLOBAL_LIBVIPS=1 bun install
-```
-
-Then start the development server:
-
-```bash
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+打开 [http://localhost:3000](http://localhost:3000) 查看。
 
-## Environment Variables
+### 环境变量
 
-Copy `.env.example` to `.env` and fill in your private key:
+复制 `.env.example` 为 `.env` 并填写：
+
+| 变量 | 说明 |
+|---|---|
+| `EAZO_PRIVATE_KEY` | Eazo 开发者私钥（hex，64 字符），服务端用于解密用户会话令牌，切勿暴露给浏览器 |
+| `DATABASE_URL` | PostgreSQL 连接串 |
+
+### 数据库迁移
 
 ```bash
-cp .env.example .env
+bun run db:generate   # 生成迁移
+bun run db:migrate    # 建表
 ```
 
-| Variable | Description |
+---
+
+## 📄 项目文档
+
+| 文件 | 内容 |
 |---|---|
-| `EAZO_PRIVATE_KEY` | Your Eazo developer private key (hex, 64 chars). Used server-side to decrypt the user session token. |
+| `README.md` | 本文件，项目总览 |
+| `AGENTS.md` | 实现规则 |
+| `MONETIZATION.md` | 商业化路线图（分阶段 + 红/黄/绿区清单） |
 
-You can generate a keypair in the Eazo developer settings. Never expose the private key to the browser.
+---
 
-## Learn More
+## 💚 我们的承诺
 
-- [Eazo Documentation](https://docs.eazo.ai)
-- [Next.js Documentation](https://nextjs.org/docs)
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **匿名，永不出售**：永远不让任何人花钱查出是谁写信给你。
+- **没有订阅陷阱**：核心功能永久免费且完整。
+- **不投广告，不卖数据**：私密的倾诉场景，绝不塞广告、绝不卖数据。
+- **你的回执，只属于你**：只有你手握查看回信的钥匙。
