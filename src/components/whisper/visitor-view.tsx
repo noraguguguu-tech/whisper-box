@@ -411,14 +411,17 @@ function OpenOwnBoxCta({ className = "" }: { className?: string }) {
       <p className="mx-auto mt-1.5 max-w-xs text-xs leading-relaxed text-muted-foreground">
         {t("visitor.ownBoxDesc")}
       </p>
-      <button
+      <LetterButton
         data-el="open-own-box-cta"
         onClick={() => router.push("/inbox")}
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground gummy"
+        variant="primary"
+        size="lg"
+        fullWidth
+        className="mt-4"
       >
         <PenLine className="h-4 w-4" />
         {t("visitor.ownBoxCta")}
-      </button>
+      </LetterButton>
     </section>
   );
 }
