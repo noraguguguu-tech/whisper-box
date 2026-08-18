@@ -28,6 +28,14 @@ export interface RateLimit {
 export const WRITE_LIMIT: RateLimit = { windowSeconds: 60, max: 5 }; // 5/min
 export const WRITE_LIMIT_DAILY: RateLimit = { windowSeconds: 86400, max: 60 }; // 60/day
 
+// Read throttling exists ONLY to blunt slug enumeration (a script scanning many
+// different /u/<slug> to discover which inboxes exist). It is keyed by IP alone
+// (not by slug), so a normal visitor re-reading the same one or two boxes stays
+// far under the cap, while a scanner hitting hundreds of distinct slugs trips
+// it. Deliberately generous.
+export const READ_LIMIT: RateLimit = { windowSeconds: 60, max: 120 }; // 120/min
+export const READ_LIMIT_DAILY: RateLimit = { windowSeconds: 86400, max: 1500 }; // 1500/day
+
 /**
  * Returns true when the request is allowed (and records the hit), false when
  * it should be throttled. Enforces both a burst window and a daily cap.
