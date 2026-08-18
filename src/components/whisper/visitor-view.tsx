@@ -269,36 +269,8 @@ export function VisitorView({ slug }: { slug: string }) {
               {t("visitor.wallEmpty")}
             </p>
           ) : (
-            <div className="flex flex-col gap-4 pb-4">
-              {wall.map((e, i) => (
-                <GummyNote
-                  key={e.id}
-                  tint={tintForId(e.id)}
-                  rotate={ROTATIONS[i % ROTATIONS.length]}
-                  el="public-note"
-                >
-                  <p className="text-[15px] leading-relaxed text-foreground">{e.body}</p>
-                  <div className="mt-3 rounded-2xl bg-white/60 p-3">
-                    <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-                      {t("inbox.yourReply")}
-                    </p>
-                    <p className="text-sm text-foreground">{e.reply}</p>
-                  </div>
-                  <p className="mt-2 text-[11px] text-muted-foreground">
-                    {t("receipt.repliedAt", {
-                      time: new Date(e.repliedAt).toLocaleDateString(i18n.language),
-                    })}
-                  </p>
-                  <button
-                    data-el="wall-report"
-                    onClick={() => setReportTarget(e.id)}
-                    className="mt-2 flex items-center gap-1 text-[11px] font-medium text-muted-foreground/70 underline underline-offset-2"
-                  >
-                    <Flag className="h-3 w-3" />
-                    {t("takedown.reportPublic")}
-                  </button>
-                </GummyNote>
-              ))}
+            <div className="pb-4">
+              <PublicWall entries={wall} onReport={setReportTarget} />
             </div>
           )}
         </section>
