@@ -40,6 +40,9 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-gummy-fill: var(--gummy-fill);
+  --color-gummy-fill-strong: var(--gummy-fill-strong);
+  --color-gummy-border: var(--gummy-border);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
