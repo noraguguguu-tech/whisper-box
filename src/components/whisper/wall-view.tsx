@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { Sparkles, PenLine, ArrowLeft } from "lucide-react";
+import { Sparkles, PenLine, ArrowLeft, Share2, Check } from "lucide-react";
 import { PublicWall } from "@/components/whisper/public-wall";
 import { LetterButton } from "@/components/whisper/letter-button";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { LegalFooter } from "@/components/whisper/legal-footer";
 import { TakedownDialog } from "@/components/whisper/takedown-dialog";
+import { hapticTap } from "@/lib/whisper/motion";
 import { fetchVisitorInbox } from "@/lib/api";
 import type { PublicEntry } from "@/lib/whisper/types";
 
@@ -27,6 +28,7 @@ export function WallView({ slug }: { slug: string }) {
   const [notFound, setNotFound] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [reportTarget, setReportTarget] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -42,6 +44,27 @@ export function WallView({ slug }: { slug: string }) {
   }, [slug]);
 
   const goWrite = () => router.push(`/u/${slug}`);
+
+  async function shareWall() {
+    hapticTap(10);
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    const text = t("wallPage.title");
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({ title: text, url });
+        return;
+      }
+    } catch {
+      /* user dismissed the share sheet — fall through to copy */
+    }
+    try {
+      await navigator.clipboard?.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard blocked — nothing more we can safely do */
+    }
+  }
 
   return (
     <main
