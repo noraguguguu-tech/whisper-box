@@ -72,6 +72,13 @@ export function toPublicEntry(row: MessageRow): PublicEntry {
   };
 }
 
-export function inboxPublic(row: InboxRow): { slug: string; prompt: string } {
-  return { slug: row.slug, prompt: row.prompt };
+export function inboxPublic(
+  row: InboxRow,
+): { slug: string; prompt: string; closed: boolean; moderationMode: "suspicious" | "all" } {
+  return {
+    slug: row.slug,
+    prompt: row.prompt,
+    closed: row.closed,
+    moderationMode: row.moderationMode === "all" ? "all" : "suspicious",
+  };
 }
