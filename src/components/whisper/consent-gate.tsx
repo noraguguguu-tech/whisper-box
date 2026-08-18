@@ -56,6 +56,7 @@ export function ConsentGate() {
       className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="consent-title"
     >
       <motion.div
         className="w-full max-w-md rounded-t-3xl bg-card p-6 shadow-xl sm:rounded-3xl"
@@ -67,7 +68,7 @@ export function ConsentGate() {
         <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-secondary/40">
           <ScrollText className="h-5 w-5 text-primary" />
         </div>
-        <h2 className="font-heading text-lg font-bold tracking-tight text-foreground">
+        <h2 id="consent-title" className="font-heading text-lg font-bold tracking-tight text-foreground">
           {t("consent.title")}
         </h2>
         <p className="mt-2 text-[13.5px] leading-relaxed text-foreground/80">
