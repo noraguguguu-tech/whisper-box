@@ -241,6 +241,8 @@
     "emptyCta": "来做第一个写信的人吧。",
     "writeCta": "也给 TA 写一封",
     "backToWrite": "去写信",
+    "shareCta": "分享这面信墙",
+    "shareCopied": "链接已复制",
     "count_one": "{{count}} 封公开信",
     "count_other": "{{count}} 封公开信"
   },

@@ -241,6 +241,8 @@
     "emptyCta": "가장 먼저 편지를 써 보세요.",
     "writeCta": "당신도 편지 쓰기",
     "backToWrite": "편지 쓰기",
+    "shareCta": "이 편지벽 공유하기",
+    "shareCopied": "링크가 복사되었어요",
     "count_one": "공개 편지 {{count}}통",
     "count_other": "공개 편지 {{count}}통"
   },

@@ -241,6 +241,8 @@
     "emptyCta": "最初のひとりになりましょう。",
     "writeCta": "あなたも手紙を書く",
     "backToWrite": "手紙を書く",
+    "shareCta": "この壁をシェア",
+    "shareCopied": "リンクをコピーしました",
     "count_one": "公開の手紙 {{count}} 通",
     "count_other": "公開の手紙 {{count}} 通"
   },
