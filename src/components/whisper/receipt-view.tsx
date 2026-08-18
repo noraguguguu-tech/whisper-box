@@ -148,7 +148,14 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
             {rows.map((row) =>
               row.kind === "bubble" ? (
                 <div key={row.key}>
-                  <Bubble side={row.side} label={row.label} body={row.body} time={row.time} />
+                  <Bubble
+                    side={row.side}
+                    label={row.label}
+                    body={row.body}
+                    time={row.time}
+                    reveal={row.reveal}
+                    revealKey={row.key}
+                  />
                 </div>
               ) : (
                 <div key={row.key}>
