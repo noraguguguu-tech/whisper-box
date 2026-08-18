@@ -37,6 +37,9 @@ export function VisitorView({ slug }: { slug: string }) {
   // Friendly inline notice for a rejected send (screen / throttle / crisis).
   const [notice, setNotice] = useState<string | null>(null);
   const [showCrisis, setShowCrisis] = useState(false);
+  // The sealing ceremony: holds { receiptId, preview } while it plays, then
+  // resolves into the receipt view. Null when idle.
+  const [sealing, setSealing] = useState<{ receiptId: string; preview: string } | null>(null);
 
   useEffect(() => {
     let alive = true;
