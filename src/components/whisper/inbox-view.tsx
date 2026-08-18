@@ -328,7 +328,10 @@ export function InboxView() {
   );
 }
 
-/** One pill tab in the inbox tab bar. */
+/** One pill tab in the inbox tab bar. The active pill background is a shared
+ *  layout element (`layoutId="tab-pill"`), so switching tabs slides the pill
+ *  across instead of hard-cutting. The unread badge springs in when its count
+ *  changes. Both honor reduced-motion. */
 function TabButton({
   active,
   onClick,
@@ -340,27 +343,45 @@ function TabButton({
   label: string;
   badge?: number;
 }) {
+  const reduce = useReducedMotion();
   return (
     <button
       data-el="inbox-tab"
       onClick={onClick}
-      className={
+      className={`relative flex items-center gap-1.5 rounded-full px-4 py-2 text-sm gummy transition-colors ${
         active
-          ? "flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground gummy"
-          : "flex items-center gap-1.5 rounded-full border border-white/60 bg-white/40 px-4 py-2 text-sm font-medium text-foreground/70"
-      }
+          ? "font-semibold text-primary-foreground"
+          : "border border-white/60 bg-white/40 font-medium text-foreground/70"
+      }`}
     >
-      {label}
-      {badge !== undefined && (
-        <span
-          className={
-            active
-              ? "rounded-full bg-primary-foreground/20 px-1.5 text-[11px] font-semibold"
-              : "rounded-full bg-accent/15 px-1.5 text-[11px] font-semibold text-accent"
+      {/* Sliding pill background — shared element animates between tabs. */}
+      {active && (
+        <motion.span
+          layoutId="tab-pill"
+          className="absolute inset-0 -z-0 rounded-full bg-primary"
+          transition={
+            reduce
+              ? { duration: 0 }
+              : { type: "spring", stiffness: 420, damping: 32 }
           }
+        />
+      )}
+      <span className="relative z-10">{label}</span>
+      {badge !== undefined && (
+        <motion.span
+          key={badge}
+          initial={reduce ? false : { scale: 0 }}
+          animate={reduce ? { scale: 1 } : { scale: [0, 1.3, 1] }}
+          transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 18 }}
+          onAnimationStart={() => {
+            if (!reduce) hapticTap(12);
+          }}
+          className={`relative z-10 rounded-full px-1.5 text-[11px] font-semibold ${
+            active ? "bg-primary-foreground/20" : "bg-accent/15 text-accent"
+          }`}
         >
           {badge}
-        </span>
+        </motion.span>
       )}
     </button>
   );
