@@ -31,6 +31,7 @@ export function VisitorView({ slug }: { slug: string }) {
 
   const [prompt, setPrompt] = useState("");
   const [wall, setWall] = useState<PublicEntry[]>([]);
+  const [wallTotal, setWallTotal] = useState(0);
   const [closed, setClosed] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -58,6 +59,7 @@ export function VisitorView({ slug }: { slug: string }) {
       } else {
         setPrompt(data.prompt);
         setWall(data.wall);
+        setWallTotal(data.wallTotal);
         setClosed(data.closed);
       }
       setLoaded(true);
@@ -272,7 +274,7 @@ export function VisitorView({ slug }: { slug: string }) {
                 onClick={() => router.push(`/u/${slug}/wall`)}
                 className="text-xs font-semibold text-primary underline underline-offset-2"
               >
-                {t("wallPage.count", { count: wall.length })}
+                {t("wallPage.count", { count: wallTotal })}
               </button>
             )}
           </div>
