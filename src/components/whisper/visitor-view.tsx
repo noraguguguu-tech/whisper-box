@@ -363,6 +363,13 @@ function SentCard({
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           {copied ? t("inbox.copied") : t("visitor.copyReceipt")}
         </button>
+        <p
+          data-el="receipt-warning"
+          className="mt-3 flex items-start gap-1.5 text-[11px] leading-relaxed text-muted-foreground"
+        >
+          <Lock className="mt-0.5 h-3 w-3 shrink-0 text-accent" />
+          {t("visitor.receiptWarning")}
+        </p>
       </div>
 
       <button
