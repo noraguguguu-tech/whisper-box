@@ -65,33 +65,21 @@ export function NoteCard({
     <GummyNote tint={tint} rotate={rotate} popped={expanded} el="note-item">
       <div className="flex w-full flex-col gap-2 text-left">
         <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "rounded-full px-2 py-0.5 text-[11px] font-semibold",
+          <StatusPill
+            variant={
               message.status === "unread"
-                ? "bg-accent text-accent-foreground"
-                : "bg-white/60 text-foreground/70",
-            )}
+                ? "unread"
+                : message.status === "replied"
+                  ? "replied"
+                  : "read"
+            }
           >
             {t(statusKey)}
-          </span>
-          {message.isPublic && (
-            <span className="flex items-center gap-1 rounded-full bg-secondary/50 px-2 py-0.5 text-[11px] font-semibold text-secondary-foreground">
-              <Globe className="h-3 w-3" />
-              {t("inbox.public")}
-            </span>
-          )}
-          {message.blocked && (
-            <span className="flex items-center gap-1 rounded-full bg-foreground/10 px-2 py-0.5 text-[11px] font-semibold text-foreground/70">
-              <Ban className="h-3 w-3" />
-              {t("inbox.muted")}
-            </span>
-          )}
+          </StatusPill>
+          {message.isPublic && <StatusPill variant="public">{t("inbox.public")}</StatusPill>}
+          {message.blocked && <StatusPill variant="blocked">{t("inbox.muted")}</StatusPill>}
           {message.reported && (
-            <span className="flex items-center gap-1 rounded-full bg-accent/20 px-2 py-0.5 text-[11px] font-semibold text-accent">
-              <Flag className="h-3 w-3" />
-              {t("inbox.reportedFlag")}
-            </span>
+            <StatusPill variant="reported">{t("inbox.reportedFlag")}</StatusPill>
           )}
         </div>
 
@@ -137,21 +125,25 @@ export function NoteCard({
               rows={2}
               className="w-full resize-none rounded-2xl border border-white/60 bg-white/70 p-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
             />
-            <button
+            <LetterButton
               data-el={hasReply ? "send-followup" : "send-reply"}
               disabled={!draft.trim()}
               onClick={submitDraft}
-              className="flex items-center justify-center gap-1.5 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
+              variant="primary"
+              size="md"
             >
               <Send className="h-4 w-4" />
               {t(hasReply ? "inbox.followupSend" : "inbox.send")}
-            </button>
+            </LetterButton>
           </div>
 
-          <button
+          <LetterButton
             data-el="toggle-public"
             onClick={onTogglePublic}
-            className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full border border-white/60 bg-white/40 py-2 text-xs font-semibold text-foreground/70"
+            variant="secondary"
+            size="sm"
+            fullWidth
+            className="mt-3"
           >
             {message.isPublic ? (
               <>
@@ -164,40 +156,47 @@ export function NoteCard({
                 {t("inbox.makePublic")}
               </>
             )}
-          </button>
+          </LetterButton>
           {hasReply && (
-            <button
+            <LetterButton
               data-el="open-share"
               onClick={() => setSharing(true)}
-              className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-accent/15 py-2 text-xs font-semibold text-accent"
+              variant="accent"
+              size="sm"
+              fullWidth
+              className="mt-2"
             >
               <Share2 className="h-3.5 w-3.5" />
               {t("inbox.shareLetter")}
-            </button>
+            </LetterButton>
           )}
 
           {/* Moderation row: mute follow-ups, delete the whole thread. */}
           <div className="mt-2 flex gap-2">
             {hasReply && (
-              <button
+              <LetterButton
                 data-el="toggle-block"
                 onClick={onToggleBlock}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-white/60 bg-white/40 py-2 text-xs font-semibold text-foreground/70"
+                variant="secondary"
+                size="sm"
+                className="flex-1"
               >
                 <Ban className="h-3.5 w-3.5" />
                 {t(message.blocked ? "inbox.unmute" : "inbox.mute")}
-              </button>
+              </LetterButton>
             )}
-            <button
+            <LetterButton
               data-el="delete-message"
               onClick={() => {
                 if (window.confirm(t("inbox.deleteConfirm"))) onDelete();
               }}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 py-2 text-xs font-semibold text-accent"
+              variant="danger"
+              size="sm"
+              className="flex-1"
             >
               <Trash2 className="h-3.5 w-3.5" />
               {t("inbox.delete")}
-            </button>
+            </LetterButton>
           </div>
           {message.blocked && (
             <p className="mt-1.5 text-center text-[11px] text-muted-foreground">
