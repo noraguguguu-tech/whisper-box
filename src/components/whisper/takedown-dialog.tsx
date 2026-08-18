@@ -31,12 +31,15 @@ export function TakedownDialog({
   const [contact, setContact] = useState("");
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   async function submit() {
     setSending(true);
+    setFailed(false);
     const ok = await submitTakedown({ targetRef, reason, details, contact });
     setSending(false);
     if (ok) setDone(true);
+    else setFailed(true);
   }
 
   return (
