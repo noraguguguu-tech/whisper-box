@@ -12,8 +12,15 @@
     "delete": "删除",
     "userId": "用户 ID"
   },
+  "legal": {
+    "back": "返回",
+    "privacyLink": "隐私政策",
+    "termsLink": "用户协议",
+    "footerNote": "使用即表示同意"
+  },
   "language": {
     "label": "语言",
+    "triggerLabel": "语言：{{language}}",
     "followSystem": "跟随系统",
     "followSystemWithLanguage": "跟随系统（{{language}}）",
     "enUS": "English",
