@@ -189,9 +189,17 @@ export function InboxView() {
                   {t("inbox.loadingBox")}
                 </p>
               ) : messages.length === 0 ? (
-                <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
-                  {t("inbox.empty")}
-                </p>
+                <div className="mx-5 rounded-3xl bg-card p-6 text-center gummy">
+                  <p className="text-sm text-muted-foreground">{t("inbox.empty")}</p>
+                  <button
+                    data-el="empty-copy-cta"
+                    onClick={() => selectTab("settings")}
+                    className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground gummy"
+                  >
+                    <Link2 className="h-4 w-4" />
+                    {t("inbox.emptyCta")}
+                  </button>
+                </div>
               ) : (
                 <section data-el="note-wall" className="flex flex-col gap-4 px-5 pb-8">
                   {messages.map((m) => (
