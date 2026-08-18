@@ -38,6 +38,25 @@ export function InboxView() {
   // Loading while signed in but the first fetch hasn't resolved yet.
   const loading = !!user && !authLoading && !fetched;
 
+  // Restore the last-selected tab (persisted on this device).
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("wb.inboxTab");
+      if (saved === "settings" || saved === "letters") setTab(saved);
+    } catch {
+      /* storage disabled — keep default */
+    }
+  }, []);
+
+  function selectTab(next: "letters" | "settings") {
+    setTab(next);
+    try {
+      window.localStorage.setItem("wb.inboxTab", next);
+    } catch {
+      /* ignore */
+    }
+  }
+
   useEffect(() => {
     if (authLoading || !user) return;
     let alive = true;
