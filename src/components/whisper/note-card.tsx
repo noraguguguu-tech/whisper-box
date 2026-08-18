@@ -213,7 +213,20 @@ export function NoteCard({
 }
 
 /** A reply/turn bubble inside the owner's expanded note. */
-function ThreadBubble({ mine, label, body }: { mine: boolean; label: string; body: string }) {
+/** A reply/turn bubble inside the owner's expanded note. */
+function ThreadBubble({
+  mine,
+  label,
+  body,
+  reveal = false,
+  revealKey,
+}: {
+  mine: boolean;
+  label: string;
+  body: string;
+  reveal?: boolean;
+  revealKey?: string;
+}) {
   return (
     <div className={cn("rounded-2xl p-3", mine ? "bg-white/60" : "bg-accent/10")}>
       <p
@@ -224,7 +237,11 @@ function ThreadBubble({ mine, label, body }: { mine: boolean; label: string; bod
       >
         {label}
       </p>
-      <p className="text-sm text-foreground">{body}</p>
+      {reveal ? (
+        <LineReveal text={body} revealKey={revealKey} className="text-sm text-foreground" />
+      ) : (
+        <p className="text-sm text-foreground">{body}</p>
+      )}
     </div>
   );
 }
