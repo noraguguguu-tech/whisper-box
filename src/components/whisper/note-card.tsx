@@ -161,6 +161,35 @@ export function NoteCard({
               {t("inbox.shareLetter")}
             </button>
           )}
+
+          {/* Moderation row: mute follow-ups, delete the whole thread. */}
+          <div className="mt-2 flex gap-2">
+            {hasReply && (
+              <button
+                data-el="toggle-block"
+                onClick={onToggleBlock}
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-white/60 bg-white/40 py-2 text-xs font-semibold text-foreground/70"
+              >
+                <Ban className="h-3.5 w-3.5" />
+                {t(message.blocked ? "inbox.unmute" : "inbox.mute")}
+              </button>
+            )}
+            <button
+              data-el="delete-message"
+              onClick={() => {
+                if (window.confirm(t("inbox.deleteConfirm"))) onDelete();
+              }}
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 py-2 text-xs font-semibold text-accent"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              {t("inbox.delete")}
+            </button>
+          </div>
+          {message.blocked && (
+            <p className="mt-1.5 text-center text-[11px] text-muted-foreground">
+              {t("inbox.mutedHint")}
+            </p>
+          )}
           <p className="mt-2 text-center text-[11px] text-muted-foreground">
             {t("inbox.receivedAt", {
               time: new Date(message.createdAt).toLocaleString(locale),
