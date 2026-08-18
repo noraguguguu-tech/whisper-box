@@ -243,6 +243,8 @@
     "backToWrite": "Write a letter",
     "shareCta": "Share this wall",
     "shareCopied": "Link copied",
+    "loadMore": "Load more letters",
+    "loadingMore": "Loading…",
     "count_one": "{{count}} public letter",
     "count_other": "{{count}} public letters"
   },
