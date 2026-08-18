@@ -41,6 +41,7 @@
     "contactPlaceholder": "联系方式（选填，便于我们回复处理进度）",
     "submit": "提交下架请求",
     "done": "已收到你的请求，我们会尽快处置。",
+    "failed": "提交失败，请检查网络后重试。",
     "reportPublic": "举报这封公开信"
   },
   "takedownQueue": {
