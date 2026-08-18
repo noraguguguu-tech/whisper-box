@@ -304,6 +304,9 @@ export function VisitorView({ slug }: { slug: string }) {
       </div>
 
       {showCrisis && <CrisisCard onClose={() => setShowCrisis(false)} />}
+      {reportTarget && (
+        <TakedownDialog targetRef={reportTarget} onClose={() => setReportTarget(null)} />
+      )}
       {sealing && (
         <SealCeremony
           previewText={sealing.preview}
