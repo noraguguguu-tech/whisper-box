@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail, Lock, Flag, PenLine } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
+import { LetterButton } from "@/components/whisper/letter-button";
 import { CrisisCard } from "@/components/whisper/crisis-card";
 import { SealCeremony } from "@/components/whisper/seal-ceremony";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
@@ -187,15 +188,18 @@ export function VisitorView({ slug }: { slug: string }) {
           <p className="mt-3 text-center text-xs text-muted-foreground">
             {t("visitor.anonymousNote")}
           </p>
-          <button
+          <LetterButton
             data-el="visitor-send"
             disabled={!text.trim() || sending}
             onClick={submit}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-40 gummy"
+            variant="primary"
+            size="lg"
+            fullWidth
+            className="mt-4"
           >
             <Send className="h-4 w-4" />
             {sending ? t("visitor.sending") : t("visitor.send")}
-          </button>
+          </LetterButton>
           {notice && (
             <p
               data-el="send-notice"
