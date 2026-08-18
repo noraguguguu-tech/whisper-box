@@ -221,3 +221,68 @@ export async function reportReceipt(receiptId: string): Promise<boolean> {
     return false;
   }
 }
+
+export type TakedownReason =
+  | "defamation"
+  | "privacy"
+  | "harassment"
+  | "illegal"
+  | "minor"
+  | "other";
+
+export interface OwnerTakedown {
+  id: string;
+  targetRef: string;
+  reason: string;
+  details: string;
+  contact: string;
+  createdAt: string;
+}
+
+/** Third party: submit a takedown request about a public letter. No auth. */
+export async function submitTakedown(input: {
+  targetRef: string;
+  reason: TakedownReason;
+  details?: string;
+  contact?: string;
+}): Promise<boolean> {
+  try {
+    const res = await request("/api/takedown", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ targetType: "public_message", ...input }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/** Owner: list open third-party takedowns for their letters. */
+export async function fetchTakedowns(): Promise<OwnerTakedown[]> {
+  try {
+    const res = await request("/api/takedowns");
+    if (!res.ok) return [];
+    const data = (await res.json()) as { takedowns: OwnerTakedown[] };
+    return data.takedowns ?? [];
+  } catch {
+    return [];
+  }
+}
+
+/** Owner: resolve a takedown request. */
+export async function resolveTakedown(
+  id: string,
+  status: "actioned" | "dismissed",
+): Promise<boolean> {
+  try {
+    const res = await request(`/api/takedowns/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
