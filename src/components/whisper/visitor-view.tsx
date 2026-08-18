@@ -312,6 +312,7 @@ export function VisitorView({ slug }: { slug: string }) {
       )}
 
       <div className="mt-auto pt-6">
+        <PromisePanel variant="footer" className="mb-6" />
         <LegalFooter />
       </div>
 
