@@ -2,6 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import { LifeBuoy } from "lucide-react";
+import { LetterButton } from "@/components/whisper/letter-button";
 
 /**
  * Crisis-resource modal shown when self-harm content is detected. Deliberately
@@ -32,13 +33,9 @@ export function CrisisCard({ onClose }: { onClose: () => void }) {
         </p>
         <p className="text-sm font-semibold text-primary">{t("safety.crisisHotlineCN")}</p>
         <p className="mb-4 text-xs text-muted-foreground">{t("safety.crisisHotlineIntl")}</p>
-        <button
-          data-el="crisis-close"
-          onClick={onClose}
-          className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground gummy"
-        >
+        <LetterButton data-el="crisis-close" onClick={onClose} variant="primary" size="lg" fullWidth>
           {t("safety.gotIt")}
-        </button>
+        </LetterButton>
       </div>
     </div>
   );
