@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, lt, inArray, sql } from "drizzle-orm";
 import { db } from "../client";
 import {
   inboxes,
