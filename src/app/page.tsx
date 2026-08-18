@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { ChevronRight } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
+import { LegalFooter } from "@/components/whisper/legal-footer";
 import { NOTE_TINTS } from "@/lib/whisper/types";
 
 type Layer = "far" | "mid" | "hero";
