@@ -148,10 +148,42 @@ export function ShareCard({
     ctx.font = "400 40px Georgia, serif";
     wrapText(ctx, reply, PAD, y + 60, maxW, 58);
 
-    // Footer link.
+    // ---- Viral footer band: hook + QR + CTA ----
+    const bandTop = H - 300;
+    // Soft separator above the band.
+    ctx.strokeStyle = "rgba(36,59,107,0.18)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(PAD, bandTop);
+    ctx.lineTo(W - PAD, bandTop);
+    ctx.stroke();
+
+    const qrSize = 200;
+    const qrX = W - PAD - qrSize;
+    const qrY = bandTop + 40;
+    if (qrRef.current) {
+      // White rounded plate behind the QR for scan contrast on parchment.
+      ctx.fillStyle = "#FFFFFF";
+      roundRect(ctx, qrX - 16, qrY - 16, qrSize + 32, qrSize + 32, 20);
+      ctx.fill();
+      ctx.drawImage(qrRef.current, qrX, qrY, qrSize, qrSize);
+    }
+
+    // Hook + CTA on the left of the QR.
+    const textR = qrX - 48;
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#243B6B";
+    ctx.font = `400 44px ${hand}`;
+    let fy = wrapText(ctx, t("inbox.shareCardHook"), PAD, bandTop + 78, textR - PAD, 50);
+    fy += 26;
+    ctx.fillStyle = "#C0392B";
+    ctx.font = "700 30px Georgia, serif";
+    wrapText(ctx, t("inbox.shareCardCta"), PAD, fy, textR - PAD, 38);
+
+    // Link line at the very bottom (fallback for anyone who can't scan).
     ctx.fillStyle = "rgba(36,59,107,0.55)";
-    ctx.font = "400 26px Georgia, serif";
-    ctx.fillText(shareUrl || "", PAD, H - 150);
+    ctx.font = "400 24px Georgia, serif";
+    ctx.fillText(shareUrl || "", PAD, H - 46);
 
     return canvas.toDataURL("image/png");
   }
