@@ -18,6 +18,13 @@
     "termsLink": "Terms",
     "footerNote": "By using this, you agree to"
   },
+  "consent": {
+    "title": "Before you begin",
+    "ageLine": "This service is intended for users aged {{age}} and older. Please confirm you meet the minimum age of use in your region.",
+    "agreeLine": "By continuing, you confirm you have read and agree to:",
+    "accept": "I'm {{age}}+ and I agree",
+    "declineHint": "If you are under {{age}}, please do not continue."
+  },
   "takedown": {
     "title": "Report this public letter",
     "intro": "If this public letter defames you, exposes your privacy, or harasses you, submit a takedown request here. No login required — we record and act on it.",
