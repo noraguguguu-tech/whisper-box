@@ -51,6 +51,23 @@
     "actioned": "Actioned",
     "dismiss": "Dismiss"
   },
+  "promo": {
+    "title": "Grab a caption & post",
+    "hint": "Pick a vibe, copy, and paste it wherever you post. Your link is already attached.",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "tones": {
+      "soft": "Soft / vulnerable",
+      "curious": "Curious",
+      "bold": "Bold / daring"
+    },
+    "captions": {
+      "soft": "Feeling a little low lately — send me some no-strings honest words 🕯️ Anonymous, I won't know who you are. {{url}}",
+      "curious": "Tell me your honest first impression of me — anonymously 👀 I really won't know it's you. {{url}}",
+      "bold": "Go on, roast me anonymously. I can take all of it. 🔥 {{url}}"
+    },
+    "note": "Best posted at night when feelings run deep. Rotate captions so it never feels spammy."
+  },
   "language": {
     "label": "Language",
     "triggerLabel": "Language: {{language}}",
