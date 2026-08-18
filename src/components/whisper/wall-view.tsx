@@ -10,7 +10,7 @@ import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { LegalFooter } from "@/components/whisper/legal-footer";
 import { TakedownDialog } from "@/components/whisper/takedown-dialog";
 import { hapticTap } from "@/lib/whisper/motion";
-import { fetchVisitorInbox } from "@/lib/api";
+import { fetchVisitorInbox, fetchPublicWall } from "@/lib/api";
 import type { PublicEntry } from "@/lib/whisper/types";
 
 /**
@@ -29,19 +29,39 @@ export function WallView({ slug }: { slug: string }) {
   const [loaded, setLoaded] = useState(false);
   const [reportTarget, setReportTarget] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     let alive = true;
     fetchVisitorInbox(slug).then((data) => {
       if (!alive) return;
       if (!data) setNotFound(true);
-      else setWall(data.wall);
+      else {
+        setWall(data.wall);
+        setHasMore(data.wallHasMore);
+        setTotal(data.wallTotal);
+      }
       setLoaded(true);
     });
     return () => {
       alive = false;
     };
   }, [slug]);
+
+  async function loadMore() {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    hapticTap(8);
+    const page = await fetchPublicWall(slug, wall.length);
+    if (page) {
+      setWall((prev) => [...prev, ...page.wall]);
+      setHasMore(page.wallHasMore);
+      setTotal(page.wallTotal);
+    }
+    setLoadingMore(false);
+  }
 
   const goWrite = () => router.push(`/u/${slug}`);
 
@@ -113,9 +133,9 @@ export function WallView({ slug }: { slug: string }) {
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               {t("wallPage.subtitle")}
             </p>
-            {loaded && wall.length > 0 && (
+            {loaded && total > 0 && (
               <p className="mt-2 text-xs font-semibold text-accent">
-                {t("wallPage.count", { count: wall.length })}
+                {t("wallPage.count", { count: total })}
               </p>
             )}
           </header>
@@ -129,7 +149,22 @@ export function WallView({ slug }: { slug: string }) {
                 </p>
               </div>
             ) : (
-              <PublicWall entries={wall} onReport={setReportTarget} />
+              <>
+                <PublicWall entries={wall} onReport={setReportTarget} />
+                {hasMore && (
+                  <LetterButton
+                    data-el="wall-load-more"
+                    onClick={loadMore}
+                    variant="secondary"
+                    size="md"
+                    fullWidth
+                    disabled={loadingMore}
+                    className="mt-4"
+                  >
+                    {loadingMore ? t("wallPage.loadingMore") : t("wallPage.loadMore")}
+                  </LetterButton>
+                )}
+              </>
             )}
           </section>
 
