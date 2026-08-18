@@ -254,7 +254,37 @@ export function ShareCard({
             {t("inbox.shareReplyLabel")}
           </p>
           <p className="mt-1 text-sm leading-relaxed text-foreground">{reply}</p>
+
+          {/* Viral footer band — mirrors the exported PNG */}
+          <div className="mt-4 flex items-end justify-between gap-3 border-t border-primary/15 pt-3">
+            <div className="min-w-0">
+              <p
+                className="text-lg leading-tight text-primary"
+                style={{ fontFamily: "var(--font-hand)" }}
+              >
+                {t("inbox.shareCardHook")}
+              </p>
+              <p className="mt-1 text-[11px] font-semibold text-accent">
+                {t("inbox.shareCardCta")}
+              </p>
+            </div>
+            {qrDataUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                data-el="share-qr"
+                src={qrDataUrl}
+                alt="QR"
+                className="h-16 w-16 shrink-0 rounded-lg bg-white p-1"
+              />
+            ) : (
+              <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-white/60" />
+            )}
+          </div>
         </div>
+
+        <p className="mt-2 text-center text-[11px] text-muted-foreground">
+          {t("inbox.shareScanHint")}
+        </p>
 
         <div className="mt-4 grid grid-cols-2 gap-2">
           <button
