@@ -72,6 +72,7 @@
     "muted": "Muted",
     "mutedHint": "They can no longer reply in this thread",
     "reportedFlag": "They reported this letter",
+    "sealedHint": "Tap to unseal · hold to peek",
     "pendingTitle": "Letters in review",
     "pendingDesc": "These letters were flagged as suspicious and are held here for you to confirm. They enter the inbox only after you approve.",
     "pendingBadge": "{{count}} in review",

@@ -72,6 +72,7 @@
     "muted": "已封口",
     "mutedHint": "对方无法再在这条对话里追问",
     "reportedFlag": "对方举报了这封信",
+    "sealedHint": "轻触拆封 · 长按偷看一角",
     "pendingTitle": "待审来信",
     "pendingDesc": "以下来信被判定为可疑，先扣在这里等你确认。放行后才进收件箱。",
     "pendingBadge": "{{count}} 封待审",
