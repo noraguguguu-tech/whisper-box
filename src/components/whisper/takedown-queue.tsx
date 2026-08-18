@@ -41,10 +41,10 @@ export function TakedownQueue({
               </span>
             </div>
             {it.details && (
-              <p className="text-[13px] leading-relaxed text-foreground/80">{it.details}</p>
+              <p className="break-words text-[13px] leading-relaxed text-foreground/80">{it.details}</p>
             )}
             {it.contact && (
-              <p className="mt-1 text-[11px] text-muted-foreground">
+              <p className="mt-1 break-words text-[11px] text-muted-foreground">
                 {t("takedownQueue.contact")}: {it.contact}
               </p>
             )}
