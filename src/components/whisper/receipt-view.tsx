@@ -184,17 +184,53 @@ export function ReceiptView({ receiptId }: { receiptId: string }) {
                 <Send className="h-4 w-4" />
                 {sending ? t("receipt.followupSending") : t("receipt.followupSend")}
               </button>
+              {notice && (
+                <p
+                  data-el="followup-notice"
+                  className="mt-3 rounded-2xl bg-accent/10 px-4 py-2.5 text-center text-xs font-medium text-accent"
+                >
+                  {notice}
+                </p>
+              )}
               <p className="mt-2 text-center text-[11px] text-muted-foreground">
                 {t("receipt.followupHint")}
               </p>
             </div>
           )}
 
-          <p className="mt-6 text-center text-[11px] leading-relaxed text-muted-foreground">
-            {t("receipt.saveLink")}
-          </p>
+          {/* Owner closed follow-ups on this thread. */}
+          {receipt.reply && receipt.closed && (
+            <p
+              data-el="receipt-closed"
+              className="mt-5 rounded-3xl bg-card p-5 text-center text-sm text-muted-foreground gummy"
+            >
+              {t("receipt.closed")}
+            </p>
+          )}
+
+          {/* Report + save-link footer. */}
+          <div className="mt-6 flex flex-col items-center gap-2">
+            {reported ? (
+              <span className="text-[11px] font-medium text-accent">
+                {t("receipt.reported")}
+              </span>
+            ) : (
+              <button
+                data-el="receipt-report"
+                onClick={report}
+                className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground underline-offset-2 hover:underline"
+              >
+                <Flag className="h-3 w-3" />
+                {t("receipt.report")}
+              </button>
+            )}
+            <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+              {t("receipt.saveLink")}
+            </p>
+          </div>
         </section>
       ) : null}
+      {showCrisis && <CrisisCard onClose={() => setShowCrisis(false)} />}
     </main>
   );
 }
