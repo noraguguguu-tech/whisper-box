@@ -118,6 +118,7 @@ export async function deleteMessage(id: string): Promise<boolean> {
 
 export interface VisitorInboxData {
   prompt: string;
+  closed: boolean;
   wall: PublicEntry[];
 }
 
@@ -131,7 +132,7 @@ export async function fetchVisitorInbox(slug: string): Promise<VisitorInboxData 
   }
 }
 
-export type SendFailReason = "blocked_content" | "rate_limited" | "not_allowed" | "error";
+export type SendFailReason = "blocked_content" | "rate_limited" | "not_allowed" | "inbox_closed" | "error";
 
 /** Discriminated outcome so the UI can show a precise, friendly message. */
 export type SendOutcome<T> =
@@ -149,6 +150,7 @@ async function readError(res: Response): Promise<{ error?: string; category?: st
 function mapReason(status: number, error?: string): SendFailReason {
   if (status === 422 || error === "blocked_content") return "blocked_content";
   if (status === 429 || error === "rate_limited") return "rate_limited";
+  if (error === "inbox_closed") return "inbox_closed";
   if (status === 403 || status === 400) return "not_allowed";
   return "error";
 }
