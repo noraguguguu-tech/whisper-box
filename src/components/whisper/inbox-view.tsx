@@ -19,6 +19,9 @@ import {
   setMessagePublic,
   setMessageBlocked,
   deleteMessage,
+  approveMessage,
+  setInboxClosed,
+  setModerationMode,
 } from "@/lib/api";
 
 export function InboxView() {
@@ -30,13 +33,18 @@ export function InboxView() {
   const [slug, setSlug] = useState<string>("");
   const [prompt, setPrompt] = useState<string>("");
   const [messages, setMessages] = useState<WhisperMessage[]>([]);
+  const [closed, setClosed] = useState(false);
+  const [modMode, setModMode] = useState<"suspicious" | "all">("suspicious");
   const [fetched, setFetched] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [tab, setTab] = useState<"letters" | "settings">("letters");
 
   const shareUrl = useCallbackShareUrl(slug);
-  const unread = messages.filter((m) => m.status === "unread").length;
+  // Pending letters are held out of the normal list and the unread count.
+  const pendingList = messages.filter((m) => m.pending);
+  const liveList = messages.filter((m) => !m.pending);
+  const unread = liveList.filter((m) => m.status === "unread").length;
   // Loading while signed in but the first fetch hasn't resolved yet.
   const loading = !!user && !authLoading && !fetched;
 
@@ -67,6 +75,8 @@ export function InboxView() {
       if (data) {
         setSlug(data.inbox.slug);
         setPrompt(data.inbox.prompt ?? "");
+        setClosed(data.inbox.closed);
+        setModMode(data.inbox.moderationMode);
         setMessages(data.messages);
       }
       setFetched(true);
@@ -121,6 +131,25 @@ export function InboxView() {
       setMessages((ms) => ms.filter((m) => m.id !== id));
       setOpenId((cur) => (cur === id ? null : cur));
     }
+  }
+
+  async function approve(id: string) {
+    const updated = await approveMessage(id);
+    if (updated) setMessages((ms) => ms.map((m) => (m.id === id ? updated : m)));
+  }
+
+  async function toggleClosed() {
+    const next = !closed;
+    setClosed(next); // optimistic
+    const ok = await setInboxClosed(next);
+    if (!ok) setClosed(!next);
+  }
+
+  async function switchMode(next: "suspicious" | "all") {
+    const prev = modMode;
+    setModMode(next); // optimistic
+    const ok = await setModerationMode(next);
+    if (!ok) setModMode(prev);
   }
 
   return (
