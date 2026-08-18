@@ -213,8 +213,9 @@ export async function addVisitorTurn(
   body: string,
 ): Promise<{ status: "ok"; row: MessageRow } | { status: "blocked" | "not_allowed" }> {
   const msg = await getMessageByReceipt(receiptId);
-  if (!msg || msg.status !== "replied") return { status: "not_allowed" };
+  if (!msg) return { status: "not_allowed" };
   if (msg.blocked) return { status: "blocked" };
+  if (msg.status !== "replied") return { status: "not_allowed" };
   await insertTurn(msg.id, "visitor", body);
   const rows = await db
     .update(messages)
