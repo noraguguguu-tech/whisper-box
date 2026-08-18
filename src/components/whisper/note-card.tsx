@@ -6,6 +6,7 @@ import { Globe, Lock, Send, Share2, Trash2, Ban, Flag } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { ShareCard } from "@/components/whisper/share-card";
 import { LineReveal } from "@/components/whisper/line-reveal";
+import { SealedCover } from "@/components/whisper/sealed-cover";
 import { tintForId } from "@/lib/whisper/types";
 import type { WhisperMessage } from "@/lib/whisper/types";
 import { cn } from "@/utils/utils";
