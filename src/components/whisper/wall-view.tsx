@@ -119,7 +119,6 @@ export function WallView({ slug }: { slug: string }) {
 
       {reportTarget && (
         <TakedownDialog
-          targetType="public_message"
           targetRef={reportTarget}
           onClose={() => setReportTarget(null)}
         />
