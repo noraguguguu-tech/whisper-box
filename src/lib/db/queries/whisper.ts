@@ -480,3 +480,16 @@ export async function resolveTakedown(
     .returning({ id: takedownRequests.id });
   return updated.length > 0;
 }
+
+/**
+ * A message that is currently publicly visible (public + not pending). Used to
+ * validate a third-party takedown target references real public content.
+ */
+export async function getPublicMessageById(id: string): Promise<MessageRow | null> {
+  const rows = await db
+    .select()
+    .from(messages)
+    .where(and(eq(messages.id, id), eq(messages.isPublic, true), eq(messages.pending, false)))
+    .limit(1);
+  return rows[0] ?? null;
+}
