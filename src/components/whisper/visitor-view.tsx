@@ -262,6 +262,7 @@ export function VisitorView({ slug }: { slug: string }) {
           )}
         </section>
       )}
+      {showCrisis && <CrisisCard onClose={() => setShowCrisis(false)} />}
     </main>
   );
 }
