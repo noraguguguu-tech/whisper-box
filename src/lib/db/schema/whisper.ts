@@ -102,3 +102,62 @@ export const rateHits = pgTable(
 );
 
 export type RateHitRow = InferSelectModel<typeof rateHits>;
+
+/**
+ * Takedown requests submitted by affected THIRD PARTIES (not the owner, not
+ * necessarily the sender) — e.g. someone defamed or exposed in a public letter.
+ * No login required. We store only what's needed to locate and act on the
+ * content plus an optional contact the reporter chooses to provide.
+ */
+export const takedownRequests = pgTable(
+  "takedown_requests",
+  {
+    id: varchar("id", { length: 32 }).primaryKey(),
+    // What is being reported. "public_message" = a letter on a public wall.
+    targetType: varchar("target_type", { length: 24 }).notNull(),
+    // Reference to the target (e.g. message id for a public letter).
+    targetRef: varchar("target_ref", { length: 64 }).notNull(),
+    reason: varchar("reason", { length: 32 }).notNull(),
+    details: text("details").notNull().default(""),
+    // Optional — reporter-provided contact for follow-up. May be empty.
+    contact: varchar("contact", { length: 200 }).notNull().default(""),
+    // "open" → "actioned" | "dismissed".
+    status: varchar("status", { length: 16 }).notNull().default("open"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    statusIdx: index("takedown_status_idx").on(table.status),
+    targetIdx: index("takedown_target_idx").on(table.targetRef),
+    createdAtIdx: index("takedown_created_at_idx").on(table.createdAt),
+  }),
+);
+
+export type TakedownRequestRow = InferSelectModel<typeof takedownRequests>;
+
+/**
+ * Moderation audit trail. Every content-handling action (delete, mute, approve,
+ * close inbox, visitor report, third-party takedown) writes one immutable row
+ * so we can demonstrate a reasonable, traceable moderation process. `actor` is
+ * "owner" | "visitor" | "system"; `actorId` is the owner user id when known,
+ * otherwise empty (we never store visitor identities).
+ */
+export const moderationLogs = pgTable(
+  "moderation_logs",
+  {
+    id: varchar("id", { length: 32 }).primaryKey(),
+    actor: varchar("actor", { length: 16 }).notNull(),
+    actorId: varchar("actor_id", { length: 128 }).notNull().default(""),
+    action: varchar("action", { length: 32 }).notNull(),
+    targetType: varchar("target_type", { length: 24 }).notNull(),
+    targetRef: varchar("target_ref", { length: 64 }).notNull(),
+    reason: varchar("reason", { length: 64 }).notNull().default(""),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    targetIdx: index("modlog_target_idx").on(table.targetRef),
+    actionIdx: index("modlog_action_idx").on(table.action),
+    createdAtIdx: index("modlog_created_at_idx").on(table.createdAt),
+  }),
+);
+
+export type ModerationLogRow = InferSelectModel<typeof moderationLogs>;
