@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { auth } from "@eazo/sdk";
 import { useEazo } from "@eazo/sdk/react";
-import { Copy, Check, Link2, Sparkles, ArrowLeft, LogIn, ShieldAlert, Power, CheckCircle2, Trash2 } from "lucide-react";
+import { Copy, Check, Link2, Sparkles, ArrowLeft, LogIn } from "lucide-react";
 import { WhisperHeader } from "@/components/whisper/whisper-header";
 import { NoteCard } from "@/components/whisper/note-card";
+import { SettingsControls, PendingQueue } from "@/components/whisper/inbox-safety";
 import { PromptEditor } from "@/components/whisper/prompt-editor";
 import type { WhisperMessage } from "@/lib/whisper/types";
 import {
