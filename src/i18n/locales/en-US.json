@@ -12,6 +12,21 @@
     "delete": "Delete",
     "userId": "User ID"
   },
+  "promise": {
+    "title": "Our promise to you",
+    "subtitle": "A quiet place should stay quiet. Here is what we will never do.",
+    "item1Label": "Anonymity is never for sale",
+    "item1Desc": "We will never let anyone pay to unmask who wrote to you. Ever.",
+    "item2Label": "No subscription traps",
+    "item2Desc": "The core app stays free and whole. No forced renewals, no locked-away basics.",
+    "item3Label": "No ads, no data selling",
+    "item3Desc": "Your letters are intimate. We will never sell your data or fill this space with ads.",
+    "item4Label": "Your receipt stays private",
+    "item4Desc": "Only you hold the key to your replies. We never expose it to anyone.",
+    "cardTagline": "An anonymous letterbox that won't sell you out.",
+    "shareCta": "Share this promise",
+    "shareCopied": "Copied — go tell someone"
+  },
   "legal": {
     "back": "Back",
     "privacyLink": "Privacy Policy",
