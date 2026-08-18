@@ -5,6 +5,7 @@ import {
   approveMessage,
   deleteMessage,
   listTurns,
+  logModeration,
   markMessageRead,
   replyToMessage,
   setMessageBlocked,
