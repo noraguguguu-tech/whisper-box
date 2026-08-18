@@ -2,6 +2,8 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import enUS from "./locales/en-US.json";
 import zhCN from "./locales/zh-CN.json";
+import jaJP from "./locales/ja-JP.json";
+import koKR from "./locales/ko-KR.json";
 import { localeCodes, normalizeLocale, type LocaleCode } from "@/lib/i18n/locale";
 import {
   LOCALE_STORAGE_KEY,
@@ -25,6 +27,8 @@ export {
 const resources = {
   "en-US": { translation: enUS },
   "zh-CN": { translation: zhCN },
+  "ja-JP": { translation: jaJP },
+  "ko-KR": { translation: koKR },
 } as const;
 
 // Fixed default for SSR — user preference is applied client-side after mount.
