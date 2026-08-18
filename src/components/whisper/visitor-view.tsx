@@ -8,6 +8,7 @@ import { GummyNote } from "@/components/whisper/gummy-note";
 import { CrisisCard } from "@/components/whisper/crisis-card";
 import { SealCeremony } from "@/components/whisper/seal-ceremony";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { LegalFooter } from "@/components/whisper/legal-footer";
 import { tintForId } from "@/lib/whisper/types";
 import type { PublicEntry } from "@/lib/whisper/types";
 import { fetchVisitorInbox, sendVisitorMessage } from "@/lib/api";
@@ -286,6 +287,11 @@ export function VisitorView({ slug }: { slug: string }) {
           )}
         </section>
       )}
+
+      <div className="mt-auto pt-6">
+        <LegalFooter />
+      </div>
+
       {showCrisis && <CrisisCard onClose={() => setShowCrisis(false)} />}
       {sealing && (
         <SealCeremony
