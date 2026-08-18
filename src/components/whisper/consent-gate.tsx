@@ -95,13 +95,16 @@ export function ConsentGate() {
           </Link>
         </div>
 
-        <button
+        <LetterButton
           data-el="consent-accept"
           onClick={accept}
-          className="mt-5 w-full rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground gummy"
+          variant="primary"
+          size="lg"
+          fullWidth
+          className="mt-5"
         >
           {t("consent.accept", { age: MIN_AGE })}
-        </button>
+        </LetterButton>
         <p className="mt-2 text-center text-[11px] text-muted-foreground">
           {t("consent.declineHint", { age: MIN_AGE })}
         </p>
