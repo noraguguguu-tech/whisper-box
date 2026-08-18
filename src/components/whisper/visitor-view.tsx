@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
+import { CrisisCard } from "@/components/whisper/crisis-card";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { tintForId } from "@/lib/whisper/types";
 import type { PublicEntry } from "@/lib/whisper/types";
