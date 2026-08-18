@@ -106,10 +106,10 @@ export default function CoverPage() {
       {/* Enter hint */}
       <div
         data-el="cover-enter"
-        className="relative z-20 flex items-center justify-center gap-1.5 px-6 pt-2 text-sm font-semibold text-accent"
+        className="relative z-20 flex items-center justify-center gap-1 px-6 pt-2 text-xs font-normal text-muted-foreground/70"
       >
         {t("cover.enter")}
-        <ChevronRight className="h-4 w-4 animate-pulse" />
+        <ChevronRight className="h-3.5 w-3.5" />
       </div>
     </main>
   );
