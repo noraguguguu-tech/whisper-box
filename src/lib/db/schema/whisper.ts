@@ -36,6 +36,10 @@ export const messages = pgTable(
     reply: text("reply"),
     status: varchar("status", { length: 16 }).notNull().default("unread"),
     isPublic: boolean("is_public").notNull().default(false),
+    // Owner "mute" — when true, visitors can no longer add follow-up turns.
+    blocked: boolean("blocked").notNull().default(false),
+    // Visitor-flagged as harmful/harassment; surfaced to the owner.
+    reported: boolean("reported").notNull().default(false),
     receiptId: varchar("receipt_id", { length: 40 }).notNull().unique(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     repliedAt: timestamp("replied_at"),
@@ -71,3 +75,23 @@ export const turns = pgTable(
 );
 
 export type TurnRow = InferSelectModel<typeof turns>;
+
+/**
+ * Durable rate-limit ledger for anonymous writes. One row per accepted write,
+ * keyed by an opaque `bucket` (hashed IP + action). We count rows in a recent
+ * time window to throttle floods. Holds no message content and no raw IP.
+ */
+export const rateHits = pgTable(
+  "rate_hits",
+  {
+    id: varchar("id", { length: 32 }).primaryKey(),
+    bucket: varchar("bucket", { length: 80 }).notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    bucketIdx: index("rate_hits_bucket_idx").on(table.bucket),
+    createdAtIdx: index("rate_hits_created_at_idx").on(table.createdAt),
+  }),
+);
+
+export type RateHitRow = InferSelectModel<typeof rateHits>;
