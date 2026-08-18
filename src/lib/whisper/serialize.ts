@@ -31,6 +31,8 @@ export function toOwnerMessage(
     reply: row.reply,
     status: row.status as MessageStatus,
     isPublic: row.isPublic,
+    blocked: row.blocked,
+    reported: row.reported,
     receiptId: row.receiptId,
     createdAt: row.createdAt.toISOString(),
     repliedAt: row.repliedAt ? row.repliedAt.toISOString() : null,
@@ -51,8 +53,11 @@ export function toReceiptView(
     createdAt: row.createdAt.toISOString(),
     repliedAt: row.repliedAt ? row.repliedAt.toISOString() : null,
     turns: turns.map(toTurn),
-    // A visitor may continue the thread only once the owner has replied.
-    canFollowUp: row.status === "replied",
+    // A visitor may continue the thread only once the owner has replied AND the
+    // owner has not muted the thread.
+    canFollowUp: row.status === "replied" && !row.blocked,
+    // Surfaced so the visitor sees a clear "closed" state instead of a failure.
+    closed: row.blocked,
   };
 }
 
