@@ -234,6 +234,16 @@
     "boxClosed": "이 편지함은 일시적으로 닫혀 있어요. 주인이 나중에 다시 엽니다.",
     "pendingSent": "전달됨——주인이 확인해 편지함에 넣기를 기다리는 중이에요."
   },
+  "wallPage": {
+    "title": "이 사람이 간직한 편지",
+    "subtitle": "이 편지함이 공개하기로 한 익명 편지와 그 답장입니다.",
+    "empty": "아직 공개된 편지가 없어요.",
+    "emptyCta": "가장 먼저 편지를 써 보세요.",
+    "writeCta": "당신도 편지 쓰기",
+    "backToWrite": "편지 쓰기",
+    "count_one": "공개 편지 {{count}}통",
+    "count_other": "공개 편지 {{count}}통"
+  },
   "receipt": {
     "title": "당신의 이름 없는 편지",
     "youAsked": "당신이 보낸 내용",

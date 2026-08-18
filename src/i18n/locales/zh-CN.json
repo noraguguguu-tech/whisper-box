@@ -234,6 +234,16 @@
     "boxClosed": "这个信箱暂时关闭了，主人稍后会重新打开。",
     "pendingSent": "已寄达，等待主人查看后进入信箱。"
   },
+  "wallPage": {
+    "title": "TA 留下的信",
+    "subtitle": "这个信箱选择公开的匿名信，以及 TA 的回信。",
+    "empty": "这里还没有公开的信。",
+    "emptyCta": "来做第一个写信的人吧。",
+    "writeCta": "也给 TA 写一封",
+    "backToWrite": "去写信",
+    "count_one": "{{count}} 封公开信",
+    "count_other": "{{count}} 封公开信"
+  },
   "receipt": {
     "title": "你的无名信",
     "youAsked": "你寄出的信",
