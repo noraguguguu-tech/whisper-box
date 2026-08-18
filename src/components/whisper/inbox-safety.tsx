@@ -2,6 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import { ShieldAlert, Power, CheckCircle2, Trash2 } from "lucide-react";
+import { LetterButton } from "@/components/whisper/letter-button";
 import type { WhisperMessage } from "@/lib/whisper/types";
 
 /**
@@ -35,7 +36,7 @@ export function SettingsControls({
           className={
             closed
               ? "flex w-full items-center justify-center gap-1.5 rounded-full bg-accent py-2.5 text-sm font-semibold text-accent-foreground gummy"
-              : "flex w-full items-center justify-center gap-1.5 rounded-full border border-white/60 bg-white/40 py-2.5 text-sm font-semibold text-foreground/70"
+              : "flex w-full items-center justify-center gap-1.5 rounded-full border border-gummy-border bg-gummy-fill py-2.5 text-sm font-semibold text-foreground/70"
           }
         >
           {closed ? t("inbox.boxClosedState") : t("inbox.boxOpen")}
@@ -82,7 +83,7 @@ function ModeButton({
       className={
         active
           ? "flex-1 rounded-full bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground gummy"
-          : "flex-1 rounded-full border border-white/60 bg-white/40 px-3 py-2 text-xs font-medium text-foreground/70"
+          : "flex-1 rounded-full border border-gummy-border bg-gummy-fill px-3 py-2 text-xs font-medium text-foreground/70"
       }
     >
       {label}
@@ -125,22 +126,26 @@ export function PendingQueue({
           >
             <p className="text-[15px] leading-relaxed text-foreground">{m.body}</p>
             <div className="mt-3 flex gap-2">
-              <button
+              <LetterButton
                 data-el="approve-pending"
                 onClick={() => onApprove(m.id)}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-primary py-2 text-xs font-semibold text-primary-foreground gummy"
+                variant="primary"
+                size="sm"
+                className="flex-1"
               >
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 {t("inbox.approve")}
-              </button>
-              <button
+              </LetterButton>
+              <LetterButton
                 data-el="reject-pending"
                 onClick={() => onReject(m.id)}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 py-2 text-xs font-semibold text-accent"
+                variant="danger"
+                size="sm"
+                className="flex-1"
               >
                 <Trash2 className="h-3.5 w-3.5" />
                 {t("inbox.reject")}
-              </button>
+              </LetterButton>
             </div>
           </div>
         ))}
