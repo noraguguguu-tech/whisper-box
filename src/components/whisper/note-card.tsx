@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Globe, Lock, Send, Share2 } from "lucide-react";
+import { Globe, Lock, Send, Share2, Trash2, Ban, Flag } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { ShareCard } from "@/components/whisper/share-card";
 import { tintForId } from "@/lib/whisper/types";
@@ -20,6 +20,8 @@ export function NoteCard({
   onReply,
   onFollowup,
   onTogglePublic,
+  onToggleBlock,
+  onDelete,
 }: {
   message: WhisperMessage;
   expanded: boolean;
@@ -30,6 +32,8 @@ export function NoteCard({
   onReply: (text: string) => void;
   onFollowup: (text: string) => void;
   onTogglePublic: () => void;
+  onToggleBlock: () => void;
+  onDelete: () => void;
 }) {
   const { t } = useTranslation();
   const [draft, setDraft] = useState("");
