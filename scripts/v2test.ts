@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
-import { messages } from "@/lib/db/schema/whisper";
-import { desc } from "drizzle-orm";
-const rows = (await db.select().from(messages).orderBy(desc(messages.createdAt)).limit(2));
-for (const r of rows) console.log(r.body, "=> pending:", r.pending);
+import { inboxes } from "@/lib/db/schema/whisper";
+import { eq } from "drizzle-orm";
+await db.update(inboxes).set({ moderationMode: "all" }).where(eq(inboxes.slug, "xjs5u1yo"));
+console.log("mode=all set");
 process.exit(0);
