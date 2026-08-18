@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft, Clock, MessageCircleHeart, Send, Flag } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { CrisisCard } from "@/components/whisper/crisis-card";
+import { LineReveal } from "@/components/whisper/line-reveal";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import type { ConversationTurn, ReceiptView as ReceiptData } from "@/lib/whisper/types";
 import { fetchReceipt, sendReceiptFollowup, reportReceipt } from "@/lib/api";
