@@ -7,8 +7,17 @@ import { Copy, Check, Megaphone, Send } from "lucide-react";
 const TONES = ["soft", "curious", "bold"] as const;
 type Tone = (typeof TONES)[number];
 
-type Platform = "xhs" | "weibo" | "x" | "system";
-const PLATFORMS: Platform[] = ["xhs", "weibo", "x", "system"];
+type Platform = "xhs" | "weibo" | "x" | "line" | "kakao" | "facebook" | "system";
+
+// Which platforms make sense per interface language. "system" (native share
+// sheet) is always the last option so every locale has a universal fallback.
+function platformsForLocale(lang: string): Platform[] {
+  const l = (lang || "").toLowerCase();
+  if (l.startsWith("zh")) return ["xhs", "weibo", "x", "system"];
+  if (l.startsWith("ja")) return ["x", "line", "system"];
+  if (l.startsWith("ko")) return ["x", "kakao", "system"];
+  return ["x", "facebook", "system"];
+}
 
 /**
  * "Grab a caption & post" panel. Removes the #1 friction that stops owners from
@@ -23,9 +32,11 @@ const PLATFORMS: Platform[] = ["xhs", "weibo", "x", "system"];
  * "More" uses the native share sheet on devices that support it.
  */
 export function SharePromoPanel({ shareUrl }: { shareUrl: string }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [copiedTone, setCopiedTone] = useState<Tone | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  const platforms = platformsForLocale(i18n.resolvedLanguage || i18n.language);
 
   function caption(tone: Tone): string {
     return t(`promo.captions.${tone}`, { url: shareUrl || "" });
@@ -68,22 +79,32 @@ export function SharePromoPanel({ shareUrl }: { shareUrl: string }) {
       return;
     }
 
-    if (platform === "x") {
-      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-      window.open(url, "_blank", "noopener,noreferrer");
+    // Platforms with an official prefilled-text share intent — the caption
+    // lands straight in the compose box.
+    const intents: Partial<Record<Platform, string>> = {
+      x: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
+      weibo: `https://service.weibo.com/share/share.php?title=${encodeURIComponent(text)}`,
+      line: `https://line.me/R/msg/text/?${encodeURIComponent(text)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(text)}`,
+    };
+    const intent = intents[platform];
+    if (intent) {
+      window.open(intent, "_blank", "noopener,noreferrer");
       return;
     }
 
-    if (platform === "weibo") {
-      // Weibo web share accepts prefilled title text.
-      const url = `https://service.weibo.com/share/share.php?title=${encodeURIComponent(text)}`;
-      window.open(url, "_blank", "noopener,noreferrer");
-      return;
-    }
-
-    // Xiaohongshu: no public compose intent. Copy + open, prompt to paste.
-    flashToast(t("promo.xhsHint"));
-    window.open("https://www.xiaohongshu.com", "_blank", "noopener,noreferrer");
+    // Platforms with no public compose intent (Xiaohongshu, KakaoTalk):
+    // copy + open + prompt the owner to long-press paste.
+    const homes: Partial<Record<Platform, string>> = {
+      xhs: "https://www.xiaohongshu.com",
+      kakao: "https://story.kakao.com",
+    };
+    flashToast(
+      platform === "xhs"
+        ? t("promo.xhsHint")
+        : t("promo.pasteHint", { platform: t(`promo.platform.${platform}`) }),
+    );
+    window.open(homes[platform] ?? shareUrl, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -131,7 +152,7 @@ export function SharePromoPanel({ shareUrl }: { shareUrl: string }) {
                     {t("promo.postTo")}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
-                    {PLATFORMS.map((p) => (
+                    {platforms.map((p) => (
                       <button
                         key={p}
                         data-el="promo-post"
