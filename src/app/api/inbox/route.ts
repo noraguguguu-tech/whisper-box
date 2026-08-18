@@ -7,6 +7,7 @@ import {
   updateInboxPrompt,
   setInboxClosed,
   setModerationMode,
+  logModeration,
 } from "@/lib/db/queries";
 import { inboxPublic, toOwnerMessage } from "@/lib/whisper/serialize";
 
@@ -43,6 +44,13 @@ export async function PATCH(request: NextRequest) {
   if (typeof body?.closed === "boolean") {
     const updated = await setInboxClosed(auth.user.id, body.closed);
     if (!updated) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    await logModeration({
+      actor: "owner",
+      actorId: auth.user.id,
+      action: body.closed ? "close_inbox" : "reopen_inbox",
+      targetType: "inbox",
+      targetRef: updated.id,
+    }).catch(() => undefined);
     return NextResponse.json({ inbox: inboxPublic(updated) });
   }
 
