@@ -319,6 +319,21 @@ export async function reportMessageByReceipt(receiptId: string): Promise<boolean
   return rows.length > 0;
 }
 
+/** Owner approves a pending letter — it leaves review and enters the inbox. */
+export async function approveMessage(
+  ownerUserId: string,
+  messageId: string,
+): Promise<MessageRow | undefined> {
+  const owned = await ownsMessage(ownerUserId, messageId);
+  if (!owned) return undefined;
+  const rows = await db
+    .update(messages)
+    .set({ pending: false })
+    .where(eq(messages.id, messageId))
+    .returning();
+  return rows[0];
+}
+
 // ---- rate limiting (durable, IP-hash bucket) ----
 
 /**
