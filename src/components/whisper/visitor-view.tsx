@@ -299,6 +299,14 @@ export function VisitorView({ slug }: { slug: string }) {
         </section>
       )}
 
+      {/* Passerby → owner conversion at the end of the wall (compose flow only;
+          the SentCard flow already shows its own CTA). */}
+      {!notFound && !receiptId && !closed && (
+        <div className="pt-8">
+          <OpenOwnBoxCta />
+        </div>
+      )}
+
       <div className="mt-auto pt-6">
         <LegalFooter />
       </div>
