@@ -2,7 +2,7 @@ import { request } from "./request";
 import type { PublicEntry, ReceiptView, WhisperMessage } from "@/lib/whisper/types";
 
 export interface InboxData {
-  inbox: { slug: string; prompt: string };
+  inbox: { slug: string; prompt: string; closed: boolean; moderationMode: "suspicious" | "all" };
   messages: WhisperMessage[];
 }
 
@@ -24,6 +24,34 @@ export async function updateInboxPrompt(prompt: string): Promise<boolean> {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/** Owner: open/close the inbox (emergency valve). */
+export async function setInboxClosed(closed: boolean): Promise<boolean> {
+  try {
+    const res = await request("/api/inbox", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ closed }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/** Owner: switch review mode between "suspicious" and "all". */
+export async function setModerationMode(mode: "suspicious" | "all"): Promise<boolean> {
+  try {
+    const res = await request("/api/inbox", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ moderationMode: mode }),
     });
     return res.ok;
   } catch {
