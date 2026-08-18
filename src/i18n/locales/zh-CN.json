@@ -64,6 +64,14 @@
     "private": "仅自己可见",
     "makePublic": "公开到墙",
     "makePrivate": "设为私密",
+    "delete": "删除这封信",
+    "deleteConfirm": "删除后无法恢复，确定删除这封信及其对话？",
+    "deleted": "已删除",
+    "mute": "禁止继续追问",
+    "unmute": "允许继续追问",
+    "muted": "已封口",
+    "mutedHint": "对方无法再在这条对话里追问",
+    "reportedFlag": "对方举报了这封信",
     "replyPlaceholder": "写下你的匿名回信…",
     "send": "寄出回信",
     "sending": "寄送中…",
@@ -114,7 +122,10 @@
     "myLettersTitle": "我寄出的信",
     "myLettersDesc": "以下是你在这台设备上寄出的信，点开可查看回信、继续聊。",
     "openLetter": "查看回信",
-    "clearMine": "清除本地记录"
+    "clearMine": "清除本地记录",
+    "blockedContent": "这句话可能包含攻击或伤害性内容，换个说法再寄出吧。",
+    "rateLimited": "你寄信太频繁了，请稍后再试。",
+    "sendFailed": "寄送失败，请稍后重试。"
   },
   "receipt": {
     "title": "你的无名信",
