@@ -143,6 +143,20 @@
     "followupSend": "继续回一句",
     "followupSending": "寄送中…",
     "followupHint": "你还可以继续匿名追问，TA 会在信箱里看到。",
-    "saveLink": "记得收好这条回执链接，方便下次回来继续聊。"
+    "saveLink": "记得收好这条回执链接，方便下次回来继续聊。",
+    "closed": "对方已关闭这条对话的追问。",
+    "blockedContent": "这句话可能包含攻击或伤害性内容，换个说法再试试。",
+    "rateLimited": "你发送太频繁了，请稍后再试。",
+    "sendFailed": "寄送失败，请稍后重试。",
+    "report": "举报这封信",
+    "reported": "已举报，谢谢你的反馈。"
+  },
+  "safety": {
+    "screeningNote": "本产品带有基础关键词过滤（非 AI 审核），可能无法拦截所有不当内容。",
+    "crisisTitle": "如果你正处于困境",
+    "crisisBody": "如果你有伤害自己的念头，请立刻联系身边的人或求助热线。你并不孤单。",
+    "crisisHotlineCN": "全国心理援助热线：12356",
+    "crisisHotlineIntl": "各地紧急求助请拨打当地紧急电话。",
+    "gotIt": "我知道了"
   }
 }
