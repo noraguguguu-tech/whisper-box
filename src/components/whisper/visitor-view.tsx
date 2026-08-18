@@ -40,6 +40,8 @@ export function VisitorView({ slug }: { slug: string }) {
   // Friendly inline notice for a rejected send (screen / throttle / crisis).
   const [notice, setNotice] = useState<string | null>(null);
   const [showCrisis, setShowCrisis] = useState(false);
+  // Public-wall takedown: holds the target message id while the form is open.
+  const [reportTarget, setReportTarget] = useState<string | null>(null);
   // The sealing ceremony: holds { receiptId, preview } while it plays, then
   // resolves into the receipt view. Null when idle.
   const [sealing, setSealing] = useState<{ receiptId: string; preview: string } | null>(null);
