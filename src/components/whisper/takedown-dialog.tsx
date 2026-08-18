@@ -127,6 +127,11 @@ export function TakedownDialog({
             >
               {t("takedown.submit")}
             </button>
+            {failed && (
+              <p data-el="takedown-error" className="mt-2 text-center text-[12px] text-destructive">
+                {t("takedown.failed")}
+              </p>
+            )}
           </>
         )}
       </div>
