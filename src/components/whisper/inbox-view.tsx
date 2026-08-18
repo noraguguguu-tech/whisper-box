@@ -13,6 +13,7 @@ import { WhisperHeader } from "@/components/whisper/whisper-header";
 import { LetterButton } from "@/components/whisper/letter-button";
 import { PromisePanel } from "@/components/whisper/promise-panel";
 import { NoteCard } from "@/components/whisper/note-card";
+import { InboxFilterBar, type InboxFilter } from "@/components/whisper/inbox-filter-bar";
 import { SettingsControls, PendingQueue } from "@/components/whisper/inbox-safety";
 import { TakedownQueue } from "@/components/whisper/takedown-queue";
 import { SharePromoPanel } from "@/components/whisper/share-promo-panel";
