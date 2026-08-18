@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail, Lock, Flag, PenLine } from "lucide-react";
+import { Copy, Check, Send, Sparkles, MessageCircleHeart, Mail, Lock, PenLine } from "lucide-react";
 import { GummyNote } from "@/components/whisper/gummy-note";
 import { LetterButton } from "@/components/whisper/letter-button";
 import { PromisePanel } from "@/components/whisper/promise-panel";
