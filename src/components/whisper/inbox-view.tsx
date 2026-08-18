@@ -152,6 +152,11 @@ export function InboxView() {
     if (updated) setMessages((ms) => ms.map((m) => (m.id === id ? updated : m)));
   }
 
+  async function handleResolveTakedown(id: string, status: "actioned" | "dismissed") {
+    const ok = await resolveTakedown(id, status);
+    if (ok) setTakedowns((ts) => ts.filter((t) => t.id !== id));
+  }
+
   async function toggleClosed() {
     const next = !closed;
     setClosed(next); // optimistic
