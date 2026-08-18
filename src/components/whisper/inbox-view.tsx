@@ -266,6 +266,11 @@ export function InboxView() {
                 />
               )}
 
+              {/* Third-party takedown requests about the owner's public letters. */}
+              {takedowns.length > 0 && (
+                <TakedownQueue items={takedowns} onResolve={handleResolveTakedown} />
+              )}
+
               {loading ? (
                 <p className="mx-5 rounded-3xl bg-card p-6 text-center text-sm text-muted-foreground">
                   {t("inbox.loadingBox")}
