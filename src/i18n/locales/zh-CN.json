@@ -72,10 +72,14 @@
       "xhs": "小红书",
       "weibo": "微博",
       "x": "X",
+      "line": "LINE",
+      "kakao": "KakaoTalk",
+      "facebook": "Facebook",
       "system": "更多…"
     },
     "copiedGo": "已复制——去{{platform}}长按粘贴即可",
-    "xhsHint": "已复制！正在打开小红书，在发帖框长按粘贴就行。"
+    "xhsHint": "已复制！正在打开小红书，在发帖框长按粘贴就行。",
+    "pasteHint": "已复制！正在打开{{platform}}，长按输入框粘贴即可。"
   },
   "language": {
     "label": "语言",
