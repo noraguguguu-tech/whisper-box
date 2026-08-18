@@ -58,6 +58,32 @@ export async function updateInboxPrompt(
   return rows[0];
 }
 
+/** Owner opens/closes the inbox (emergency valve). */
+export async function setInboxClosed(
+  ownerUserId: string,
+  closed: boolean,
+): Promise<Inbox | undefined> {
+  const rows = await db
+    .update(inboxes)
+    .set({ closed })
+    .where(eq(inboxes.ownerUserId, ownerUserId))
+    .returning();
+  return rows[0];
+}
+
+/** Owner switches review mode: "suspicious" (default) or "all". */
+export async function setModerationMode(
+  ownerUserId: string,
+  mode: "suspicious" | "all",
+): Promise<Inbox | undefined> {
+  const rows = await db
+    .update(inboxes)
+    .set({ moderationMode: mode })
+    .where(eq(inboxes.ownerUserId, ownerUserId))
+    .returning();
+  return rows[0];
+}
+
 // ---- messages ----
 
 /** Owner's full message list (newest first). Scoped by owner via the inbox. */
@@ -77,7 +103,13 @@ export async function listPublicMessagesBySlug(slug: string): Promise<MessageRow
   return db
     .select()
     .from(messages)
-    .where(and(eq(messages.inboxId, inbox.id), eq(messages.isPublic, true)))
+    .where(
+      and(
+        eq(messages.inboxId, inbox.id),
+        eq(messages.isPublic, true),
+        eq(messages.pending, false),
+      ),
+    )
     .orderBy(desc(messages.repliedAt));
 }
 
@@ -85,6 +117,7 @@ export async function listPublicMessagesBySlug(slug: string): Promise<MessageRow
 export async function createMessage(
   inboxId: string,
   body: string,
+  pending = false,
 ): Promise<MessageRow> {
   const row = {
     id: randId(16),
@@ -93,6 +126,7 @@ export async function createMessage(
     reply: null,
     status: "unread",
     isPublic: false,
+    pending,
     receiptId: randId(32),
   };
   const inserted = await db.insert(messages).values(row).returning();
